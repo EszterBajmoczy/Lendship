@@ -7,13 +7,13 @@ namespace Lendship.Backend.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class CreateEvaluations : IMigrationMetadata
+    public sealed partial class ConversationAndMessage : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(CreateEvaluations));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(ConversationAndMessage));
         
         string IMigrationMetadata.Id
         {
-            get { return "202110032150597_CreateEvaluations"; }
+            get { return "202110191815331_ConversationAndMessage"; }
         }
         
         string IMigrationMetadata.Source

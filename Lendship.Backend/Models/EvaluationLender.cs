@@ -14,25 +14,13 @@ namespace Lendship.Backend.Models
         public int Id { get; set; }
 
         [Required]
-        [ForeignKey("UserFrom")]
-        public string UserFromId { get; set; }
+        public ApplicationUser UserFrom { get; set; }
 
         [Required]
-        public virtual ApplicationUser UserFrom { get; set; }
+        public ApplicationUser UserTo { get; set; }
 
         [Required]
-        [ForeignKey("UserTo")]
-        public string UserToId { get; set; }
-
-        [Required]
-        public virtual ApplicationUser UserTo { get; set; }
-
-        [Required]
-        [ForeignKey("Advertisement")]
-        public int AdvertisementId { get; set; }
-
-        [Required]
-        public virtual Advertisement Advertisement { get; set; }
+        public Advertisement Advertisement { get; set; }
 
         [Required]
         public int Flexibility { get; set; }

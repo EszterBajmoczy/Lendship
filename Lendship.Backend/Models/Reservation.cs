@@ -5,30 +5,27 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Lendship.Backend.Models
 {
+    public enum ReservationState
+    {
+        Created,
+        Accepted,
+        Declined,
+        Resigned,
+        Closed
+    }
+
     public class Reservation
     {
         [Key]
         public int Id { get; set; }
 
         [Required]
-        [ForeignKey("User")]
-        public string UserId { get; set; }
+        public ApplicationUser User { get; set; }
 
         [Required]
-        public virtual ApplicationUser User { get; set; }
+        public  Advertisement Advertisement { get; set; }
 
-        [Required]
-        [ForeignKey("Advertisement")]
-        public int AdvertisementId { get; set; }
-
-        [Required]
-        public virtual Advertisement Advertisement { get; set; }
-
-        [Required]
-        [ForeignKey("ReservationState")]
-        public int ReservationStateId { get; set; }
-
-        public virtual ReservationState ReservationState { get; set; }
+        public ReservationState ReservationState { get; set; }
 
         public string Comment { get; set; }
 

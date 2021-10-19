@@ -7,13 +7,13 @@ namespace Lendship.Backend.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class AdvertisementAndReservation : IMigrationMetadata
+    public sealed partial class IdentityUser : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(AdvertisementAndReservation));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(IdentityUser));
         
         string IMigrationMetadata.Id
         {
-            get { return "202110032130323_AdvertisementAndReservation"; }
+            get { return "202110191733583_IdentityUser"; }
         }
         
         string IMigrationMetadata.Source

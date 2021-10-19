@@ -13,6 +13,9 @@ namespace Lendship.Backend.Models
         [Key]
         public int Id { get; set; }
 
+        [Required]
+        public Advertisement Advertisement { get; set; }
+
         public virtual ICollection<ApplicationUser> Users { get; set; }
     }
 }

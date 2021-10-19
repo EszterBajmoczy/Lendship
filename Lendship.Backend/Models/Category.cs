@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Lendship.Backend.Models
 {
-    public class ReservationState
+    public class Category
     {
         [Key]
         public int Id { get; set; }
 
         [Required]
-        public string State { get; set; }
+        public string Name { get; set; }
     }
 }

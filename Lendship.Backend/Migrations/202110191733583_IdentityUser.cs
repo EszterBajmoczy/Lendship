@@ -3,7 +3,7 @@
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class IdentityUpdate : DbMigration
+    public partial class IdentityUser : DbMigration
     {
         public override void Up()
         {

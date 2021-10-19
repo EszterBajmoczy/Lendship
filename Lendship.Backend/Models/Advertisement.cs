@@ -11,11 +11,7 @@ namespace Lendship.Backend.Models
         public int Id { get; set; }
 
         [Required]
-        [ForeignKey("User")]
-        public string UserId { get; set; }
-
-        [Required]
-        public virtual ApplicationUser User { get; set; }
+        public ApplicationUser User { get; set; }
 
         [Required]
         public string Title { get; set; }
@@ -39,6 +35,9 @@ namespace Lendship.Backend.Models
 
         [Required]
         public bool IsPublic { get; set; }
+
+        [Required]
+        public Category Category { get; set; }
 
         [Required]
         public DateTime Creation { get; set; }
