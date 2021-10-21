@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNet.Identity.EntityFramework;
+﻿using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,11 +17,11 @@ namespace Lendship.Backend.Authentication
         public bool EmailNotificationsEnabled { get; set; }
 
         [Required]
-        [DataType("decimal(8,6)")]
+        [Column(TypeName = "decimal(8,6)")]
         public int Latitude { get; set; }
 
         [Required]
-        [DataType("decimal(9,6)")]
+        [Column(TypeName = "decimal(9,6)")]
         public decimal Longitude { get; set; }
 
         [Required]

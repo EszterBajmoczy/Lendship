@@ -16,6 +16,6 @@ namespace Lendship.Backend.Models
         [Required]
         public Advertisement Advertisement { get; set; }
 
-        public virtual ICollection<ApplicationUser> Users { get; set; }
+        public ICollection<ApplicationUser> Users { get; set; }
     }
 }
