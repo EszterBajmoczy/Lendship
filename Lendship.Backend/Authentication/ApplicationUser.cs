@@ -18,7 +18,7 @@ namespace Lendship.Backend.Authentication
 
         [Required]
         [Column(TypeName = "decimal(8,6)")]
-        public int Latitude { get; set; }
+        public decimal Latitude { get; set; }
 
         [Required]
         [Column(TypeName = "decimal(9,6)")]
