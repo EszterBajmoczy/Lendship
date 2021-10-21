@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Lendship.Backend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class AuthenticationController : Controller
     {
