@@ -15,6 +15,13 @@ using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using Lendship.Backend.DTO;
 using Microsoft.AspNetCore.Authorization;
+using Lendship.Backend.Models;
+using System.Linq;
+using Lendship.Backend.Authentication;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+using Lendship.Backend.Interfaces.Services;
+using Lendship.Backend.Exceptions;
 
 namespace Lendship.Backend.Controllers
 {
@@ -25,7 +32,36 @@ namespace Lendship.Backend.Controllers
     [ApiController]
     [Route("[controller]")]
     public class AdvertisementController : ControllerBase
-    { 
+    {
+        private readonly IAdvertisementService _adService;
+
+        public AdvertisementController(IAdvertisementService adService)
+        {
+            _adService = adService;
+        }
+
+        /// <summary>
+        /// get an advertisement
+        /// </summary>
+        /// <remarks>Gets an advertisement</remarks>
+        /// <param name="advertisementId">id of the advertisement</param>
+        /// <response code="200">advertisement</response>
+        /// <response code="400">bad request</response>
+        /// <response code="401"></response>
+        [HttpGet]
+        [Route("{advertisementId}")]
+        public virtual IActionResult GetAdvertisement([FromRoute][Required] int advertisementId)
+        {
+            var advertisement = _adService.GetAdvertisement(advertisementId);
+
+            if (advertisement != null)
+            {
+                return new ObjectResult(advertisement.ToJson());
+            }
+
+            return this.BadRequest("Advertisement not found.");
+        }
+
         /// <summary>
         /// creates a new advertisement
         /// </summary>
@@ -36,44 +72,39 @@ namespace Lendship.Backend.Controllers
         /// <response code="401"></response>
         [HttpPost]
         public virtual IActionResult CreateAdvertisement([FromBody]AdvertisementDto advertisement)
-        { 
-            //TODO: Uncomment the next line to return response 201 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(201);
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-
-            throw new NotImplementedException();
+        {
+            try
+            {
+                _adService.CreateAdvertisement(advertisement);
+                return StatusCode(201);
+            } catch (Exception e)
+            {
+                Console.WriteLine("Exception at creating advertisement: " + e.Message);
+                return this.BadRequest(e.Message);
+            }
         }
 
         /// <summary>
-        /// create availability of advertisement
+        /// updates a new advertisement
         /// </summary>
-        /// <remarks>Create availability of advertisement</remarks>
-        /// <param name="advertisementId">id of the advertisement</param>
-        /// <param name="availability">Availability to create</param>
-        /// <response code="201">availability created</response>
+        /// <remarks>Update a new advertisement</remarks>
+        /// <param name="advertisement">Advertisement to update</param>
+        /// <response code="201">item created</response>
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
-        [HttpPost]
-        [Route("{advertisementId}")]
-        public virtual IActionResult CreateAvailabilityOfAdvertisement([FromRoute][Required]string advertisementId, [FromBody]AvailabilityDto availability)
-        { 
-            //TODO: Uncomment the next line to return response 201 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(201);
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-
-            throw new NotImplementedException();
+        [HttpPut]
+        public virtual IActionResult UpdateAdvertisement([FromBody] AdvertisementDto advertisement)
+        {
+            try
+            {
+                _adService.UpdateAdvertisement(advertisement);
+                return StatusCode(201);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception at updating advertisement: " + e.Message);
+                return this.BadRequest(e.Message);
+            }
         }
 
         /// <summary>
@@ -85,20 +116,17 @@ namespace Lendship.Backend.Controllers
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpDelete]
-        [Route("delete")]
-        public virtual IActionResult DeleteAdvertisement([FromQuery]int? advertisementId)
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200);
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-
-            throw new NotImplementedException();
+        public virtual IActionResult DeleteAdvertisement([FromQuery]int advertisementId)
+        {
+            try
+            {
+                _adService.DeleteAdvertisement(advertisementId);
+                return StatusCode(200);
+            } catch(Exception e)
+            {
+                Console.WriteLine("Exception at deleting advertisement: " + e.Message);
+                return this.BadRequest(e.Message);
+            }
         }
 
         /// <summary>
@@ -116,56 +144,10 @@ namespace Lendship.Backend.Controllers
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpGet]
-        public virtual IActionResult GetAdvertisements([FromQuery]string advertisementType, [FromQuery]bool? credit, [FromQuery]bool? cash, [FromQuery]string category, [FromQuery]string city, [FromQuery]int? distance, [FromQuery]string sortBy)
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(List<Advertisement>));
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-            string exampleJson = null;
-            exampleJson = "{}";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<List<AdvertisementDto>>(exampleJson)
-            : default(List<AdvertisementDto>);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
-        }
-
-        /// <summary>
-        /// get availability of advertisement
-        /// </summary>
-        /// <remarks>Gets availability of advertisement</remarks>
-        /// <param name="advertisementId">id of the advertisement</param>
-        /// <response code="200">availability of advertisement</response>
-        /// <response code="400">bad request</response>
-        /// <response code="401"></response>
-        [HttpGet]
-        [Route("{advertisementId}")]
-        public virtual IActionResult GetAvailabilityOfAdvertisement([FromRoute][Required]string advertisementId)
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(Availability));
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-            string exampleJson = null;
-            exampleJson = "{\"empty\": false}";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<AvailabilityDto>(exampleJson)
-            : default(AvailabilityDto);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+        public virtual IActionResult GetAdvertisements([FromQuery]string advertisementType, [FromQuery]bool credit, [FromQuery]bool cash, [FromQuery]string category, [FromQuery]string city, [FromQuery]int distance, [FromQuery]string sortBy)
+        {
+            var advertisements = _adService.GetAdvertisements(advertisementType, credit, cash, category, city, distance, sortBy);
+            return new ObjectResult(JsonConvert.SerializeObject(advertisements));
         }
 
         /// <summary>
@@ -221,25 +203,41 @@ namespace Lendship.Backend.Controllers
         /// <response code="401"></response>
         [HttpGet]
         [Route("saved")]
-        public virtual IActionResult GetSavedAdvertisements([FromQuery]string advertisementType, [FromQuery]bool? credit, [FromQuery]bool? cash, [FromQuery]string category, [FromQuery]string city, [FromQuery]int? distance, [FromQuery]string sortBy)
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(Advertisement));
+        public virtual IActionResult GetSavedAdvertisements([FromQuery]string advertisementType, [FromQuery]bool credit, [FromQuery]bool cash, [FromQuery]string category, [FromQuery]string city, [FromQuery]int? distance, [FromQuery]string sortBy)
+        {
+            try
+            {
+                var advertisements = _adService.GetSavedAdvertisements(advertisementType, credit, cash, category, city, distance, sortBy);
+                return new ObjectResult(JsonConvert.SerializeObject(advertisements));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception at getting saving advertisements: " + e.Message);
+                return this.BadRequest(e.Message);
+            }
+        }
 
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-            string exampleJson = null;
-            exampleJson = "{\"empty\": false}";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<AdvertisementDto>(exampleJson)
-            : default(AdvertisementDto);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+        /// <summary>
+        /// save an advertisement
+        /// </summary>
+        /// <remarks>Saves an advertisement for the user</remarks>
+        /// <param name="advertisementId">Advertisement&#39;s id to remove</param>
+        /// <response code="200">item removed</response>
+        /// <response code="400">bad request</response>
+        /// <response code="401"></response>
+        [HttpPost]
+        [Route("saved")]
+        public virtual IActionResult SaveAdvertisement([FromQuery]int advertisementId)
+        {
+            try
+            {
+                _adService.SaveAdvertisementForUser(advertisementId);
+                return StatusCode(200);
+            } catch (Exception e)
+            {
+                Console.WriteLine("Exception at saving advertisement: " + e.Message);
+                return this.BadRequest(e.Message);
+            }
         }
 
         /// <summary>
@@ -251,70 +249,11 @@ namespace Lendship.Backend.Controllers
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpDelete]
-        [Route("remove")]
-        public virtual IActionResult RemoveAdvertisement([FromQuery]int? advertisementId)
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200);
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// updates a new advertisement
-        /// </summary>
-        /// <remarks>Update a new advertisement</remarks>
-        /// <param name="advertisement">Advertisement to update</param>
-        /// <response code="201">item created</response>
-        /// <response code="400">bad request</response>
-        /// <response code="401"></response>
-        [HttpPut]
-        public virtual IActionResult UpdateAdvertisement([FromBody]AdvertisementDto advertisement)
-        { 
-            //TODO: Uncomment the next line to return response 201 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(201);
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// update availability of advertisement
-        /// </summary>
-        /// <remarks>Update availability of advertisement</remarks>
-        /// <param name="advertisementId">id of the advertisement</param>
-        /// <param name="availability">Availability to update</param>
-        /// <response code="201">availability updated</response>
-        /// <response code="400">bad request</response>
-        /// <response code="401"></response>
-        [HttpPut]
-        [Route("{advertisementId}")]
-        public virtual IActionResult UpdateAvailabilityOfAdvertisement([FromRoute][Required]string advertisementId, [FromBody]AvailabilityDto availability)
-        { 
-            //TODO: Uncomment the next line to return response 201 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(201);
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-
-            throw new NotImplementedException();
+        [Route("saved")]
+        public virtual IActionResult RemoveAdvertisement([FromQuery] int advertisementId)
+        {
+            _adService.RemoveSavedAdvertisement(advertisementId);
+            return StatusCode(200);
         }
     }
 }
