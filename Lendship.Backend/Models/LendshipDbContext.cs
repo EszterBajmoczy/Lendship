@@ -28,7 +28,8 @@ namespace Lendship.Backend.Models
 
         public DbSet<Conversation> Conversation { get; set; }
 
-
+        public DbSet<SavedAdvertisement> SavedAdvertisements { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

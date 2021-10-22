@@ -36,9 +36,7 @@ namespace Lendship.Backend.DTO
 
         /// <summary>
         /// Gets or Sets User
-        /// </summary>
-        [Required]
-        
+        /// </summary>        
         [DataMember(Name="user")]
         public UserDto User { get; set; }
 
@@ -92,7 +90,7 @@ namespace Lendship.Backend.DTO
         [Required]
         
         [DataMember(Name="latitude")]
-        public decimal? Latitude { get; set; }
+        public decimal Latitude { get; set; }
 
         /// <summary>
         /// Gets or Sets Longitude
@@ -100,7 +98,7 @@ namespace Lendship.Backend.DTO
         [Required]
         
         [DataMember(Name="longitude")]
-        public decimal? Longitude { get; set; }
+        public decimal Longitude { get; set; }
 
         /// <summary>
         /// Gets or Sets IsPublic
@@ -116,7 +114,14 @@ namespace Lendship.Backend.DTO
         [Required]
         
         [DataMember(Name="category")]
-        public CategoryDto Category { get; set; }
+        public string Category { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Availabilities
+        /// </summary>
+
+        [DataMember(Name="availabilities")]
+        public List<AvailabilityDto> Availabilities { get; set; }
 
         /// <summary>
         /// Gets or Sets Creation
@@ -146,6 +151,7 @@ namespace Lendship.Backend.DTO
             sb.Append("  Longitude: ").Append(Longitude).Append("\n");
             sb.Append("  IsPublic: ").Append(IsPublic).Append("\n");
             sb.Append("  Category: ").Append(Category).Append("\n");
+            sb.Append("  Availabilities: ").Append(Availabilities).Append("\n");
             sb.Append("  Creation: ").Append(Creation).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
@@ -244,6 +250,11 @@ namespace Lendship.Backend.DTO
                     Category.Equals(other.Category)
                 ) && 
                 (
+                    Availabilities == other.Availabilities ||
+                    Availabilities != null &&
+                    Availabilities.SequenceEqual(other.Availabilities)
+                ) && 
+                (
                     Creation == other.Creation ||
                     Creation != null &&
                     Creation.Equals(other.Creation)
@@ -284,6 +295,8 @@ namespace Lendship.Backend.DTO
                     hashCode = hashCode * 59 + IsPublic.GetHashCode();
                     if (Category != null)
                     hashCode = hashCode * 59 + Category.GetHashCode();
+                    if (Availabilities != null)
+                    hashCode = hashCode * 59 + Availabilities.GetHashCode();
                     if (Creation != null)
                     hashCode = hashCode * 59 + Creation.GetHashCode();
                 return hashCode;
