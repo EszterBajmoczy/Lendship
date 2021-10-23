@@ -12,76 +12,17 @@ namespace Lendship.Backend.Converters
 {
     public class AdvertisementConverter : IAdvertisementConverter
     {
-        private readonly IUserConverter _userConverter;
-        private readonly IAvailabilityConverter _availabillityConverter;
-
-        public AdvertisementConverter(IUserConverter userConverter, IAvailabilityConverter availabillityConverter)
+        public AdvertisementDto ConvertToDto(Advertisement ad)
         {
-            _userConverter = userConverter;
-            _availabillityConverter = availabillityConverter;
-        }
-
-        public AdvertisementDto ConvertToDto(Advertisement ad, IEnumerable<Availability> availabilities)
-        {
-            if(ad == null)
-            {
-                return null;
-            }
-
-            //TODO evaluations !!!
-            var userDTO = _userConverter.ConvertToDto(ad.User, 0, 2);
-
-            List<AvailabilityDto> availabilityDtos = new List<AvailabilityDto>();
-
-            foreach (var availability in availabilities)
-            {
-                var a = _availabillityConverter.ConvertToDto(availability);
-                availabilityDtos.Add(a);
-            }
-
             return new AdvertisementDto
             {
                 Id = ad.Id,
-                User = userDTO,
                 Title = ad.Title,
-                Description = ad.Description,
-                InstructionManual = ad.InstructionManual,
                 Price = ad.Price,
                 Credit = ad.Credit,
-                Deposit = ad.Deposit,
                 Latitude = ad.Latitude,
-                Longitude = ad.Longitude,
-                IsPublic = ad.IsPublic,
-                Category = ad.Category.Name,
-                Availabilities = availabilityDtos,
-                Creation = ad.Creation
+                Longitude = ad.Longitude
             };
-        }
-
-        public Advertisement ConvertToEntity(AdvertisementDto ad, ApplicationUser user, Category category)
-        {
-            var newAd = new Advertisement
-            {
-                User = user,
-                Title = ad.Title,
-                Description = ad.Description,
-                InstructionManual = ad.InstructionManual,
-                Price = ad.Price,
-                Credit = ad.Credit,
-                Deposit = ad.Deposit,
-                Latitude = ad.Latitude,
-                Longitude = ad.Longitude,
-                IsPublic = ad.IsPublic ?? true,
-                Category = category,
-                Creation = ad.Creation ?? DateTime.Now
-            };
-
-            if (ad.Id.HasValue)
-            {
-                newAd.Id = ad.Id.Value;
-            }
-
-            return newAd;
         }
     }
 }

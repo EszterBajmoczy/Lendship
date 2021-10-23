@@ -10,9 +10,6 @@ namespace Lendship.Backend.Interfaces.Converters
 {
     public interface IAdvertisementConverter
     {
-        Advertisement ConvertToEntity(AdvertisementDto ad, ApplicationUser user, Category category);
-
-        AdvertisementDto ConvertToDto(Advertisement ad, IEnumerable<Availability> availabilities);
-
+        AdvertisementDto ConvertToDto(Advertisement ad);
     }
 }

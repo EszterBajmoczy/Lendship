@@ -8,11 +8,11 @@ namespace Lendship.Backend.Interfaces.Services
 {
     public interface IAdvertisementService
     {
-        AdvertisementDto GetAdvertisement(int advertisementId);
+        AdvertisementDetailsDto GetAdvertisement(int advertisementId);
 
-        void CreateAdvertisement(AdvertisementDto advertisement);
+        void CreateAdvertisement(AdvertisementDetailsDto advertisement);
 
-        void UpdateAdvertisement(AdvertisementDto advertisement);
+        void UpdateAdvertisement(AdvertisementDetailsDto advertisement);
 
         void DeleteAdvertisement(int advertisementId);
 

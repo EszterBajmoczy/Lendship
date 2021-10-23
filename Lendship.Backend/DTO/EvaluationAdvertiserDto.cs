@@ -55,7 +55,7 @@ namespace Lendship.Backend.DTO
         /// </summary>
 
         [DataMember(Name="advertisementId")]
-        public AdvertisementDto AdvertisementId { get; set; }
+        public int AdvertisementId { get; set; }
 
         /// <summary>
         /// Gets or Sets Flexibility
