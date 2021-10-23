@@ -43,14 +43,6 @@ namespace Lendship.Backend.DTO
         public AdvertisementDto Advertisement { get; set; }
 
         /// <summary>
-        /// Gets or Sets User
-        /// </summary>
-        [Required]
-        
-        [DataMember(Name="user")]
-        public UserDto User { get; set; }
-
-        /// <summary>
         /// Gets or Sets ReservationState
         /// </summary>
         [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]

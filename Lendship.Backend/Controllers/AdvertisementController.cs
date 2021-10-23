@@ -71,7 +71,7 @@ namespace Lendship.Backend.Controllers
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpPost]
-        public virtual IActionResult CreateAdvertisement([FromBody]AdvertisementDto advertisement)
+        public virtual IActionResult CreateAdvertisement([FromBody]AdvertisementDetailsDto advertisement)
         {
             try
             {
@@ -93,7 +93,7 @@ namespace Lendship.Backend.Controllers
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpPut]
-        public virtual IActionResult UpdateAdvertisement([FromBody] AdvertisementDto advertisement)
+        public virtual IActionResult UpdateAdvertisement([FromBody] AdvertisementDetailsDto advertisement)
         {
             try
             {
@@ -181,8 +181,8 @@ namespace Lendship.Backend.Controllers
             exampleJson = "{\"empty\": false}";
             
             var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<AdvertisementDto>(exampleJson)
-            : default(AdvertisementDto);
+            ? JsonConvert.DeserializeObject<AdvertisementDetailsDto>(exampleJson)
+            : default(AdvertisementDetailsDto);
             //TODO: Change the data returned
             return new ObjectResult(example);
         }
@@ -203,7 +203,7 @@ namespace Lendship.Backend.Controllers
         /// <response code="401"></response>
         [HttpGet]
         [Route("saved")]
-        public virtual IActionResult GetSavedAdvertisements([FromQuery]string advertisementType, [FromQuery]bool credit, [FromQuery]bool cash, [FromQuery]string category, [FromQuery]string city, [FromQuery]int? distance, [FromQuery]string sortBy)
+        public virtual IActionResult GetSavedAdvertisements([FromQuery]string advertisementType, [FromQuery]bool credit, [FromQuery]bool cash, [FromQuery]string category, [FromQuery]string city, [FromQuery]int distance, [FromQuery]string sortBy)
         {
             try
             {

@@ -18,7 +18,8 @@ namespace Lendship.Backend.Services
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly LendshipDbContext _dbContext;
-        private readonly AdvertisementConverter _converter;
+        private readonly AdvertisementDetailsConverter _adDetailsConverter;
+        private readonly AdvertisementConverter _adConverter;
 
         public AdvertisementService(IHttpContextAccessor httpContextAccessor, LendshipDbContext dbContext)
         {
@@ -26,10 +27,11 @@ namespace Lendship.Backend.Services
             _dbContext = dbContext;
 
             //TODO inject converters!!
-            _converter = new AdvertisementConverter(new UserConverter(), new AvailabilityConverter());
+            _adDetailsConverter = new AdvertisementDetailsConverter(new UserConverter(), new AvailabilityConverter());
+            _adConverter = new AdvertisementConverter();
         }
 
-        public AdvertisementDto GetAdvertisement(int advertisementId)
+        public AdvertisementDetailsDto GetAdvertisement(int advertisementId)
         {
             var advertisement = _dbContext.Advertisements
                 .Include(a => a.User)
@@ -38,11 +40,11 @@ namespace Lendship.Backend.Services
                 .FirstOrDefault();
             var availabilities = _dbContext.Availabilites.Where(a => a.Advertisement.Id == advertisementId).ToList();
 
-            var advertisementDto = _converter.ConvertToDto(advertisement, availabilities);
+            var advertisementDto = _adDetailsConverter.ConvertToDto(advertisement, availabilities);
             return advertisementDto;
         }
 
-        public void CreateAdvertisement(AdvertisementDto advertisement)
+        public void CreateAdvertisement(AdvertisementDetailsDto advertisement)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -54,13 +56,13 @@ namespace Lendship.Backend.Services
                 throw new CategoryNotExistsException("Category not exists.");
             }
 
-            var ad =_converter.ConvertToEntity(advertisement, user, category);
+            var ad =_adDetailsConverter.ConvertToEntity(advertisement, user, category);
 
             _dbContext.Advertisements.Add(ad);
             _dbContext.SaveChanges();
         }
 
-        public void UpdateAdvertisement(AdvertisementDto advertisement)
+        public void UpdateAdvertisement(AdvertisementDetailsDto advertisement)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -84,7 +86,7 @@ namespace Lendship.Backend.Services
 
             var user = _dbContext.Users.Where(x => x.Id == signedInUserId).FirstOrDefault();
 
-            var ad = _converter.ConvertToEntity(advertisement, user, category);
+            var ad = _adDetailsConverter.ConvertToEntity(advertisement, user, category);
 
             _dbContext.Update(ad);
             _dbContext.SaveChanges();
@@ -111,16 +113,13 @@ namespace Lendship.Backend.Services
             var resultList = new List<AdvertisementDto>();
 
             var ads = _dbContext.Advertisements
-                        .Include(a => a.User)
-                        .Include(a => a.Category)
                         .ToList();
 
             ads = FilterAdvertisments(ads, advertisementType, creditPayment, cashPayment, category, city, distance, sortBy);
 
             foreach (var ad in ads)
             {
-                var availabilities = _dbContext.Availabilites.Where(a => a.Advertisement.Id == ad.Id).ToList();
-                var dto = _converter.ConvertToDto(ad, availabilities);
+                var dto = _adConverter.ConvertToDto(ad);
                 resultList.Add(dto);
             }
 
@@ -134,8 +133,6 @@ namespace Lendship.Backend.Services
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var ads = _dbContext.Advertisements
-                        .Include(a => a.User)
-                        .Include(a => a.Category)
                         .Where(a => a.User.Id == signedInUserId)
                         .ToList();
 
@@ -143,8 +140,7 @@ namespace Lendship.Backend.Services
 
             foreach (var ad in ads)
             {
-                var availabilities = _dbContext.Availabilites.Where(a => a.Advertisement.Id == ad.Id).ToList();
-                var dto = _converter.ConvertToDto(ad, availabilities);
+                var dto = _adConverter.ConvertToDto(ad);
                 resultList.Add(dto);
             }
 
@@ -160,8 +156,6 @@ namespace Lendship.Backend.Services
 
             var savedAds = _dbContext.SavedAdvertisements.Where(sa => sa.UserId == signedInUserId).Select(a => a.AdvertisementId).ToList();
             var advertisements = _dbContext.Advertisements
-                .Include(a => a.User)
-                .Include(a => a.Category)
                 .Where(a => savedAds.Contains(a.Id))
                 .ToList();
 
@@ -169,8 +163,7 @@ namespace Lendship.Backend.Services
 
             foreach(var ad in advertisements)
             {
-                var availabilities = _dbContext.Availabilites.Where(a => a.Advertisement.Id == ad.Id).ToList();
-                var dto = _converter.ConvertToDto(ad, availabilities);
+                var dto = _adConverter.ConvertToDto(ad);
                 resultList.Add(dto);
             }
 

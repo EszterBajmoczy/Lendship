@@ -25,7 +25,7 @@ namespace Lendship.Backend.DTO
     /// 
     /// </summary>
     [DataContract]
-    public partial class AdvertisementDto : IEquatable<AdvertisementDto>
+    public partial class AdvertisementDetailsDto : IEquatable<AdvertisementDetailsDto>
     { 
         /// <summary>
         /// Gets or Sets Id
@@ -35,12 +35,33 @@ namespace Lendship.Backend.DTO
         public int? Id { get; set; }
 
         /// <summary>
+        /// Gets or Sets User
+        /// </summary>        
+        [DataMember(Name="user")]
+        public UserDto User { get; set; }
+
+        /// <summary>
         /// Gets or Sets Title
         /// </summary>
         [Required]
         
         [DataMember(Name="title")]
         public string Title { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Description
+        /// </summary>
+        [Required]
+        
+        [DataMember(Name="description")]
+        public string Description { get; set; }
+
+        /// <summary>
+        /// Gets or Sets InstructionManual
+        /// </summary>
+
+        [DataMember(Name="instructionManual")]
+        public string InstructionManual { get; set; }
 
         /// <summary>
         /// Gets or Sets Price
@@ -55,6 +76,13 @@ namespace Lendship.Backend.DTO
 
         [DataMember(Name="credit")]
         public int? Credit { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Deposit
+        /// </summary>
+
+        [DataMember(Name="deposit")]
+        public int? Deposit { get; set; }
 
         /// <summary>
         /// Gets or Sets Latitude
@@ -73,6 +101,37 @@ namespace Lendship.Backend.DTO
         public decimal Longitude { get; set; }
 
         /// <summary>
+        /// Gets or Sets IsPublic
+        /// </summary>
+        [Required]
+        
+        [DataMember(Name="isPublic")]
+        public bool? IsPublic { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Category
+        /// </summary>
+        [Required]
+        
+        [DataMember(Name="category")]
+        public string Category { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Availabilities
+        /// </summary>
+
+        [DataMember(Name="availabilities")]
+        public List<AvailabilityDto> Availabilities { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Creation
+        /// </summary>
+        [Required]
+        
+        [DataMember(Name="creation")]
+        public DateTime? Creation { get; set; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -81,11 +140,19 @@ namespace Lendship.Backend.DTO
             var sb = new StringBuilder();
             sb.Append("class Advertisement {\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
+            sb.Append("  User: ").Append(User).Append("\n");
             sb.Append("  Title: ").Append(Title).Append("\n");
+            sb.Append("  Description: ").Append(Description).Append("\n");
+            sb.Append("  InstructionManual: ").Append(InstructionManual).Append("\n");
             sb.Append("  Price: ").Append(Price).Append("\n");
             sb.Append("  Credit: ").Append(Credit).Append("\n");
+            sb.Append("  Deposit: ").Append(Deposit).Append("\n");
             sb.Append("  Latitude: ").Append(Latitude).Append("\n");
             sb.Append("  Longitude: ").Append(Longitude).Append("\n");
+            sb.Append("  IsPublic: ").Append(IsPublic).Append("\n");
+            sb.Append("  Category: ").Append(Category).Append("\n");
+            sb.Append("  Availabilities: ").Append(Availabilities).Append("\n");
+            sb.Append("  Creation: ").Append(Creation).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -108,7 +175,7 @@ namespace Lendship.Backend.DTO
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((AdvertisementDto)obj);
+            return obj.GetType() == GetType() && Equals((AdvertisementDetailsDto)obj);
         }
 
         /// <summary>
@@ -116,7 +183,7 @@ namespace Lendship.Backend.DTO
         /// </summary>
         /// <param name="other">Instance of Advertisement to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(AdvertisementDto other)
+        public bool Equals(AdvertisementDetailsDto other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -128,9 +195,24 @@ namespace Lendship.Backend.DTO
                     Id.Equals(other.Id)
                 ) && 
                 (
+                    User == other.User ||
+                    User != null &&
+                    User.Equals(other.User)
+                ) && 
+                (
                     Title == other.Title ||
                     Title != null &&
                     Title.Equals(other.Title)
+                ) && 
+                (
+                    Description == other.Description ||
+                    Description != null &&
+                    Description.Equals(other.Description)
+                ) && 
+                (
+                    InstructionManual == other.InstructionManual ||
+                    InstructionManual != null &&
+                    InstructionManual.Equals(other.InstructionManual)
                 ) && 
                 (
                     Price == other.Price ||
@@ -143,6 +225,11 @@ namespace Lendship.Backend.DTO
                     Credit.Equals(other.Credit)
                 ) && 
                 (
+                    Deposit == other.Deposit ||
+                    Deposit != null &&
+                    Deposit.Equals(other.Deposit)
+                ) && 
+                (
                     Latitude == other.Latitude ||
                     Latitude != null &&
                     Latitude.Equals(other.Latitude)
@@ -151,6 +238,26 @@ namespace Lendship.Backend.DTO
                     Longitude == other.Longitude ||
                     Longitude != null &&
                     Longitude.Equals(other.Longitude)
+                ) && 
+                (
+                    IsPublic == other.IsPublic ||
+                    IsPublic != null &&
+                    IsPublic.Equals(other.IsPublic)
+                ) && 
+                (
+                    Category == other.Category ||
+                    Category != null &&
+                    Category.Equals(other.Category)
+                ) && 
+                (
+                    Availabilities == other.Availabilities ||
+                    Availabilities != null &&
+                    Availabilities.SequenceEqual(other.Availabilities)
+                ) && 
+                (
+                    Creation == other.Creation ||
+                    Creation != null &&
+                    Creation.Equals(other.Creation)
                 );
         }
 
@@ -166,16 +273,32 @@ namespace Lendship.Backend.DTO
                 // Suitable nullity checks etc, of course :)
                     if (Id != null)
                     hashCode = hashCode * 59 + Id.GetHashCode();
+                    if (User != null)
+                    hashCode = hashCode * 59 + User.GetHashCode();
                     if (Title != null)
                     hashCode = hashCode * 59 + Title.GetHashCode();
+                    if (Description != null)
+                    hashCode = hashCode * 59 + Description.GetHashCode();
+                    if (InstructionManual != null)
+                    hashCode = hashCode * 59 + InstructionManual.GetHashCode();
                     if (Price != null)
                     hashCode = hashCode * 59 + Price.GetHashCode();
                     if (Credit != null)
                     hashCode = hashCode * 59 + Credit.GetHashCode();
+                    if (Deposit != null)
+                    hashCode = hashCode * 59 + Deposit.GetHashCode();
                     if (Latitude != null)
                     hashCode = hashCode * 59 + Latitude.GetHashCode();
                     if (Longitude != null)
                     hashCode = hashCode * 59 + Longitude.GetHashCode();
+                    if (IsPublic != null)
+                    hashCode = hashCode * 59 + IsPublic.GetHashCode();
+                    if (Category != null)
+                    hashCode = hashCode * 59 + Category.GetHashCode();
+                    if (Availabilities != null)
+                    hashCode = hashCode * 59 + Availabilities.GetHashCode();
+                    if (Creation != null)
+                    hashCode = hashCode * 59 + Creation.GetHashCode();
                 return hashCode;
             }
         }
@@ -183,12 +306,12 @@ namespace Lendship.Backend.DTO
         #region Operators
         #pragma warning disable 1591
 
-        public static bool operator ==(AdvertisementDto left, AdvertisementDto right)
+        public static bool operator ==(AdvertisementDetailsDto left, AdvertisementDetailsDto right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(AdvertisementDto left, AdvertisementDto right)
+        public static bool operator !=(AdvertisementDetailsDto left, AdvertisementDetailsDto right)
         {
             return !Equals(left, right);
         }
