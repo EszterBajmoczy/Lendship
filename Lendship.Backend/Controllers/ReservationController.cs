@@ -9,12 +9,12 @@
  */
 
 using System;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Lendship.Backend.DTO;
+using Lendship.Backend.Interfaces.Services;
 
 namespace Lendship.Backend.Controllers
 {
@@ -25,30 +25,36 @@ namespace Lendship.Backend.Controllers
     [ApiController]
     [Route("[controller]")]
     public class ReservationController : ControllerBase
-    { 
+    {
+        private readonly IReservationService _reservationService;
+
+        public ReservationController(IReservationService reservationService)
+        {
+            _reservationService = reservationService;
+        }
+
         /// <summary>
-        /// create reservations
+        /// create reservation
         /// </summary>
-        /// <remarks>Creates a reservations</remarks>
+        /// <remarks>Creates a reservation</remarks>
         /// <param name="advertisementId">id of the user</param>
         /// <param name="reservation">reservation for the advertisement</param>
         /// <response code="200">reservation created</response>
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpPost]
-        public virtual IActionResult CreateReservations([FromQuery][Required()]string advertisementId, [FromBody]ReservationDto reservation)
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200);
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-
-            throw new NotImplementedException();
+        public virtual IActionResult CreateReservation([FromQuery][Required()]int advertisementId, [FromBody]ReservationDto reservation)
+        {
+            try
+            {
+                _reservationService.CreateReservation(reservation, advertisementId);
+                return StatusCode(201);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception at creating reservation: " + e.Message);
+                return this.BadRequest(e.Message);
+            }
         }
 
         /// <summary>
@@ -60,24 +66,9 @@ namespace Lendship.Backend.Controllers
         /// <response code="401"></response>
         [HttpGet]
         public virtual IActionResult GetReservations()
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(List<Reservation>));
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-            string exampleJson = null;
-            exampleJson = "{}";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<List<ReservationDto>>(exampleJson)
-            : default(List<ReservationDto>);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+        {
+            var reservations = _reservationService.GetReservations();
+            return new ObjectResult(JsonConvert.SerializeObject(reservations));
         }
 
         /// <summary>
@@ -90,24 +81,9 @@ namespace Lendship.Backend.Controllers
         [HttpGet]
         [Route("for")]
         public virtual IActionResult GetReservationsForUsersAdvertisements()
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(List<Reservation>));
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-            string exampleJson = null;
-            exampleJson = "{}";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<List<ReservationDto>>(exampleJson)
-            : default(List<ReservationDto>);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+        {
+            var reservations = _reservationService.GetReservationsForUser();
+            return new ObjectResult(JsonConvert.SerializeObject(reservations));
         }
 
         /// <summary>
@@ -120,18 +96,17 @@ namespace Lendship.Backend.Controllers
         /// <response code="401"></response>
         [HttpPut]
         public virtual IActionResult UpdateReservation([FromBody]ReservationDto reservation)
-        { 
-            //TODO: Uncomment the next line to return response 201 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(201);
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-
-            throw new NotImplementedException();
+        {
+            try
+            {
+                _reservationService.UpdateReservation(reservation);
+                return StatusCode(201);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception at updating reservation: " + e.Message);
+                return this.BadRequest(e.Message);
+            }
         }
     }
 }

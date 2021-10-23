@@ -10,17 +10,13 @@
 
 using System;
 using System.Linq;
-using System.IO;
 using System.Text;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
 namespace Lendship.Backend.DTO
-{ 
+{
     /// <summary>
     /// 
     /// </summary>
@@ -40,7 +36,7 @@ namespace Lendship.Backend.DTO
         [Required]
         
         [DataMember(Name="advertisement")]
-        public AdvertisementDto Advertisement { get; set; }
+        public AdvertisementDto? Advertisement { get; set; }
 
         /// <summary>
         /// Gets or Sets ReservationState

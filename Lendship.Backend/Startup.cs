@@ -66,6 +66,7 @@ namespace Lendship.Backend
             services.AddHttpContextAccessor();
 
             services.AddScoped<IAdvertisementService, AdvertisementService>();
+            services.AddScoped<IReservationService, ReservationService>();
 
             services.AddControllers();
             services.AddSwaggerGen(swagger =>
