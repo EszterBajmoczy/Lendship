@@ -20,5 +20,9 @@ SwaggerHub: https://app.swaggerhub.com/apis/EszterBajmoczy/Lendship.Backend/1.0.
   - Services - Az üzleti logikát megvalósító osztályok, Converterek használata
 - Swagger osztályok beépítése a projektbe
 
+Kérdések:
+- Képek:
+  - File rendszerben tervezem őket tárolni
+  - Külön http kérésekben utazzanak, vagy fűzzem hozzá a megfelelő Dto osztályhoz?
 
 2021.10.10: Swagger-ben elkészítettem a backend api-ját. A projektbe holnap integrálom a generált file-okat.
