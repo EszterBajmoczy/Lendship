@@ -9,4 +9,16 @@ SwaggerHub: https://app.swaggerhub.com/apis/EszterBajmoczy/Lendship.Backend/1.0.
 
 
 # Haladási napló:
+2021.10.24:
+- Bejelentkezés megvalósítása, JWT token használatával (jelszó visszaállítás még hiányzik)
+- Advertisement controller és service megvalósítása
+- A project felépítése:
+  - Models - EF modellek
+  - DTOs - A kliensnek szükséges modellek
+  - Converters - Modellek és Dto-k közötti átakalításért felelős osztályok
+  - Controllers - A http kéréseket fogadó osztályok
+  - Services - Az üzleti logikát megvalósító osztályok, Converterek használata
+- Swagger osztályok beépítése a projektbe
+
+
 2021.10.10: Swagger-ben elkészítettem a backend api-ját. A projektbe holnap integrálom a generált file-okat.
