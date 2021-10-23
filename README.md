@@ -24,5 +24,6 @@ Kérdések:
 - Képek:
   - File rendszerben tervezem őket tárolni
   - Külön http kérésekben utazzanak, vagy fűzzem hozzá a megfelelő Dto osztályhoz?
+- Enum modelben és Dto-ban megegyezik
 
 2021.10.10: Swagger-ben elkészítettem a backend api-ját. A projektbe holnap integrálom a generált file-okat.
