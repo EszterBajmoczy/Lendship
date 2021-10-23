@@ -35,14 +35,6 @@ namespace Lendship.Backend.DTO
         public int? Id { get; set; }
 
         /// <summary>
-        /// Gets or Sets AdvertisementId
-        /// </summary>
-        [Required]
-        
-        [DataMember(Name="advertisementId")]
-        public int? AdvertisementId { get; set; }
-
-        /// <summary>
         /// Gets or Sets DateFrom
         /// </summary>
         [Required]
@@ -67,7 +59,6 @@ namespace Lendship.Backend.DTO
             var sb = new StringBuilder();
             sb.Append("class Availability {\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
-            sb.Append("  AdvertisementId: ").Append(AdvertisementId).Append("\n");
             sb.Append("  DateFrom: ").Append(DateFrom).Append("\n");
             sb.Append("  DateTo: ").Append(DateTo).Append("\n");
             sb.Append("}\n");
@@ -110,12 +101,7 @@ namespace Lendship.Backend.DTO
                     Id == other.Id ||
                     Id != null &&
                     Id.Equals(other.Id)
-                ) && 
-                (
-                    AdvertisementId == other.AdvertisementId ||
-                    AdvertisementId != null &&
-                    AdvertisementId.Equals(other.AdvertisementId)
-                ) && 
+                ) &&  
                 (
                     DateFrom == other.DateFrom ||
                     DateFrom != null &&
@@ -140,8 +126,6 @@ namespace Lendship.Backend.DTO
                 // Suitable nullity checks etc, of course :)
                     if (Id != null)
                     hashCode = hashCode * 59 + Id.GetHashCode();
-                    if (AdvertisementId != null)
-                    hashCode = hashCode * 59 + AdvertisementId.GetHashCode();
                     if (DateFrom != null)
                     hashCode = hashCode * 59 + DateFrom.GetHashCode();
                     if (DateTo != null)

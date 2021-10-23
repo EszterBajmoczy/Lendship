@@ -1,5 +1,7 @@
 using Lendship.Backend.Authentication;
+using Lendship.Backend.Interfaces.Services;
 using Lendship.Backend.Models;
+using Lendship.Backend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -61,7 +63,9 @@ namespace Lendship.Backend
                     };
                 });
 
+            services.AddHttpContextAccessor();
 
+            services.AddScoped<IAdvertisementService, AdvertisementService>();
 
             services.AddControllers();
             services.AddSwaggerGen(swagger =>

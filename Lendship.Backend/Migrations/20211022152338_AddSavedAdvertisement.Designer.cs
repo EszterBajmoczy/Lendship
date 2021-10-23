@@ -4,14 +4,16 @@ using Lendship.Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Lendship.Backend.Migrations
 {
     [DbContext(typeof(LendshipDbContext))]
-    partial class LendshipDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211022152338_AddSavedAdvertisement")]
+    partial class AddSavedAdvertisement
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -147,6 +149,9 @@ namespace Lendship.Backend.Migrations
                     b.Property<int?>("Price")
                         .HasColumnType("int");
 
+                    b.Property<int?>("SavedAdvertisementId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -157,6 +162,8 @@ namespace Lendship.Backend.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("SavedAdvertisementId");
 
                     b.HasIndex("UserId");
 
@@ -396,14 +403,12 @@ namespace Lendship.Backend.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AdvertisementId")
-                        .HasColumnType("int");
-
                     b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("SavedAdvertisements");
                 });
@@ -556,6 +561,10 @@ namespace Lendship.Backend.Migrations
                         .WithMany()
                         .HasForeignKey("CategoryId");
 
+                    b.HasOne("Lendship.Backend.Models.SavedAdvertisement", null)
+                        .WithMany("Advertisements")
+                        .HasForeignKey("SavedAdvertisementId");
+
                     b.HasOne("Lendship.Backend.Authentication.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
@@ -662,6 +671,15 @@ namespace Lendship.Backend.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Lendship.Backend.Models.SavedAdvertisement", b =>
+                {
+                    b.HasOne("Lendship.Backend.Authentication.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -723,6 +741,11 @@ namespace Lendship.Backend.Migrations
                     b.Navigation("Messages");
 
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Lendship.Backend.Models.SavedAdvertisement", b =>
+                {
+                    b.Navigation("Advertisements");
                 });
 #pragma warning restore 612, 618
         }
