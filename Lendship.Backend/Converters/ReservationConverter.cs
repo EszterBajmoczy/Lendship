@@ -40,6 +40,7 @@ namespace Lendship.Backend.Converters
         {
             var reservation = new Reservation
             {
+                Id = reservationDto.Id ?? 0,
                 User = user,
                 Advertisement = advertisement,
                 ReservationState = GetReservationState(reservationDto.ReservationState),
@@ -49,11 +50,6 @@ namespace Lendship.Backend.Converters
                 DateFrom = reservationDto.DateFrom ?? DateTime.Now,
                 DateTo = reservationDto.DateTo ?? DateTime.Now
             };
-
-            if(reservationDto.Id.HasValue)
-            {
-                reservation.Id = reservationDto.Id.Value;
-            }
 
             return reservation;
         }

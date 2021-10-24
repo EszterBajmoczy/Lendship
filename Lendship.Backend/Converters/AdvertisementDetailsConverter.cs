@@ -62,6 +62,7 @@ namespace Lendship.Backend.Converters
         {
             var newAd = new Advertisement
             {
+                Id = ad.Id ?? 0,
                 User = user,
                 Title = ad.Title,
                 Description = ad.Description,
@@ -75,11 +76,6 @@ namespace Lendship.Backend.Converters
                 Category = category,
                 Creation = ad.Creation ?? DateTime.Now
             };
-
-            if (ad.Id.HasValue)
-            {
-                newAd.Id = ad.Id.Value;
-            }
 
             return newAd;
         }
