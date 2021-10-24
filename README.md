@@ -25,5 +25,6 @@ Kérdések:
   - File rendszerben tervezem őket tárolni
   - Külön http kérésekben utazzanak, vagy fűzzem hozzá a megfelelő Dto osztályhoz?
 - Enum modelben és Dto-ban megegyezik
+- Amennyiben egy értékelés anonym, akkor a frontend anonimizálja vagy a backend?
 
 2021.10.10: Swagger-ben elkészítettem a backend api-ját. A projektbe holnap integrálom a generált file-okat.
