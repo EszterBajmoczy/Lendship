@@ -76,7 +76,7 @@ namespace Lendship.Backend.Controllers
             try
             {
                 _adService.CreateAdvertisement(advertisement);
-                return StatusCode(201);
+                return StatusCode(200);
             } catch (Exception e)
             {
                 Console.WriteLine("Exception at creating advertisement: " + e.Message);
