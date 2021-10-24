@@ -30,5 +30,6 @@ Kérdések:
 - Enum modelben és Dto-ban megegyezik
   - Legyen egy központi enum vagy maradjon így és legyen hozzá converter 
 - Amennyiben egy értékelés anonym, akkor a frontend anonimizálja vagy a backend?
+- Értékelések számítása külön lekérdezésben legyen, vagy Dto-hoz hozzáfűzve?
 
 2021.10.10: Swagger-ben elkészítettem a backend api-ját. A projektbe holnap integrálom a generált file-okat.
