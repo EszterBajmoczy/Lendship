@@ -100,7 +100,7 @@ namespace Lendship.Backend.Controllers
             try
             {
                 _reservationService.UpdateReservation(reservation);
-                return StatusCode(201);
+                return StatusCode(200);
             }
             catch (Exception e)
             {

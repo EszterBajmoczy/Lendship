@@ -54,6 +54,7 @@ namespace Lendship.Backend.Services
             var resultList = new List<ReservationDto>();
 
             var reservations = _dbContext.Reservations
+                        .Include(r => r.Advertisement)
                         .ToList();
 
             foreach (var res in reservations)
@@ -90,6 +91,7 @@ namespace Lendship.Backend.Services
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var oldRes = _dbContext.Reservations
+                            .AsNoTracking()
                             .Include(r => r.User)
                             .Include(r => r.Advertisement)
                             .Where(r => r.Id == reservationDto.Id)

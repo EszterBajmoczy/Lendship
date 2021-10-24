@@ -41,7 +41,13 @@ namespace Lendship.Backend.Converters
             var reservation = new Reservation
             {
                 User = user,
-                Advertisement = advertisement
+                Advertisement = advertisement,
+                ReservationState = GetReservationState(reservationDto.ReservationState),
+                Comment = reservationDto.Comment,
+                admittedByAdvertiser = reservationDto.AdmittedByAdvertiser ?? false,
+                admittedByLender = reservationDto.AdmittedByLender ?? false,
+                DateFrom = reservationDto.DateFrom ?? DateTime.Now,
+                DateTo = reservationDto.DateTo ?? DateTime.Now
             };
 
             if(reservationDto.Id.HasValue)
@@ -65,7 +71,7 @@ namespace Lendship.Backend.Converters
             };
         }
 
-        private ReservationState GetReservationState(ReservationStateEnum state)
+        private ReservationState GetReservationState(ReservationStateEnum? state)
         {
             return state switch
             {

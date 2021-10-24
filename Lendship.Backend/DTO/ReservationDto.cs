@@ -33,10 +33,8 @@ namespace Lendship.Backend.DTO
         /// <summary>
         /// Gets or Sets Advertisement
         /// </summary>
-        [Required]
-        
         [DataMember(Name="advertisement")]
-        public AdvertisementDto Advertisement { get; set; }
+        public AdvertisementDto? Advertisement { get; set; }
 
         /// <summary>
         /// Gets or Sets ReservationState
