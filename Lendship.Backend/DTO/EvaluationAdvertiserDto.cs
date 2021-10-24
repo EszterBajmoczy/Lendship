@@ -48,7 +48,7 @@ namespace Lendship.Backend.DTO
         [Required]
         
         [DataMember(Name="userTo")]
-        public UserDto userTo { get; set; }
+        public UserDto UserTo { get; set; }
 
         /// <summary>
         /// Gets or Sets AdvertisementId
