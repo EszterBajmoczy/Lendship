@@ -35,19 +35,19 @@ namespace Lendship.Backend.DTO
         public int? Id { get; set; }
 
         /// <summary>
-        /// Gets or Sets FromUser
+        /// Gets or Sets UserFrom
         /// </summary>
         [Required]
         
-        [DataMember(Name="fromUser")]
-        public UserDto FromUser { get; set; }
+        [DataMember(Name="userFrom")]
+        public UserDto UserFrom { get; set; }
 
         /// <summary>
-        /// Gets or Sets ToUserId
+        /// Gets or Sets UserTo
         /// </summary>
 
-        [DataMember(Name="toUserId")]
-        public UserDto ToUserId { get; set; }
+        [DataMember(Name="userTo")]
+        public UserDto UserTo { get; set; }
 
         /// <summary>
         /// Gets or Sets Advertisement
@@ -63,7 +63,7 @@ namespace Lendship.Backend.DTO
         [Required]
         
         [DataMember(Name="flexibility")]
-        public int? Flexibility { get; set; }
+        public int Flexibility { get; set; }
 
         /// <summary>
         /// Gets or Sets Reliability
@@ -71,14 +71,14 @@ namespace Lendship.Backend.DTO
         [Required]
         
         [DataMember(Name="reliability")]
-        public int? Reliability { get; set; }
+        public int Reliability { get; set; }
 
         /// <summary>
         /// Gets or Sets QualityAtReturn
         /// </summary>
 
         [DataMember(Name="qualityAtReturn")]
-        public int? QualityAtReturn { get; set; }
+        public int QualityAtReturn { get; set; }
 
         /// <summary>
         /// Gets or Sets Comment
@@ -90,9 +90,10 @@ namespace Lendship.Backend.DTO
         /// <summary>
         /// Gets or Sets Anonymous
         /// </summary>
+        [Required]
 
-        [DataMember(Name="anonymous")]
-        public bool? Anonymous { get; set; }
+        [DataMember(Name="isAnonymous")]
+        public bool IsAnonymous { get; set; }
 
         /// <summary>
         /// Gets or Sets Creation
