@@ -131,7 +131,6 @@ namespace Lendship.Backend.DTO
             sb.Append("class Reservation {\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  Advertisement: ").Append(Advertisement).Append("\n");
-            sb.Append("  User: ").Append(User).Append("\n");
             sb.Append("  ReservationState: ").Append(ReservationState).Append("\n");
             sb.Append("  Comment: ").Append(Comment).Append("\n");
             sb.Append("  AdmittedByAdvertiser: ").Append(AdmittedByAdvertiser).Append("\n");
@@ -185,11 +184,6 @@ namespace Lendship.Backend.DTO
                     Advertisement.Equals(other.Advertisement)
                 ) && 
                 (
-                    User == other.User ||
-                    User != null &&
-                    User.Equals(other.User)
-                ) && 
-                (
                     ReservationState == other.ReservationState ||
                     ReservationState != null &&
                     ReservationState.Equals(other.ReservationState)
@@ -235,8 +229,6 @@ namespace Lendship.Backend.DTO
                     hashCode = hashCode * 59 + Id.GetHashCode();
                     if (Advertisement != null)
                     hashCode = hashCode * 59 + Advertisement.GetHashCode();
-                    if (User != null)
-                    hashCode = hashCode * 59 + User.GetHashCode();
                     if (ReservationState != null)
                     hashCode = hashCode * 59 + ReservationState.GetHashCode();
                     if (Comment != null)
