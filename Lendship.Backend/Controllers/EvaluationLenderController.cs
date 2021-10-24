@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Lendship.Backend.DTO;
+using Lendship.Backend.Interfaces.Services;
 
 namespace Lendship.Backend.Controllers
 {
@@ -25,7 +26,14 @@ namespace Lendship.Backend.Controllers
     [ApiController]
     [Route("[controller]")]
     public class EvaluationLenderController : ControllerBase
-    { 
+    {
+        private readonly IEvaluationService _evaluationService;
+
+        public EvaluationLenderController(IEvaluationService adService)
+        {
+            _evaluationService = adService;
+        }
+
         /// <summary>
         /// add lender evaluation
         /// </summary>
@@ -38,18 +46,17 @@ namespace Lendship.Backend.Controllers
         [HttpPost]
         [Route("{userId}")]
         public virtual IActionResult AddLenderEvaluation([FromRoute][Required]string userId, [FromBody]EvaluationLenderDto evaluation)
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200);
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-
-            throw new NotImplementedException();
+        {
+            try
+            {
+                _evaluationService.CreateLenderEvaluation(evaluation, userId);
+                return StatusCode(201);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception at creating lender's evaluation: " + e.Message);
+                return this.BadRequest(e.Message);
+            }
         }
 
         /// <summary>
@@ -63,24 +70,17 @@ namespace Lendship.Backend.Controllers
         [HttpGet]
         [Route("{userId}")]
         public virtual IActionResult GetLenderEvaluation([FromRoute][Required]string userId)
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(List<EvaluationLender>));
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-            string exampleJson = null;
-            exampleJson = "{}";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<List<EvaluationLenderDto>>(exampleJson)
-            : default(List<EvaluationLenderDto>);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+        {
+            try
+            {
+                var evaluations = _evaluationService.GetLenderEvaluations(userId);
+                return new ObjectResult(JsonConvert.SerializeObject(evaluations));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception at getting lender's evaluations: " + e.Message);
+                return this.BadRequest(e.Message);
+            }
         }
     }
 }
