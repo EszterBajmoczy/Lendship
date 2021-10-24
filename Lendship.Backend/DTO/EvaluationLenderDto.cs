@@ -111,14 +111,14 @@ namespace Lendship.Backend.DTO
             var sb = new StringBuilder();
             sb.Append("class EvaluationLender {\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
-            sb.Append("  FromUser: ").Append(FromUser).Append("\n");
-            sb.Append("  ToUserId: ").Append(ToUserId).Append("\n");
+            sb.Append("  UserFrom: ").Append(UserFrom).Append("\n");
+            sb.Append("  UserToId: ").Append(UserTo).Append("\n");
             sb.Append("  AdvertisementId: ").Append(AdvertisementId).Append("\n");
             sb.Append("  Flexibility: ").Append(Flexibility).Append("\n");
             sb.Append("  Reliability: ").Append(Reliability).Append("\n");
             sb.Append("  QualityAtReturn: ").Append(QualityAtReturn).Append("\n");
             sb.Append("  Comment: ").Append(Comment).Append("\n");
-            sb.Append("  Anonymous: ").Append(Anonymous).Append("\n");
+            sb.Append("  Anonymous: ").Append(IsAnonymous).Append("\n");
             sb.Append("  Creation: ").Append(Creation).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
@@ -162,14 +162,14 @@ namespace Lendship.Backend.DTO
                     Id.Equals(other.Id)
                 ) && 
                 (
-                    FromUser == other.FromUser ||
-                    FromUser != null &&
-                    FromUser.Equals(other.FromUser)
+                    UserFrom == other.UserFrom ||
+                    UserFrom != null &&
+                    UserFrom.Equals(other.UserFrom)
                 ) && 
                 (
-                    ToUserId == other.ToUserId ||
-                    ToUserId != null &&
-                    ToUserId.Equals(other.ToUserId)
+                    UserTo == other.UserTo ||
+                    UserTo != null &&
+                    UserTo.Equals(other.UserTo)
                 ) && 
                 (
                     AdvertisementId == other.AdvertisementId ||
@@ -197,9 +197,9 @@ namespace Lendship.Backend.DTO
                     Comment.Equals(other.Comment)
                 ) && 
                 (
-                    Anonymous == other.Anonymous ||
-                    Anonymous != null &&
-                    Anonymous.Equals(other.Anonymous)
+                    IsAnonymous == other.IsAnonymous ||
+                    IsAnonymous != null &&
+                    IsAnonymous.Equals(other.IsAnonymous)
                 ) && 
                 (
                     Creation == other.Creation ||
@@ -220,10 +220,10 @@ namespace Lendship.Backend.DTO
                 // Suitable nullity checks etc, of course :)
                     if (Id != null)
                     hashCode = hashCode * 59 + Id.GetHashCode();
-                    if (FromUser != null)
-                    hashCode = hashCode * 59 + FromUser.GetHashCode();
-                    if (ToUserId != null)
-                    hashCode = hashCode * 59 + ToUserId.GetHashCode();
+                    if (UserFrom != null)
+                    hashCode = hashCode * 59 + UserFrom.GetHashCode();
+                    if (UserTo != null)
+                    hashCode = hashCode * 59 + UserTo.GetHashCode();
                     if (AdvertisementId != null)
                     hashCode = hashCode * 59 + AdvertisementId.GetHashCode();
                     if (Flexibility != null)
@@ -234,8 +234,8 @@ namespace Lendship.Backend.DTO
                     hashCode = hashCode * 59 + QualityAtReturn.GetHashCode();
                     if (Comment != null)
                     hashCode = hashCode * 59 + Comment.GetHashCode();
-                    if (Anonymous != null)
-                    hashCode = hashCode * 59 + Anonymous.GetHashCode();
+                    if (IsAnonymous != null)
+                    hashCode = hashCode * 59 + IsAnonymous.GetHashCode();
                     if (Creation != null)
                     hashCode = hashCode * 59 + Creation.GetHashCode();
                 return hashCode;
