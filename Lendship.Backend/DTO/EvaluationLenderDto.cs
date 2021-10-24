@@ -112,7 +112,7 @@ namespace Lendship.Backend.DTO
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  FromUser: ").Append(FromUser).Append("\n");
             sb.Append("  ToUserId: ").Append(ToUserId).Append("\n");
-            sb.Append("  Advertisement: ").Append(Advertisement).Append("\n");
+            sb.Append("  AdvertisementId: ").Append(AdvertisementId).Append("\n");
             sb.Append("  Flexibility: ").Append(Flexibility).Append("\n");
             sb.Append("  Reliability: ").Append(Reliability).Append("\n");
             sb.Append("  QualityAtReturn: ").Append(QualityAtReturn).Append("\n");
@@ -171,9 +171,9 @@ namespace Lendship.Backend.DTO
                     ToUserId.Equals(other.ToUserId)
                 ) && 
                 (
-                    Advertisement == other.Advertisement ||
-                    Advertisement != null &&
-                    Advertisement.Equals(other.Advertisement)
+                    AdvertisementId == other.AdvertisementId ||
+                    AdvertisementId != null &&
+                    AdvertisementId.Equals(other.AdvertisementId)
                 ) && 
                 (
                     Flexibility == other.Flexibility ||
@@ -223,8 +223,8 @@ namespace Lendship.Backend.DTO
                     hashCode = hashCode * 59 + FromUser.GetHashCode();
                     if (ToUserId != null)
                     hashCode = hashCode * 59 + ToUserId.GetHashCode();
-                    if (Advertisement != null)
-                    hashCode = hashCode * 59 + Advertisement.GetHashCode();
+                    if (AdvertisementId != null)
+                    hashCode = hashCode * 59 + AdvertisementId.GetHashCode();
                     if (Flexibility != null)
                     hashCode = hashCode * 59 + Flexibility.GetHashCode();
                     if (Reliability != null)

@@ -70,11 +70,20 @@ namespace Lendship.Backend.Services
             {
                 throw new UpdateNotAllowedException("Update is not allowed.");
             }
-            var oldAd = _dbContext.Advertisements.Where(a => a.Id == advertisement.Id);
+            var oldAd = _dbContext.Advertisements
+                            .AsNoTracking()
+                            .Include(a => a.User)
+                            .Where(a => a.Id == advertisement.Id)
+                            .FirstOrDefault();
 
             if(oldAd == null)
             {
                 throw new AdvertisementNotFoundException("Advertisement not found.");
+            }
+
+            if (oldAd.User.Id != signedInUserId)
+            {
+                throw new UpdateNotAllowedException("Update not allowed.");
             }
 
             var category = _dbContext.Categories.Where(x => x.Name == advertisement.Category).FirstOrDefault();
