@@ -76,7 +76,7 @@ namespace Lendship.Backend.Controllers
             try
             {
                 _adService.CreateAdvertisement(advertisement);
-                return StatusCode(200);
+                return StatusCode(201);
             } catch (Exception e)
             {
                 Console.WriteLine("Exception at creating advertisement: " + e.Message);
@@ -166,25 +166,18 @@ namespace Lendship.Backend.Controllers
         /// <response code="401"></response>
         [HttpGet]
         [Route("own")]
-        public virtual IActionResult GetOwnAdvertisements([FromQuery]string advertisementType, [FromQuery]bool? credit, [FromQuery]bool? cash, [FromQuery]string category, [FromQuery]string city, [FromQuery]int? distance, [FromQuery]string sortBy)
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(Advertisement));
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-            string exampleJson = null;
-            exampleJson = "{\"empty\": false}";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<AdvertisementDetailsDto>(exampleJson)
-            : default(AdvertisementDetailsDto);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+        public virtual IActionResult GetOwnAdvertisements([FromQuery]string advertisementType, [FromQuery]bool credit, [FromQuery]bool cash, [FromQuery]string category, [FromQuery]string city, [FromQuery]int distance, [FromQuery]string sortBy)
+        {
+            try
+            {
+                var advertisements = _adService.GetUsersAdvertisements(advertisementType, credit, cash, category, city, distance, sortBy);
+                return new ObjectResult(JsonConvert.SerializeObject(advertisements));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception at getting saving advertisements: " + e.Message);
+                return this.BadRequest(e.Message);
+            }
         }
 
         /// <summary>

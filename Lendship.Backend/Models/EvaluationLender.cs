@@ -31,6 +31,8 @@ namespace Lendship.Backend.Models
         [Required]
         public int QualityAtReturn { get; set; }
 
+        public string Comment { get; set; }
+
         [Required]
         public bool IsAnonymous { get; set; }
 
