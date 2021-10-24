@@ -37,7 +37,6 @@ namespace Lendship.Backend.DTO
         /// <summary>
         /// Gets or Sets UserFrom
         /// </summary>
-        [Required]
         
         [DataMember(Name="userFrom")]
         public UserDto UserFrom { get; set; }
