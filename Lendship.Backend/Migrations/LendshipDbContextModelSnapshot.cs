@@ -229,6 +229,10 @@ namespace Lendship.Backend.Migrations
                     b.Property<int?>("AdvertisementId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AdvertisementId");
