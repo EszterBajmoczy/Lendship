@@ -16,6 +16,9 @@ namespace Lendship.Backend.Models
         public ApplicationUser UserFrom { get; set; }
 
         [Required]
+        public int conversationId { get; set; }
+
+        [Required]
         public string message { get; set; }
 
         [Required]
