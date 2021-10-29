@@ -16,12 +16,12 @@ namespace Lendship.Backend.Models
         public ApplicationUser UserFrom { get; set; }
 
         [Required]
-        public int conversationId { get; set; }
+        public int ConversationId { get; set; }
 
         [Required]
-        public string message { get; set; }
+        public string Content { get; set; }
 
         [Required]
-        public DateTime date { get; set; }
+        public DateTime Date { get; set; }
     }
 }
