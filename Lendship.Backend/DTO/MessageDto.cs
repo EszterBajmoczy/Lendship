@@ -40,7 +40,7 @@ namespace Lendship.Backend.DTO
         [Required]
         
         [DataMember(Name="conversationId")]
-        public int? ConversationId { get; set; }
+        public int ConversationId { get; set; }
 
         /// <summary>
         /// Gets or Sets UserFrom
@@ -51,12 +51,12 @@ namespace Lendship.Backend.DTO
         public UserDto UserFrom { get; set; }
 
         /// <summary>
-        /// Gets or Sets _Message
+        /// Gets or Sets Content
         /// </summary>
         [Required]
         
-        [DataMember(Name="message")]
-        public string Message { get; set; }
+        [DataMember(Name="content")]
+        public string Content { get; set; }
 
         /// <summary>
         /// Gets or Sets Date
@@ -77,7 +77,7 @@ namespace Lendship.Backend.DTO
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  ConversationId: ").Append(ConversationId).Append("\n");
             sb.Append("  UserFrom: ").Append(UserFrom).Append("\n");
-            sb.Append("  _Message: ").Append(Message).Append("\n");
+            sb.Append("  Content: ").Append(Content).Append("\n");
             sb.Append("  Date: ").Append(Date).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
@@ -131,9 +131,9 @@ namespace Lendship.Backend.DTO
                     UserFrom.Equals(other.UserFrom)
                 ) && 
                 (
-                    Message == other.Message ||
-                    Message != null &&
-                    Message.Equals(other.Message)
+                    Content == other.Content ||
+                    Content != null &&
+                    Content.Equals(other.Content)
                 ) && 
                 (
                     Date == other.Date ||
@@ -158,8 +158,8 @@ namespace Lendship.Backend.DTO
                     hashCode = hashCode * 59 + ConversationId.GetHashCode();
                     if (UserFrom != null)
                     hashCode = hashCode * 59 + UserFrom.GetHashCode();
-                    if (Message != null)
-                    hashCode = hashCode * 59 + Message.GetHashCode();
+                    if (Content != null)
+                    hashCode = hashCode * 59 + Content.GetHashCode();
                     if (Date != null)
                     hashCode = hashCode * 59 + Date.GetHashCode();
                 return hashCode;
