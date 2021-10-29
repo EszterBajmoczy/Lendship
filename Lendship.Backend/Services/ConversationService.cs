@@ -36,27 +36,78 @@ namespace Lendship.Backend.Services
 
         public void CreateConversation(ConversationDto conversationDto)
         {
-            throw new NotImplementedException();
+            var advertisement = _dbContext.Advertisements.Where(x => x.Id == conversationDto.AdvertisementId).FirstOrDefault();
+
+            if (advertisement == null)
+            {
+                throw new AdvertisementNotFoundException("Advertisement not exists.");
+            }
+
+            var userIds = conversationDto.Users.Select(u => u.Id);
+            var users = _dbContext.Users.Where(x => userIds.Contains(new Guid(x.Id))).ToList();
+
+            var conversation = _conversationConverter.ConvertToEntity(conversationDto, advertisement, users, null);
+
+            _dbContext.Conversation.Add(conversation);
+            _dbContext.SaveChanges();
         }
 
         public void CreateMessage(MessageDto messageDto, int conversationId)
         {
-            throw new NotImplementedException();
+            var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var conversation = _dbContext.Conversation.Where(x => x.Id == conversationId).FirstOrDefault();
+
+            if (conversation == null)
+            {
+                throw new ConversationNotFoundException("Conversation not exists.");
+            }
+
+            var userFrom = _dbContext.Users.Where(x => new Guid(x.Id) == messageDto.UserFrom.Id).FirstOrDefault();
+
+            var message = _messageConverter.ConvertToEntity(messageDto, userFrom);
+
+            _dbContext.Messages.Add(message);
+            _dbContext.SaveChanges();
         }
 
         public IEnumerable<ConversationDto> GetAllConversation(string searchString)
         {
-            throw new NotImplementedException();
+            var resultList = new List<ConversationDto>();
+            var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var conversations = _dbContext.Conversation
+                        .Where(c => c.Users.Any(u => u.Id == signedInUserId))
+                        .Include(c => c.Advertisement)
+                        .ToList();
+
+            foreach (var con in conversations)
+            {
+                var dto = _conversationConverter.ConvertToDto(con);
+                resultList.Add(dto);
+            }
+
+            return resultList;
         }
 
         public IEnumerable<MessageDto> GetAllMessage(int conversationId)
         {
-            throw new NotImplementedException();
-        }
 
-        public void UpdateReservation(ReservationDto reservation)
-        {
-            throw new NotImplementedException();
+            var resultList = new List<MessageDto>();
+            var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var msgs = _dbContext.Messages
+                        .Where(m => m.Id == m.ConversationId)
+                        .Include(m => m.UserFrom)
+                        .ToList();
+
+            foreach (var msg in msgs)
+            {
+                var dto = _messageConverter.ConvertToDto(msg, conversationId);
+                resultList.Add(dto);
+            }
+
+            return resultList;
         }
     }
 }
