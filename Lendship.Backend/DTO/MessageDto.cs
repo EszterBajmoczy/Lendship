@@ -56,7 +56,7 @@ namespace Lendship.Backend.DTO
         [Required]
         
         [DataMember(Name="message")]
-        public string _Message { get; set; }
+        public string Message { get; set; }
 
         /// <summary>
         /// Gets or Sets Date
@@ -77,7 +77,7 @@ namespace Lendship.Backend.DTO
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  ConversationId: ").Append(ConversationId).Append("\n");
             sb.Append("  UserFrom: ").Append(UserFrom).Append("\n");
-            sb.Append("  _Message: ").Append(_Message).Append("\n");
+            sb.Append("  _Message: ").Append(Message).Append("\n");
             sb.Append("  Date: ").Append(Date).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
@@ -131,9 +131,9 @@ namespace Lendship.Backend.DTO
                     UserFrom.Equals(other.UserFrom)
                 ) && 
                 (
-                    _Message == other._Message ||
-                    _Message != null &&
-                    _Message.Equals(other._Message)
+                    Message == other.Message ||
+                    Message != null &&
+                    Message.Equals(other.Message)
                 ) && 
                 (
                     Date == other.Date ||
@@ -158,8 +158,8 @@ namespace Lendship.Backend.DTO
                     hashCode = hashCode * 59 + ConversationId.GetHashCode();
                     if (UserFrom != null)
                     hashCode = hashCode * 59 + UserFrom.GetHashCode();
-                    if (_Message != null)
-                    hashCode = hashCode * 59 + _Message.GetHashCode();
+                    if (Message != null)
+                    hashCode = hashCode * 59 + Message.GetHashCode();
                     if (Date != null)
                     hashCode = hashCode * 59 + Date.GetHashCode();
                 return hashCode;
