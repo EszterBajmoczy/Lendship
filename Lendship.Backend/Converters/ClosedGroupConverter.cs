@@ -37,14 +37,8 @@ namespace Lendship.Backend.Converters
             };
         }
 
-        public ClosedGroup ConvertToEntity(ClosedGroupDto closedGroupDto)
+        public ClosedGroup ConvertToEntity(ClosedGroupDto closedGroupDto, List<Guid> userIds)
         {
-            var userIds = closedGroupDto
-                            .Users
-                            .Where(x => x.Id.HasValue)
-                            .Select(x => x.Id.GetValueOrDefault())
-                            .ToList();
-
             return new ClosedGroup()
             {
                 Id = closedGroupDto.Id ?? 0,
