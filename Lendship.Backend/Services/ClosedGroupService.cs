@@ -35,8 +35,9 @@ namespace Lendship.Backend.Services
             var cGroup = _dbContext.ClosedGroups
                 .Where(c => c.AdvertismentId == advertisementId)
                 .FirstOrDefault();
+            var userIds = cGroup.UserIds.Select(cg => cg.ToString());
 
-            var users = _dbContext.Users.Where(u => cGroup.UserIds.Contains(new Guid(u.Id))).ToList();
+            var users = _dbContext.Users.Where(u => userIds.Contains(u.Id)).ToList();
 
             var closedGroupDto = _cgConverter.ConvertToDto(cGroup, users);
             return closedGroupDto;
