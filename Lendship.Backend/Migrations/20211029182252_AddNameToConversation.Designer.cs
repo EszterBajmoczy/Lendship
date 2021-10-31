@@ -4,14 +4,16 @@ using Lendship.Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Lendship.Backend.Migrations
 {
     [DbContext(typeof(LendshipDbContext))]
-    partial class LendshipDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211029182252_AddNameToConversation")]
+    partial class AddNameToConversation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,6 +35,9 @@ namespace Lendship.Backend.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ConversationId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Credit")
                         .HasColumnType("int");
@@ -92,6 +97,8 @@ namespace Lendship.Backend.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClosedGroupId");
+
+                    b.HasIndex("ConversationId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -228,9 +235,6 @@ namespace Lendship.Backend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserIds")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AdvertisementId");
@@ -335,18 +339,18 @@ namespace Lendship.Backend.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ConversationId")
+                    b.Property<int?>("ConversationId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("UserFromId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -552,6 +556,10 @@ namespace Lendship.Backend.Migrations
                     b.HasOne("Lendship.Backend.Models.ClosedGroup", null)
                         .WithMany("Users")
                         .HasForeignKey("ClosedGroupId");
+
+                    b.HasOne("Lendship.Backend.Models.Conversation", null)
+                        .WithMany("Users")
+                        .HasForeignKey("ConversationId");
                 });
 
             modelBuilder.Entity("Lendship.Backend.Models.Advertisement", b =>
@@ -642,9 +650,7 @@ namespace Lendship.Backend.Migrations
                 {
                     b.HasOne("Lendship.Backend.Models.Conversation", null)
                         .WithMany("Messages")
-                        .HasForeignKey("ConversationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ConversationId");
 
                     b.HasOne("Lendship.Backend.Authentication.ApplicationUser", "UserFrom")
                         .WithMany()
@@ -727,6 +733,8 @@ namespace Lendship.Backend.Migrations
             modelBuilder.Entity("Lendship.Backend.Models.Conversation", b =>
                 {
                     b.Navigation("Messages");
+
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

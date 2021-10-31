@@ -1,9 +1,6 @@
 ﻿using Lendship.Backend.Authentication;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Lendship.Backend.Models
 {
@@ -16,9 +13,12 @@ namespace Lendship.Backend.Models
         public ApplicationUser UserFrom { get; set; }
 
         [Required]
-        public string message { get; set; }
+        public int ConversationId { get; set; }
 
         [Required]
-        public DateTime date { get; set; }
+        public string Content { get; set; }
+
+        [Required]
+        public DateTime Date { get; set; }
     }
 }

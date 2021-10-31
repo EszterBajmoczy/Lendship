@@ -4,14 +4,16 @@ using Lendship.Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Lendship.Backend.Migrations
 {
     [DbContext(typeof(LendshipDbContext))]
-    partial class LendshipDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211029194120_RefactMessage")]
+    partial class RefactMessage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,6 +35,9 @@ namespace Lendship.Backend.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ConversationId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Credit")
                         .HasColumnType("int");
@@ -92,6 +97,8 @@ namespace Lendship.Backend.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClosedGroupId");
+
+                    b.HasIndex("ConversationId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -226,9 +233,6 @@ namespace Lendship.Backend.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserIds")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -552,6 +556,10 @@ namespace Lendship.Backend.Migrations
                     b.HasOne("Lendship.Backend.Models.ClosedGroup", null)
                         .WithMany("Users")
                         .HasForeignKey("ClosedGroupId");
+
+                    b.HasOne("Lendship.Backend.Models.Conversation", null)
+                        .WithMany("Users")
+                        .HasForeignKey("ConversationId");
                 });
 
             modelBuilder.Entity("Lendship.Backend.Models.Advertisement", b =>
@@ -727,6 +735,8 @@ namespace Lendship.Backend.Migrations
             modelBuilder.Entity("Lendship.Backend.Models.Conversation", b =>
                 {
                     b.Navigation("Messages");
+
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

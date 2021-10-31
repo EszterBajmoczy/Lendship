@@ -9,12 +9,12 @@
  */
 
 using System;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Lendship.Backend.DTO;
+using Lendship.Backend.Interfaces.Services;
 
 namespace Lendship.Backend.Controllers
 {
@@ -25,7 +25,14 @@ namespace Lendship.Backend.Controllers
     [ApiController]
     [Route("[controller]")]
     public class ConversationController : ControllerBase
-    { 
+    {
+        private readonly IConversationService _conversationService;
+
+        public ConversationController(IConversationService conversationService)
+        {
+            _conversationService = conversationService;
+        }
+
         /// <summary>
         /// create conversation
         /// </summary>
@@ -36,18 +43,17 @@ namespace Lendship.Backend.Controllers
         /// <response code="401"></response>
         [HttpPost]
         public virtual IActionResult CreateConversation([FromBody]ConversationDto conversation)
-        { 
-            //TODO: Uncomment the next line to return response 201 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(201);
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-
-            throw new NotImplementedException();
+        {
+            try
+            {
+                _conversationService.CreateConversation(conversation);
+                return StatusCode(201);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception at creating conversation: " + e.Message);
+                return this.BadRequest(e.Message);
+            }
         }
 
         /// <summary>
@@ -60,20 +66,19 @@ namespace Lendship.Backend.Controllers
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpPost]
-        [Route("{conversationId}")]
-        public virtual IActionResult CreateMessage([FromRoute][Required]int conversationId, [FromBody]MessageDto message)
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200);
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-
-            throw new NotImplementedException();
+        [Route("/msg")]
+        public virtual IActionResult CreateMessage([FromBody]MessageDto message)
+        {
+            try
+            {
+                _conversationService.CreateMessage(message);
+                return StatusCode(201);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception at creating message: " + e.Message);
+                return this.BadRequest(e.Message);
+            }
         }
 
         /// <summary>
@@ -86,24 +91,9 @@ namespace Lendship.Backend.Controllers
         /// <response code="401"></response>
         [HttpGet]
         public virtual IActionResult GetAllConversation([FromQuery]string searchString)
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(List<Conversation>));
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-            string exampleJson = null;
-            exampleJson = "{}";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<List<ConversationDto>>(exampleJson)
-            : default(List<ConversationDto>);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+        {
+            var conversations = _conversationService.GetAllConversation(searchString);
+            return new ObjectResult(JsonConvert.SerializeObject(conversations));
         }
 
         /// <summary>
@@ -117,24 +107,9 @@ namespace Lendship.Backend.Controllers
         [HttpGet]
         [Route("{conversationId}")]
         public virtual IActionResult GetAllMessage([FromRoute][Required]int conversationId)
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(List<Message>));
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-            string exampleJson = null;
-            exampleJson = "{}";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<List<MessageDto>>(exampleJson)
-            : default(List<MessageDto>);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+        {
+            var msgs = _conversationService.GetAllMessage(conversationId);
+            return new ObjectResult(JsonConvert.SerializeObject(msgs));
         }
     }
 }
