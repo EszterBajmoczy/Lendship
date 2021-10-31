@@ -43,27 +43,27 @@ namespace Lendship.Backend.Services
                 throw new AdvertisementNotFoundException("Advertisement not exists.");
             }
 
-            var userIds = conversationDto.Users.Select(u => u.Id);
-            var users = _dbContext.Users.Where(x => userIds.Contains(new Guid(x.Id))).ToList();
+            var userIds = conversationDto.Users.Select(u => u.Id.ToString());
+            var users = _dbContext.Users.Where(x => userIds.Contains(x.Id)).ToList();
 
-            var conversation = _conversationConverter.ConvertToEntity(conversationDto, advertisement, users, null);
+            var conversation = _conversationConverter.ConvertToEntity(conversationDto, advertisement, null);
 
             _dbContext.Conversation.Add(conversation);
             _dbContext.SaveChanges();
         }
 
-        public void CreateMessage(MessageDto messageDto, int conversationId)
+        public void CreateMessage(MessageDto messageDto)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var conversation = _dbContext.Conversation.Where(x => x.Id == conversationId).FirstOrDefault();
+            var conversation = _dbContext.Conversation.Where(x => x.Id == messageDto.ConversationId).FirstOrDefault();
 
             if (conversation == null)
             {
                 throw new ConversationNotFoundException("Conversation not exists.");
             }
 
-            var userFrom = _dbContext.Users.Where(x => new Guid(x.Id) == messageDto.UserFrom.Id).FirstOrDefault();
+            var userFrom = _dbContext.Users.Where(x => x.Id == messageDto.UserFrom.Id.ToString()).FirstOrDefault();
 
             var message = _messageConverter.ConvertToEntity(messageDto, userFrom);
 
@@ -75,15 +75,17 @@ namespace Lendship.Backend.Services
         {
             var resultList = new List<ConversationDto>();
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userGuid = new Guid(signedInUserId);
 
             var conversations = _dbContext.Conversation
-                        .Where(c => c.Users.Any(u => u.Id == signedInUserId))
+                        .Where(c => c.UserIds.Any(u => u == userGuid))
                         .Include(c => c.Advertisement)
                         .ToList();
 
             foreach (var con in conversations)
             {
-                var dto = _conversationConverter.ConvertToDto(con);
+                var users = _dbContext.Users.Where(u => con.UserIds.Contains(new Guid(u.Id))).ToList();
+                var dto = _conversationConverter.ConvertToDto(con, users);
                 resultList.Add(dto);
             }
 
@@ -97,7 +99,7 @@ namespace Lendship.Backend.Services
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var msgs = _dbContext.Messages
-                        .Where(m => m.Id == m.ConversationId)
+                        .Where(m => m.ConversationId == conversationId)
                         .Include(m => m.UserFrom)
                         .ToList();
 
