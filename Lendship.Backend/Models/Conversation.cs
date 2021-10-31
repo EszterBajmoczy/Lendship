@@ -1,4 +1,5 @@
 ﻿using Lendship.Backend.Authentication;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -15,7 +16,7 @@ namespace Lendship.Backend.Models
         [Required]
         public string Name { get; set; }
 
-        public ICollection<ApplicationUser> Users { get; set; }
+        public ICollection<Guid> UserIds { get; set; }
 
         public ICollection<Message> Messages { get; set; }
     }
