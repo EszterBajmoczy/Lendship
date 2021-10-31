@@ -1,5 +1,4 @@
-﻿using Lendship.Backend.Authentication;
-using Lendship.Backend.Converters;
+﻿using Lendship.Backend.Converters;
 using Lendship.Backend.DTO;
 using Lendship.Backend.Exceptions;
 using Lendship.Backend.Interfaces.Converters;
@@ -11,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace Lendship.Backend.Services
 {
