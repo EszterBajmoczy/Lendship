@@ -41,6 +41,12 @@ namespace Lendship.Backend.Models
                 .HasConversion(
                     v => string.Join(',', v),
                     v => mapStringToGuids(v));
+
+            modelBuilder.Entity<ClosedGroup>()
+                .Property(e => e.UserIds)
+                .HasConversion(
+                    v => string.Join(',', v),
+                    v => mapStringToGuids(v));
         }
 
         private List<Guid> mapStringToGuids(string v)
