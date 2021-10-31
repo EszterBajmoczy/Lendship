@@ -92,7 +92,7 @@ namespace Lendship.Backend.Controllers
             try
             {
                 _cgroupService.UpdateClosedGroup(closedGroup);
-                return StatusCode(201);
+                return StatusCode(200);
             }
             catch (Exception e)
             {
