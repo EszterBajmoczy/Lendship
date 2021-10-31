@@ -7,8 +7,8 @@ namespace Lendship.Backend.Interfaces.Converters
 {
     public interface IConversationConverter
     {
-        ConversationDto ConvertToDto(Conversation conversation);
+        ConversationDto ConvertToDto(Conversation conversation, List<ApplicationUser> users);
 
-        Conversation ConvertToEntity(ConversationDto conversationDto, Advertisement advertisement, List<ApplicationUser> users, List<Message> msgs);
+        Conversation ConvertToEntity(ConversationDto conversationDto, Advertisement advertisement, List<Message> msgs);
     }
 }

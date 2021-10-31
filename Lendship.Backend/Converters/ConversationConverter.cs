@@ -4,6 +4,7 @@ using Lendship.Backend.Interfaces.Converters;
 using Lendship.Backend.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Lendship.Backend.Converters
 {
@@ -15,11 +16,11 @@ namespace Lendship.Backend.Converters
             _userConverter = userConverter;
         }
 
-        public ConversationDto ConvertToDto(Conversation conversation)
+        public ConversationDto ConvertToDto(Conversation conversation, List<ApplicationUser> users)
         {
             var userDtos = new List<UserDto>();
-
-            foreach(var user in conversation.Users)
+            
+            foreach(var user in users)
             {
                 //TODO evaulation
                 var userDto = _userConverter.ConvertToDto(user, 0, 1);
@@ -35,14 +36,20 @@ namespace Lendship.Backend.Converters
             };
         }
 
-        public Conversation ConvertToEntity(ConversationDto conversationDto, Advertisement advertisement, List<ApplicationUser> users, List<Message> msgs)
+        public Conversation ConvertToEntity(ConversationDto conversationDto, Advertisement advertisement, List<Message> msgs)
         {
+            var userIds = conversationDto
+                .Users
+                .Where(x => x.Id.HasValue)
+                .Select(x => x.Id.GetValueOrDefault())
+                .ToList();
+
             return new Conversation()
             {
                 Id = conversationDto.Id ?? 0,
                 Advertisement = advertisement,
                 Name = conversationDto.ConversationName,
-                Users = users,
+                UserIds = userIds,
                 Messages = msgs
             };
         }
