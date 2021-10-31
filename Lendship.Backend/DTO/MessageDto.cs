@@ -45,10 +45,8 @@ namespace Lendship.Backend.DTO
         /// <summary>
         /// Gets or Sets UserFrom
         /// </summary>
-        [Required]
-        
         [DataMember(Name="UserFrom")]
-        public UserDto UserFrom { get; set; }
+        public UserDto? UserFrom { get; set; }
 
         /// <summary>
         /// Gets or Sets Content
@@ -61,8 +59,6 @@ namespace Lendship.Backend.DTO
         /// <summary>
         /// Gets or Sets Date
         /// </summary>
-        [Required]
-        
         [DataMember(Name="date")]
         public DateTime? Date { get; set; }
 
