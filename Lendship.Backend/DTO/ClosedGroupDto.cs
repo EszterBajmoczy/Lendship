@@ -10,17 +10,14 @@
 
 using System;
 using System.Linq;
-using System.IO;
 using System.Text;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
 namespace Lendship.Backend.DTO
-{ 
+{
     /// <summary>
     /// 
     /// </summary>
@@ -40,7 +37,7 @@ namespace Lendship.Backend.DTO
         [Required]
         
         [DataMember(Name="advertisementId")]
-        public int? AdvertisementId { get; set; }
+        public int AdvertisementId { get; set; }
 
         /// <summary>
         /// Gets or Sets Users

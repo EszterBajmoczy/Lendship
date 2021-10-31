@@ -14,8 +14,8 @@ namespace Lendship.Backend.Models
         public int Id { get; set; }
 
         [Required]
-        public Advertisement Advertisement { get; set; }
+        public int AdvertismentId { get; set; }
 
-        public ICollection<ApplicationUser> Users { get; set; }
+        public ICollection<Guid> UserIds { get; set; }
     }
 }

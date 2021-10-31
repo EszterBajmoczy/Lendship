@@ -9,7 +9,9 @@
  */
 
 using System;
+using System.ComponentModel.DataAnnotations;
 using Lendship.Backend.DTO;
+using Lendship.Backend.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -23,7 +25,36 @@ namespace Lendship.Backend.Controllers
     [ApiController]
     [Route("[controller]")]
     public class ClosedGroupController : ControllerBase
-    { 
+    {
+        private readonly IClosedGroupService _cgroupService;
+
+        public ClosedGroupController(IClosedGroupService cgroupService)
+        {
+            _cgroupService = cgroupService;
+        }
+
+        /// <summary>
+        /// get closed group to advertisementId
+        /// </summary>
+        /// <remarks>Gets closed group to advertisementId</remarks>
+        /// <param name="advertisementId">id of the advertisement</param>
+        /// <response code="200">Closed group</response>
+        /// <response code="400">bad request</response>
+        /// <response code="401"></response>
+        [HttpGet]
+        [Route("{advertisementId}")]
+        public virtual IActionResult GetClosedGroupForAdvertisement([FromRoute][Required] int advertisementId)
+        {
+            var cgroup = _cgroupService.GetClosedGroupOfAdvertisement(advertisementId);
+
+            if (cgroup != null)
+            {
+                return new ObjectResult(cgroup.ToJson());
+            }
+
+            return this.BadRequest("Closed Group not found.");
+        }
+
         /// <summary>
         /// create closed group for advertisement
         /// </summary>
@@ -34,47 +65,17 @@ namespace Lendship.Backend.Controllers
         /// <response code="401"></response>
         [HttpPost]
         public virtual IActionResult CreateClosedGroupForAdvertisement([FromBody]ClosedGroupDto closedGroup)
-        { 
-            //TODO: Uncomment the next line to return response 201 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(201);
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// get closed group to advertisementId
-        /// </summary>
-        /// <remarks>Gets closed group to advertisementId</remarks>
-        /// <response code="200">Closed group</response>
-        /// <response code="400">bad request</response>
-        /// <response code="401"></response>
-        [HttpGet]
-        public virtual IActionResult GetClosedGroupForAdvertisement()
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(ClosedGroup));
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-            string exampleJson = null;
-            exampleJson = "{\"empty\": false}";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<ClosedGroupDto>(exampleJson)
-            : default(ClosedGroupDto);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+        {
+            try
+            {
+                _cgroupService.CreateClosedGroup(closedGroup);
+                return StatusCode(201);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception at creating closed group: " + e.Message);
+                return this.BadRequest(e.Message);
+            }
         }
 
         /// <summary>
@@ -87,18 +88,17 @@ namespace Lendship.Backend.Controllers
         /// <response code="401"></response>
         [HttpPut]
         public virtual IActionResult UpdateClosedGroupForAdvertisement([FromBody]ClosedGroupDto closedGroup)
-        { 
-            //TODO: Uncomment the next line to return response 201 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(201);
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-
-            throw new NotImplementedException();
+        {
+            try
+            {
+                _cgroupService.UpdateClosedGroup(closedGroup);
+                return StatusCode(200);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception at updating closed group: " + e.Message);
+                return this.BadRequest(e.Message);
+            }
         }
     }
 }
