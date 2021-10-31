@@ -67,12 +67,12 @@ namespace Lendship.Backend.Controllers
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpPost]
-        [Route("{conversationId}")]
-        public virtual IActionResult CreateMessage([FromRoute][Required]int conversationId, [FromBody]MessageDto message)
+        [Route("/msg")]
+        public virtual IActionResult CreateMessage([FromBody]MessageDto message)
         {
             try
             {
-                _conversationService.CreateMessage(message, conversationId);
+                _conversationService.CreateMessage(message);
                 return StatusCode(201);
             }
             catch (Exception e)
