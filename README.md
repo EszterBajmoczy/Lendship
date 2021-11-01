@@ -9,6 +9,12 @@ SwaggerHub: https://app.swaggerhub.com/apis/EszterBajmoczy/Lendship.Backend/1.0.
 
 
 # Haladási napló:
+2021.11.01:
+- Conversation controller és service megvalósítása
+- Closed Group controller és service megvalósítása
+- Ami még hátra van: 
+  - Profile és Image implementációk
+
 2021.10.24:
 - Bejelentkezés megvalósítása, JWT token használatával (jelszó visszaállítás még hiányzik)
 - Advertisement controller és service megvalósítása
