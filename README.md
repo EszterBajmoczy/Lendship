@@ -32,10 +32,12 @@ SwaggerHub: https://app.swaggerhub.com/apis/EszterBajmoczy/Lendship.Backend/1.0.
 Kérdések:
 - Képek:
   - File rendszerben tervezem őket tárolni
-  - Külön http kérésekben utazzanak, vagy fűzzem hozzá a megfelelő Dto osztályhoz?
+  - Külön http kérésekben utazzanak!
 - Enum modelben és Dto-ban megegyezik
-  - Legyen egy központi enum vagy maradjon így és legyen hozzá converter 
+  - Maradjon ahogyan van, kettő enum és legyen hozzá converter 
 - Amennyiben egy értékelés anonym, akkor a frontend anonimizálja vagy a backend?
+  - Backend
 - Értékelések számítása külön lekérdezésben legyen, vagy Dto-hoz hozzáfűzve?
+  - Legyen egy napra kész, kiszámított érték (User táblába mehet) 
 
 2021.10.10: Swagger-ben elkészítettem a backend api-ját. A projektbe holnap integrálom a generált file-okat.
