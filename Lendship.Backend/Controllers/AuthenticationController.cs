@@ -1,5 +1,6 @@
 ﻿using Lendship.Backend.Authentication;
 using Lendship.Backend.DTO;
+using Lendship.Backend.DTO.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -79,23 +81,85 @@ namespace Lendship.Backend.Controllers
                     authClaims.Add(new Claim(ClaimTypes.Role, userRole));
                 }
 
-                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("JWT").GetValue("Key", "defaultKey")));
+                var token = generateToken(authClaims, false);
+                authClaims.Add(new Claim(ClaimTypes.AuthenticationMethod, "RefreshToken"));
 
-                var token = new JwtSecurityToken(
-                    issuer: _configuration.GetSection("JWT").GetValue("Issuer", "defaultIssuer"),
-                    audience: _configuration.GetSection("JWT").GetValue("Audience", "defaultAudience"),
-                    expires: DateTime.Now.AddHours(3),
-                    claims: authClaims,
-                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                );
+                //not sure, but that way the refresh token won't work as a normal token (issuer)
+                var refreshToken = generateToken(authClaims, true);
 
                 return Ok(new
                 {
                     token = new JwtSecurityTokenHandler().WriteToken(token),
-                    expiration = token.ValidTo
+                    expiration = token.ValidTo,
+                    refreshToken = new JwtSecurityTokenHandler().WriteToken(refreshToken)
                 });
             }
             return Unauthorized();
+        }
+
+        [HttpPost]
+        [Route("refresh")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenModel model)
+        {
+            var refreshToken = new JwtSecurityToken(model.RefreshToken);
+            var userId = refreshToken.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault();
+            var user = await userManager.FindByIdAsync(userId.Value);
+
+            var audience = refreshToken.Audiences.FirstOrDefault();
+            var validAudience = _configuration.GetSection("JWT").GetValue("Audience", "defaultAudience");
+
+            var issuer = refreshToken.Issuer;
+            var validIssuer = _configuration.GetSection("JWT").GetValue("Issuer", "defaultIssuer");
+
+            var issuerSigningKey = refreshToken.SigningKey;
+            var validIssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("JWT").GetValue("Key", "defaultKey")));
+
+            if (refreshToken.ValidTo < DateTime.Now 
+                || user == null
+                || audience != validAudience
+                || issuer != validIssuer
+                || issuerSigningKey != validIssuerSigningKey)
+            {
+                return Unauthorized();
+            }
+
+            var userRoles = await userManager.GetRolesAsync(user);
+            var authClaims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, user.Id),
+                        new Claim(ClaimTypes.Name, user.UserName),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    };
+
+            foreach (var userRole in userRoles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+            }
+
+            var token = generateToken(authClaims, false);
+
+            return Ok(new
+            {
+                token = new JwtSecurityTokenHandler().WriteToken(token),
+                expiration = token.ValidTo,
+            });
+        }
+
+        private JwtSecurityToken generateToken(List<Claim> authClaims, bool isRefresh)
+        {
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("JWT").GetValue("Key", "defaultKey")));
+            var issuer = isRefresh ?
+                _configuration.GetSection("JWT").GetValue("Issuer", "defaultIssuer") + "refresh" :
+                _configuration.GetSection("JWT").GetValue("Issuer", "defaultIssuer");
+            var expires = isRefresh ? 6 : 3;
+
+            return new JwtSecurityToken(
+                issuer: issuer,
+                audience: _configuration.GetSection("JWT").GetValue("Audience", "defaultAudience"),
+                expires: DateTime.Now.AddHours(expires),
+                claims: authClaims,
+                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+            );
         }
     }
 }
