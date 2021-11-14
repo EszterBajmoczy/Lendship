@@ -9,6 +9,9 @@ SwaggerHub: https://app.swaggerhub.com/apis/EszterBajmoczy/Lendship.Backend/1.0.
 
 
 # Haladási napló:
+2021.11.15:
+- Implement refresh token (issue 6)
+
 2021.11.01:
 - Conversation controller és service megvalósítása
 - Closed Group controller és service megvalósítása
