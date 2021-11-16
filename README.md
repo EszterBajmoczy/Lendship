@@ -11,6 +11,10 @@ SwaggerHub: https://app.swaggerhub.com/apis/EszterBajmoczy/Lendship.Backend/1.0.
 # Haladási napló:
 2021.11.15:
 - Implement refresh token (issue 6)
+- Cancel token with Redis db (issue 1)
+
+Kérdések:
+- Refresh token-t is deaktiválni kellene, de hogyan? Összes legenerált token számontartása? Token ellenőrzésnél akkor azt is nézni kellene, hogy tárolva van nálunk.
 
 2021.11.01:
 - Conversation controller és service megvalósítása
