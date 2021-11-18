@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -13,8 +11,12 @@ namespace Lendship.Backend.Interfaces.Services
 
         bool IsRefreshTokenValid(string refreshToken);
 
+        bool IsPasswordTokenValid(string pswToken);
+
         Task DeactivateCurrentTokenAndRefreshTokenAsync(string refreshToken);
 
         JwtSecurityToken GenerateNewToken(List<Claim> authClaims, bool isRefresh);
+
+        JwtSecurityToken GenerateNewPasswordToken(List<Claim> authClaims);
     }
 }
