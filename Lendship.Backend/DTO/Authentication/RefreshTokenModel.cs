@@ -1,4 +1,4 @@
-﻿namespace Lendship.Backend.DTO.Authentication
+﻿namespace Lendship.Backend.DTO.Authentication.Authentication
 {
     public class RefreshTokenModel
     {
