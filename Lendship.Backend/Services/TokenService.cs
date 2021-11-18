@@ -42,11 +42,6 @@ namespace Lendship.Backend.Services
             return _redisCache.GetString($"ref_{refreshToken}") == _active;
         }
 
-        public bool IsPasswordTokenValid(string pswToken)
-        {
-            return _redisCache.GetString($"psw_{pswToken}") == _active;
-        }
-
         public async Task DeactivateCurrentTokenAndRefreshTokenAsync(string refreshToken)
         {
             var currentToken = GetCurrentToken();
@@ -64,29 +59,6 @@ namespace Lendship.Backend.Services
                         _deactiveted,
                         new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromTicks(expiresRefreshToken.Ticks - DateTime.Now.Ticks) },
                         CancellationToken.None);
-        }
-
-        public JwtSecurityToken GenerateNewPasswordToken(List<Claim> authClaims)
-        {
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("JWT").GetValue("Key", "defaultKey")));
-            var issuer = _configuration.GetSection("JWT").GetValue("Issuer", "defaultIssuer");
-            var expires = _configuration.GetSection("JWT").GetValue("ExpirationPsw", 1);
-
-            var pswToken = new JwtSecurityToken(
-                issuer: issuer,
-                audience: _configuration.GetSection("JWT").GetValue("Audience", "defaultAudience"),
-                expires: DateTime.Now.AddHours(expires),
-                claims: authClaims,
-                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-            );
-
-            _redisCache.SetStringAsync(
-                        $"psw_{pswToken}",
-                        _active,
-                        new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromTicks(DateTime.Now.AddHours(expires).Ticks - DateTime.Now.Ticks) },
-                        CancellationToken.None);
-
-            return pswToken;
         }
 
         public JwtSecurityToken GenerateNewToken(List<Claim> authClaims, bool isRefresh)
