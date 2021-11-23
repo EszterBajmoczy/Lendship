@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Lendship.Backend.DTO
+namespace Lendship.Backend.DTO.Authentication
 {
     public class Response
     {

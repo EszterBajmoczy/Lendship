@@ -32,8 +32,28 @@ namespace Lendship.Backend
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             // For Identity
             services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<LendshipDbContext>()
+                .AddEntityFrameworkStores<LendshipDbContext>();
                 .AddDefaultTokenProviders();
+
+            //redis
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = Configuration["redis:connectionString"];
+                //options.InstanceName = "lendship";
+            });
+
+            services.AddHttpContextAccessor();
+
+            services.AddScoped<IAdvertisementService, AdvertisementService>();
+            services.AddScoped<IReservationService, ReservationService>();
+            services.AddScoped<IEvaluationService, EvaluationService>();
+            services.AddScoped<IConversationService, ConversationService>();
+            services.AddScoped<IClosedGroupService, ClosedGroupService>();
+            services.AddScoped<ITokenService, TokenService>();
+
+            //TODOoooooooooooooooooooooooo tesztelni
+            services.AddScoped<TokenValidator>();
+            var serviceProvider = services.BuildServiceProvider();
 
             // Adding Authentication
             services.AddAuthentication(options =>
@@ -44,6 +64,8 @@ namespace Lendship.Backend
             })
                 .AddJwtBearer(options =>
                 {
+                    options.SecurityTokenValidators.Clear();
+                    options.SecurityTokenValidators.Add(serviceProvider.GetService<TokenValidator>());
                     options.SaveToken = true;
                     options.RequireHttpsMetadata = false;
                     options.TokenValidationParameters = new TokenValidationParameters()
@@ -56,15 +78,7 @@ namespace Lendship.Backend
                     };
                 });
 
-            services.AddHttpContextAccessor();
-
-            services.AddScoped<IAdvertisementService, AdvertisementService>();
-            services.AddScoped<IReservationService, ReservationService>();
-            services.AddScoped<IEvaluationService, EvaluationService>();
-            services.AddScoped<IConversationService, ConversationService>();
-            services.AddScoped<IClosedGroupService, ClosedGroupService>();
             services.AddScoped<IProfileService, ProfileService>();
-
             services.AddControllers();
             services.AddSwaggerGen(swagger =>
             {
