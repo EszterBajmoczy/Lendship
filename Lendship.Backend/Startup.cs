@@ -63,6 +63,7 @@ namespace Lendship.Backend
             services.AddScoped<IEvaluationService, EvaluationService>();
             services.AddScoped<IConversationService, ConversationService>();
             services.AddScoped<IClosedGroupService, ClosedGroupService>();
+            services.AddScoped<IProfileService, ProfileService>();
 
             services.AddControllers();
             services.AddSwaggerGen(swagger =>
