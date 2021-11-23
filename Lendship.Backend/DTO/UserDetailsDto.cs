@@ -9,18 +9,13 @@
  */
 
 using System;
-using System.Linq;
-using System.IO;
 using System.Text;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
 namespace Lendship.Backend.DTO
-{ 
+{
     /// <summary>
     /// 
     /// </summary>
@@ -80,6 +75,20 @@ namespace Lendship.Backend.DTO
         
         [DataMember(Name="longitude")]
         public decimal? Longitude { get; set; }
+
+        /// <summary>
+        /// Gets or Sets EvaluationAsAdvertiser
+        /// </summary>
+
+        [DataMember(Name = "evaluationAsAdvertiser")]
+        public int? EvaluationAsAdvertiser { get; set; }
+
+        /// <summary>
+        /// Gets or Sets EvaluationAsLender
+        /// </summary>
+
+        [DataMember(Name = "evaluationAsLender")]
+        public int? EvaluationAsLender { get; set; }
 
         /// <summary>
         /// Gets or Sets Registration
