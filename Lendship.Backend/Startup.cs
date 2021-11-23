@@ -32,8 +32,8 @@ namespace Lendship.Backend
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             // For Identity
             services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<LendshipDbContext>();
-            //    .AddDefaultTokenProviders();
+                .AddEntityFrameworkStores<LendshipDbContext>()
+                .AddDefaultTokenProviders();
 
             //redis
             services.AddStackExchangeRedisCache(options =>
@@ -51,7 +51,6 @@ namespace Lendship.Backend
             services.AddScoped<IClosedGroupService, ClosedGroupService>();
             services.AddScoped<ITokenService, TokenService>();
 
-            //TODOoooooooooooooooooooooooo tesztelni
             services.AddScoped<TokenValidator>();
             var serviceProvider = services.BuildServiceProvider();
 
@@ -78,6 +77,7 @@ namespace Lendship.Backend
                     };
                 });
 
+            services.AddScoped<IProfileService, ProfileService>();
             services.AddControllers();
             services.AddSwaggerGen(swagger =>
             {
