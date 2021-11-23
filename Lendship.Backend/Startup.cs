@@ -32,7 +32,7 @@ namespace Lendship.Backend
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             // For Identity
             services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<LendshipDbContext>();
+                .AddEntityFrameworkStores<LendshipDbContext>()
                 .AddDefaultTokenProviders();
 
             //redis
@@ -51,7 +51,6 @@ namespace Lendship.Backend
             services.AddScoped<IClosedGroupService, ClosedGroupService>();
             services.AddScoped<ITokenService, TokenService>();
 
-            //TODOoooooooooooooooooooooooo tesztelni
             services.AddScoped<TokenValidator>();
             var serviceProvider = services.BuildServiceProvider();
 
