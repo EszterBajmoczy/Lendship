@@ -84,11 +84,25 @@ namespace Lendship.Backend.DTO
         public int? EvaluationAsAdvertiser { get; set; }
 
         /// <summary>
+        /// Gets or Sets EvaluationAsAdvertiserCount
+        /// </summary>
+
+        [DataMember(Name = "evaluationAsAdvertiserCount")]
+        public int? EvaluationAsAdvertiserCount { get; set; }
+
+        /// <summary>
         /// Gets or Sets EvaluationAsLender
         /// </summary>
 
         [DataMember(Name = "evaluationAsLender")]
         public int? EvaluationAsLender { get; set; }
+
+        /// <summary>
+        /// Gets or Sets EvaluationAsLenderCount
+        /// </summary>
+
+        [DataMember(Name = "evaluationAsLenderCount")]
+        public int? EvaluationAsLenderCount { get; set; }
 
         /// <summary>
         /// Gets or Sets Registration
