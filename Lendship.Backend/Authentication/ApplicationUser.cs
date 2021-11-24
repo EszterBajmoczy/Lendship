@@ -24,6 +24,14 @@ namespace Lendship.Backend.Authentication
         [Column(TypeName = "decimal(9,6)")]
         public decimal Longitude { get; set; }
 
+        public int EvaluationAsAdvertiser { get; set; }
+
+        public int EvaluationAsAdvertiserCount { get; set; }
+
+        public int EvaluationAsLender { get; set; }
+
+        public int EvaluationAsLenderCount { get; set; }
+
         [Required]
         public DateTime Registration { get; set; }
     }
