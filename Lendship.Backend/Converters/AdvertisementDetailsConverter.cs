@@ -29,7 +29,7 @@ namespace Lendship.Backend.Converters
             }
 
             //TODO evaluations !!!
-            var userDTO = _userConverter.ConvertToDto(ad.User, 0, 2);
+            var userDTO = _userConverter.ConvertToDto(ad.User);
 
             List<AvailabilityDto> availabilityDtos = new List<AvailabilityDto>();
 

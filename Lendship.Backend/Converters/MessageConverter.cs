@@ -22,7 +22,7 @@ namespace Lendship.Backend.Converters
             {
                 Id = msg.Id,
                 ConversationId = conversationId,
-                UserFrom = _userConverter.ConvertToDto(msg.UserFrom, 0, 1),
+                UserFrom = _userConverter.ConvertToDto(msg.UserFrom),
                 Content = msg.Content,
                 Date = msg.Date
             };
