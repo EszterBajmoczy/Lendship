@@ -57,7 +57,7 @@ namespace Lendship.Backend.Services
             var updatedEvaluation = _calcuting.recalculate(userTo.EvaluationAsAdvertiser, userTo.EvaluationAsAdvertiserCount, calculated);
 
             userTo.EvaluationAsAdvertiser = updatedEvaluation;
-            userTo.EvaluationAsAdvertiserCount++;
+            userTo.EvaluationAsAdvertiserCount = userTo.EvaluationAsAdvertiserCount + 1;
             _dbContext.Update(userTo);
             _dbContext.SaveChanges();
         }
@@ -86,7 +86,7 @@ namespace Lendship.Backend.Services
             var updatedEvaluation = _calcuting.recalculate(userTo.EvaluationAsAdvertiser, userTo.EvaluationAsAdvertiserCount, calculated);
 
             userTo.EvaluationAsAdvertiser = updatedEvaluation;
-            userTo.EvaluationAsAdvertiserCount++;
+            userTo.EvaluationAsAdvertiserCount = userTo.EvaluationAsAdvertiserCount + 1;
             _dbContext.Update(userTo);
             _dbContext.SaveChanges();
         }
