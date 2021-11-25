@@ -1,4 +1,5 @@
-﻿using Lendship.Backend.DTO;
+﻿using Lendship.Backend.Converters;
+using Lendship.Backend.DTO;
 using Lendship.Backend.Exceptions;
 using Lendship.Backend.Interfaces.Converters;
 using Lendship.Backend.Interfaces.Services;
@@ -20,6 +21,8 @@ namespace Lendship.Backend.Services
         {
             _httpContextAccessor = httpContextAccessor;
             _dbContext = dbContext;
+
+            _userConverter = new UserConverter();
         }
 
         public void DeleteUser()
