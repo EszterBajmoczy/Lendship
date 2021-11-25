@@ -1,4 +1,6 @@
 using Lendship.Backend.Authentication;
+using Lendship.Backend.EvaluationCalcuting;
+using Lendship.Backend.Interfaces.EvaluationCalcuting;
 using Lendship.Backend.Interfaces.Services;
 using Lendship.Backend.Models;
 using Lendship.Backend.Services;
@@ -50,6 +52,8 @@ namespace Lendship.Backend
             services.AddScoped<IConversationService, ConversationService>();
             services.AddScoped<IClosedGroupService, ClosedGroupService>();
             services.AddScoped<ITokenService, TokenService>();
+
+            services.AddScoped<IEvaluationCalcuting, WeightedAverage>();
 
             services.AddScoped<TokenValidator>();
             var serviceProvider = services.BuildServiceProvider();
