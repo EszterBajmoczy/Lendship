@@ -22,7 +22,7 @@ namespace Lendship.Backend.Converters
             return new EvaluationAdvertiserDto
             {
                 Id = evaluation.Id,
-                UserFrom = _userConverter.ConvertToDto(evaluation.UserFrom, 0, 2),
+                UserFrom = _userConverter.ConvertToDto(evaluation.UserFrom),
                 AdvertisementId = evaluation.Advertisement.Id,
                 Flexibility = evaluation.Flexibility,
                 Reliability = evaluation.Reliability,

@@ -4,14 +4,16 @@ using Lendship.Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Lendship.Backend.Migrations
 {
     [DbContext(typeof(LendshipDbContext))]
-    partial class LendshipDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211124200800_UpdateApplicationUser")]
+    partial class UpdateApplicationUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,14 +46,14 @@ namespace Lendship.Backend.Migrations
                     b.Property<bool>("EmailNotificationsEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<decimal>("EvaluationAsAdvertiser")
-                        .HasColumnType("decimal(9,6)");
+                    b.Property<int>("EvaluationAsAdvertiser")
+                        .HasColumnType("int");
 
                     b.Property<int>("EvaluationAsAdvertiserCount")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("EvaluationAsLender")
-                        .HasColumnType("decimal(9,6)");
+                    b.Property<int>("EvaluationAsLender")
+                        .HasColumnType("int");
 
                     b.Property<int>("EvaluationAsLenderCount")
                         .HasColumnType("int");

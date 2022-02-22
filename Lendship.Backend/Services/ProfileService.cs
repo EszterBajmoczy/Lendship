@@ -1,4 +1,5 @@
-﻿using Lendship.Backend.DTO;
+﻿using Lendship.Backend.Converters;
+using Lendship.Backend.DTO;
 using Lendship.Backend.Exceptions;
 using Lendship.Backend.Interfaces.Converters;
 using Lendship.Backend.Interfaces.Services;
@@ -20,6 +21,8 @@ namespace Lendship.Backend.Services
         {
             _httpContextAccessor = httpContextAccessor;
             _dbContext = dbContext;
+
+            _userConverter = new UserConverter();
         }
 
         public void DeleteUser()
@@ -36,7 +39,7 @@ namespace Lendship.Backend.Services
             var user = _dbContext.Users.Where(x => x.Id == userId).FirstOrDefault();
 
             //TODO evaluation
-            return _userConverter.ConvertToUserDetaiolsDto(user, 0, 0);
+            return _userConverter.ConvertToUserDetaiolsDto(user);
         }
 
         public UserDetailsDto GetUserInformation()
@@ -45,7 +48,7 @@ namespace Lendship.Backend.Services
             var user = _dbContext.Users.Where(x => x.Id == signedInUserId).FirstOrDefault();
 
             //TODO evaluation
-            return _userConverter.ConvertToUserDetaiolsDto(user, 0, 0);
+            return _userConverter.ConvertToUserDetaiolsDto(user);
         }
 
         public void UpdateUserInformation(UserDetailsDto user)

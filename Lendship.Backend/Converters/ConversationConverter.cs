@@ -23,7 +23,7 @@ namespace Lendship.Backend.Converters
             foreach(var user in users)
             {
                 //TODO evaulation
-                var userDto = _userConverter.ConvertToDto(user, 0, 1);
+                var userDto = _userConverter.ConvertToDto(user);
                 userDtos.Add(userDto);
             }
 
