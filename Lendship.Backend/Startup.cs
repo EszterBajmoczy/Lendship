@@ -52,6 +52,7 @@ namespace Lendship.Backend
             services.AddScoped<IConversationService, ConversationService>();
             services.AddScoped<IClosedGroupService, ClosedGroupService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IImageService, ImageService>();
 
             services.AddScoped<IEvaluationCalcuting, WeightedAverage>();
 
