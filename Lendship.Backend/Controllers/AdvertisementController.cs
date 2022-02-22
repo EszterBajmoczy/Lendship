@@ -9,19 +9,12 @@
  */
 
 using System;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using Lendship.Backend.DTO;
 using Microsoft.AspNetCore.Authorization;
-using Lendship.Backend.Models;
-using System.Linq;
-using Lendship.Backend.Authentication;
-using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
 using Lendship.Backend.Interfaces.Services;
-using Lendship.Backend.Exceptions;
 
 namespace Lendship.Backend.Controllers
 {
