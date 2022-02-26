@@ -79,19 +79,46 @@ namespace Lendship.Backend.Controllers
         }
 
         /// <summary>
-        /// update closed group for advertisement
+        /// add user to closed group
         /// </summary>
-        /// <remarks>Updates closed group for advertisement</remarks>
-        /// <param name="closedGroup">Closed Group</param>
+        /// <remarks>Add user to closed group</remarks>
+        /// <param name="userId">User id</param>
+        /// <param name="closedGroupId">Closed group id</param>
         /// <response code="201">group updated</response>
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpPut]
-        public virtual IActionResult UpdateClosedGroupForAdvertisement([FromBody]ClosedGroupDto closedGroup)
+        [Route("{userId}/{closedGroupId}")]
+        public virtual IActionResult AddUserToClosedGroup([FromRoute][Required] string userId, [FromRoute][Required] int closedGroupId)
         {
             try
             {
-                _cgroupService.UpdateClosedGroup(closedGroup);
+                _cgroupService.AddUserToClosedGroup(userId, closedGroupId);
+                return StatusCode(200);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception at updating closed group: " + e.Message);
+                return this.BadRequest(e.Message);
+            }
+        }
+
+        /// <summary>
+        /// remove user to closed group
+        /// </summary>
+        /// <remarks>Add user to closed group</remarks>
+        /// <param name="userId">User id</param>
+        /// <param name="closedGroupId">Closed group id</param>
+        /// <response code="201">group updated</response>
+        /// <response code="400">bad request</response>
+        /// <response code="401"></response>
+        [HttpPut]
+        [Route("{userId}/{closedGroupId}")]
+        public virtual IActionResult RemoveUserToClosedGroup([FromRoute][Required] string userId, [FromRoute][Required] int closedGroupId)
+        {
+            try
+            {
+                _cgroupService.RemoveUserToClosedGroup(userId, closedGroupId);
                 return StatusCode(200);
             }
             catch (Exception e)

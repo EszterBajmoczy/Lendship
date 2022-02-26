@@ -41,7 +41,7 @@ namespace Lendship.Backend.Converters
         {
             return new ClosedGroup()
             {
-                Id = closedGroupDto.Id ?? 0,
+                Id = closedGroupDto.Id,
                 AdvertismentId = closedGroupDto.AdvertisementId
             };
         }

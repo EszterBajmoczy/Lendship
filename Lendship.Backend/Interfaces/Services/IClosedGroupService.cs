@@ -7,7 +7,9 @@ namespace Lendship.Backend.Interfaces.Services
     {
         void CreateClosedGroup(ClosedGroupDto closedGroup);
 
-        void UpdateClosedGroup(ClosedGroupDto closedGroup);
+        public void AddUserToClosedGroup(string userId, int closedGroupId);
+
+        public void RemoveUserToClosedGroup(string userId, int closedGroupId);
 
         ClosedGroupDto GetClosedGroupOfAdvertisement(int advertisementId);
     }
