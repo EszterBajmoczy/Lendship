@@ -35,7 +35,11 @@ namespace Lendship.Backend.Services
             var cGroup = _dbContext.ClosedGroups
                 .Where(c => c.AdvertismentId == advertisementId)
                 .FirstOrDefault();
-            var userIds = cGroup.UserIds.Select(cg => cg.ToString());
+
+            var userIds = _dbContext.UsersAndClosedGroups
+                                .Where(x => x.ClosedGroupId == cGroup.Id)
+                                .Select(x => x.UserId)
+                                .ToList();
 
             var users = _dbContext.Users.Where(u => userIds.Contains(u.Id)).ToList();
 
