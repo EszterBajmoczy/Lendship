@@ -4,14 +4,16 @@ using Lendship.Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Lendship.Backend.Migrations
 {
     [DbContext(typeof(LendshipDbContext))]
-    partial class LendshipDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220226205323_UpdateConversationUsers")]
+    partial class UpdateConversationUsers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,6 +32,9 @@ namespace Lendship.Backend.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ConversationId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Credit")
                         .HasColumnType("int");
@@ -99,6 +104,8 @@ namespace Lendship.Backend.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ConversationId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -424,25 +431,6 @@ namespace Lendship.Backend.Migrations
                     b.ToTable("SavedAdvertisements");
                 });
 
-            modelBuilder.Entity("Lendship.Backend.Models.UsersAndConversations", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ConversationId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UsersAndConversations");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -572,6 +560,13 @@ namespace Lendship.Backend.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("Lendship.Backend.Authentication.ApplicationUser", b =>
+                {
+                    b.HasOne("Lendship.Backend.Models.Conversation", null)
+                        .WithMany("Users")
+                        .HasForeignKey("ConversationId");
                 });
 
             modelBuilder.Entity("Lendship.Backend.Models.Advertisement", b =>
@@ -733,6 +728,8 @@ namespace Lendship.Backend.Migrations
             modelBuilder.Entity("Lendship.Backend.Models.Conversation", b =>
                 {
                     b.Navigation("Messages");
+
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

@@ -4,14 +4,16 @@ using Lendship.Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Lendship.Backend.Migrations
 {
     [DbContext(typeof(LendshipDbContext))]
-    partial class LendshipDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220226210935_UpdateConversationAndUserRelation")]
+    partial class UpdateConversationAndUserRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -422,25 +424,6 @@ namespace Lendship.Backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SavedAdvertisements");
-                });
-
-            modelBuilder.Entity("Lendship.Backend.Models.UsersAndConversations", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ConversationId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UsersAndConversations");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

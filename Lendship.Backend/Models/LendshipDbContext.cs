@@ -30,17 +30,14 @@ namespace Lendship.Backend.Models
 
         public DbSet<Conversation> Conversation { get; set; }
 
+        public DbSet<UsersAndConversations> UsersAndConversations { get; set; }
+
         public DbSet<SavedAdvertisement> SavedAdvertisements { get; set; }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Conversation>()
-                .Property(e => e.UserIds)
-                .HasConversion(
-                    v => string.Join(',', v),
-                    v => mapStringToGuids(v));
 
             modelBuilder.Entity<ClosedGroup>()
                 .Property(e => e.UserIds)
