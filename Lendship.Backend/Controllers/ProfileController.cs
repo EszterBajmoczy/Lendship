@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Lendship.Backend.DTO;
+using Lendship.Backend.Interfaces.Services;
 
 namespace Lendship.Backend.Controllers
 {
@@ -24,7 +25,14 @@ namespace Lendship.Backend.Controllers
     [ApiController]
     [Route("[controller]")]
     public class ProfileController : ControllerBase
-    { 
+    {
+        private readonly IProfileService _profileService;
+
+        public ProfileController(IProfileService profileService)
+        {
+            _profileService = profileService;
+        }
+
         /// <summary>
         /// delete profile
         /// </summary>
@@ -33,19 +41,18 @@ namespace Lendship.Backend.Controllers
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpDelete]
-        public virtual IActionResult DeleteUserInformation()
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200);
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-
-            throw new NotImplementedException();
+        public virtual IActionResult DeleteUser()
+        {
+            try
+            {
+                _profileService.DeleteUser();
+                return StatusCode(200);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception at deleting profile: " + e.Message);
+                return this.BadRequest(e.Message);
+            }
         }
 
         /// <summary>
@@ -59,24 +66,17 @@ namespace Lendship.Backend.Controllers
         [HttpGet]
         [Route("{userId}")]
         public virtual IActionResult GetOtherUserInformation([FromRoute][Required]string userId)
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(UserDetails));
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-            string exampleJson = null;
-            exampleJson = "{\"empty\": false}";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<UserDetailsDto>(exampleJson)
-            : default(UserDetailsDto);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+        {
+            try
+            {
+                var user = _profileService.GetOtherUserInformation(userId);
+                return new ObjectResult(user.ToJson());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception at geting other user's profile: " + e.Message);
+                return this.BadRequest(e.Message);
+            }
         }
 
         /// <summary>
@@ -88,24 +88,17 @@ namespace Lendship.Backend.Controllers
         /// <response code="401"></response>
         [HttpGet]
         public virtual IActionResult GetUserInformation()
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(UserDetails));
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-            string exampleJson = null;
-            exampleJson = "{\"empty\": false}";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<UserDetailsDto>(exampleJson)
-            : default(UserDetailsDto);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+        {
+            try
+            {
+                var user = _profileService.GetUserInformation();
+                return new ObjectResult(user.ToJson());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception at geting user's profile: " + e.Message);
+                return this.BadRequest(e.Message);
+            }
         }
 
         /// <summary>
@@ -118,18 +111,17 @@ namespace Lendship.Backend.Controllers
         /// <response code="401"></response>
         [HttpPut]
         public virtual IActionResult UpdateUserInformation([FromBody]UserDetailsDto user)
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200);
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-
-            throw new NotImplementedException();
+        {
+            try
+            {
+                _profileService.UpdateUserInformation(user);
+                return StatusCode(200);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception at updating profile: " + e.Message);
+                return this.BadRequest(e.Message);
+            }
         }
     }
 }

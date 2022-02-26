@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Lendship.Backend.Authentication
 {
@@ -23,6 +20,16 @@ namespace Lendship.Backend.Authentication
         [Required]
         [Column(TypeName = "decimal(9,6)")]
         public decimal Longitude { get; set; }
+
+        [Column(TypeName = "decimal(9,6)")]
+        public decimal EvaluationAsAdvertiser { get; set; }
+
+        public int EvaluationAsAdvertiserCount { get; set; }
+
+        [Column(TypeName = "decimal(9,6)")]
+        public decimal EvaluationAsLender { get; set; }
+
+        public int EvaluationAsLenderCount { get; set; }
 
         [Required]
         public DateTime Registration { get; set; }

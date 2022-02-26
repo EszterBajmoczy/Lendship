@@ -9,11 +9,12 @@
  */
 
 using System;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Lendship.Backend.Interfaces.Services;
 
 namespace Lendship.Backend.Controllers
 {
@@ -23,165 +24,154 @@ namespace Lendship.Backend.Controllers
     [Authorize]
     [ApiController]
     [Route("[controller]")]
-    public class ImageController : ControllerBase
-    { 
+    public class ImageController : Controller
+    {
+        private readonly IImageService _imgService;
+
+        public ImageController(IImageService imgService)
+        {
+            _imgService = imgService;
+        }
         /// <summary>
-        /// delete images in folder
+        /// uploads image
         /// </summary>
-        /// <remarks>Delete images in folder</remarks>
-        /// <param name="imgName"></param>
+        /// <remarks>Uploads profile image</remarks>
         /// <response code="200">Success</response>
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
-        [HttpDelete]
-        public virtual IActionResult DeleteImge([FromQuery][Required()]string imgName)
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200);
+        [HttpPost]
+        [Route("profile")]
+        public virtual IActionResult UploadImage()
+        {
+            try
+            {
+                IFormFile file = Request.Form.Files[0];
+                _imgService.UploadProfileImage(file);
+                return StatusCode(201);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception at uploading profile image: " + e.Message);
+                return this.BadRequest(e.Message);
+            }
+        }
 
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
+        /// <summary>
+        /// uploads images
+        /// </summary>
+        /// <remarks>Uploads images to an advertisement</remarks>
+        /// <param name="advertisementId"></param>
+        /// <response code="200">Success</response>
+        /// <response code="400">bad request</response>
+        /// <response code="401"></response>
+        [HttpPost]
+        [Route("{advertisementId}")]
+        public virtual IActionResult UploadImages([FromRoute][Required] int advertisementId)
+        {
+            try
+            {
+                var files = Request.Form.Files;
+                _imgService.UploadImages(files, advertisementId);
+                return StatusCode(201);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception at uploading profile image: " + e.Message);
+                return this.BadRequest(e.Message);
+            }
 
             throw new NotImplementedException();
         }
 
         /// <summary>
-        /// delete images in folder
+        /// delete profile image
         /// </summary>
-        /// <remarks>Delete images in folder</remarks>
-        /// <param name="imgLocation"></param>
+        /// <remarks>Delete profile image</remarks>
         /// <response code="200">Success</response>
-        /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpDelete]
-        [Route("list")]
-        public virtual IActionResult DeleteImgesFolder([FromQuery][Required()]string imgLocation)
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200);
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-
-            throw new NotImplementedException();
+        [Route("profile")]
+        public virtual IActionResult DeleteImage()
+        {
+            _imgService.DeleteProfileImage();
+            return StatusCode(200);
         }
 
         /// <summary>
-        /// get image
+        /// delete images for an advertisement
         /// </summary>
-        /// <remarks>Get image</remarks>
-        /// <param name="imgLocation"></param>
+        /// <remarks>Delete images in folder</remarks>
+        /// <param name="advertisementId"></param>
+        /// <response code="200">Success</response>
+        /// <response code="401"></response>
+        [HttpDelete]
+        [Route("{advertisementId}")]
+        public virtual IActionResult DeleteImagesFolder([FromRoute][Required] int advertisementId)
+        {
+            _imgService.DeleteImages(advertisementId);
+            return StatusCode(200);
+        }
+
+        /// <summary>
+        /// deletes one images at an advertisement by name
+        /// </summary>
+        /// <remarks>Delete one image in folder</remarks>
+        /// <param name="advertisementId"></param>
+        /// <param name="fileName"></param>
+        /// <response code="200">Success</response>
+        /// <response code="401"></response>
+        [HttpDelete]
+        [Route("{advertisementId}/{fileName}")]
+        public virtual IActionResult DeleteOneFromAdvertisement([FromRoute][Required] int advertisementId, [FromRoute][Required] string fileName)
+        {
+            _imgService.DeleteImageFromAdvertisement(advertisementId, fileName);
+            return StatusCode(200);
+        }
+
+        /// <summary>
+        /// get profile image
+        /// </summary>
+        /// <remarks>Get profile image</remarks>
         /// <response code="200">Success</response>
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpGet]
-        public virtual IActionResult GetImg([FromQuery][Required()]string imgLocation)
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(byte[]));
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-            string exampleJson = null;
-            exampleJson = "";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<byte[]>(exampleJson)
-            : default(byte[]);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
+        [Route("profile")]
+        public virtual IActionResult GetImage()
+        {
+            try
+            {
+                var img = _imgService.GetImage();
+                return new ObjectResult(img.ToJson());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception at fetching profile image: " + e.Message);
+                return this.BadRequest(e.Message);
+            }
         }
 
         /// <summary>
-        /// get images from folder
+        /// get images for an advertisement
         /// </summary>
-        /// <remarks>Get images from folder</remarks>
-        /// <param name="imgLocation"></param>
+        /// <remarks>Get images for an advertisement</remarks>
+        /// <param name="advertisementId"></param>
         /// <response code="200">List of images in the folder</response>
-        /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpGet]
-        [Route("list")]
-        public virtual IActionResult GetImges([FromQuery][Required()]string imgLocation)
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200, default(List<byte[]>));
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-            string exampleJson = null;
-            exampleJson = "";
-            
-            var example = exampleJson != null
-            ? JsonConvert.DeserializeObject<List<byte[]>>(exampleJson)
-            : default(List<byte[]>);
-            //TODO: Change the data returned
-            return new ObjectResult(example);
-        }
-
-        /// <summary>
-        /// upload image
-        /// </summary>
-        /// <remarks>Upload image</remarks>
-        /// <param name="img"></param>
-        /// <response code="200">Success</response>
-        /// <response code="400">bad request</response>
-        /// <response code="401"></response>
-        [HttpPost]
-        public virtual IActionResult UploadImg([FromBody]byte[] img)
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200);
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// get images
-        /// </summary>
-        /// <remarks>Get images</remarks>
-        /// <param name="imgList"></param>
-        /// <response code="200">Success</response>
-        /// <response code="400">bad request</response>
-        /// <response code="401"></response>
-        [HttpPost]
-        [Route("list")]
-        public virtual IActionResult UploadImges([FromBody]List<byte[]> imgList)
-        { 
-            //TODO: Uncomment the next line to return response 200 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(200);
-
-            //TODO: Uncomment the next line to return response 400 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(400);
-
-            //TODO: Uncomment the next line to return response 401 or use other options such as return this.NotFound(), return this.BadRequest(..), ...
-            // return StatusCode(401);
-
-
-            throw new NotImplementedException();
+        [Route("{advertisementId}")]
+        public virtual IActionResult GetImges([FromRoute][Required] int advertisementId)
+        {
+            try
+            {
+                var imges = _imgService.GetImages(advertisementId);
+                return new ObjectResult(JsonConvert.SerializeObject(imges));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception at fetching images: " + e.Message);
+                return this.BadRequest(e.Message);
+            }
         }
     }
 }

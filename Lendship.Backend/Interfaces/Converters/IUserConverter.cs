@@ -9,6 +9,8 @@ namespace Lendship.Backend.Interfaces.Converters
 {
     public interface IUserConverter
     {
-        UserDto ConvertToDto(ApplicationUser user, int evaluationAsLender, int evaluationAsAdvertiser);
+        UserDto ConvertToDto(ApplicationUser user);
+
+        UserDetailsDto ConvertToUserDetaiolsDto(ApplicationUser user);
     }
 }
