@@ -42,9 +42,6 @@ namespace Lendship.Backend.Services
             return _redisCache.GetString($"ref_{refreshToken}") == _active;
         }
 
-        public async Task<bool> IsTokenActiveAsync(string token)
-            => await _redisCache.GetStringAsync(token) == null;
-
         public async Task DeactivateCurrentTokenAndRefreshTokenAsync(string refreshToken)
         {
             var currentToken = GetCurrentToken();
@@ -62,23 +59,6 @@ namespace Lendship.Backend.Services
                         _deactiveted,
                         new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromTicks(expiresRefreshToken.Ticks - DateTime.Now.Ticks) },
                         CancellationToken.None);
-        }
-
-        private string GetCurrentToken()
-        {
-            var token = _httpContextAccessor
-                            .HttpContext
-                            .Request
-                            .Headers["authorization"]
-                            .ToString()
-                            .Replace("Bearer ", "");
-
-            if (string.IsNullOrEmpty(token))
-            {
-                throw new MissingTokenException("Error at getting current token");
-            }
-
-            return token;
         }
 
         public JwtSecurityToken GenerateNewToken(List<Claim> authClaims, bool isRefresh)
@@ -113,6 +93,23 @@ namespace Lendship.Backend.Services
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
             );
+        }
+
+        private string GetCurrentToken()
+        {
+            var token = _httpContextAccessor
+                            .HttpContext
+                            .Request
+                            .Headers["authorization"]
+                            .ToString()
+                            .Replace("Bearer ", "");
+
+            if (string.IsNullOrEmpty(token))
+            {
+                throw new MissingTokenException("Error at getting current token");
+            }
+
+            return token;
         }
     }
 }

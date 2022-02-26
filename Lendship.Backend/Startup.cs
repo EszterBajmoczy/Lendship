@@ -1,4 +1,5 @@
 using Lendship.Backend.Authentication;
+using Lendship.Backend.DTO.Authentication;
 using Lendship.Backend.EvaluationCalcuting;
 using Lendship.Backend.Interfaces.EvaluationCalcuting;
 using Lendship.Backend.Interfaces.Services;
@@ -44,6 +45,8 @@ namespace Lendship.Backend
                 //options.InstanceName = "lendship";
             });
 
+            services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
+
             services.AddHttpContextAccessor();
 
             services.AddScoped<IAdvertisementService, AdvertisementService>();
@@ -52,6 +55,7 @@ namespace Lendship.Backend
             services.AddScoped<IConversationService, ConversationService>();
             services.AddScoped<IClosedGroupService, ClosedGroupService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<IImageService, ImageService>();
 
             services.AddScoped<IEvaluationCalcuting, WeightedAverage>();
@@ -100,7 +104,7 @@ namespace Lendship.Backend
                     Scheme = "Bearer",
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Description = "Enter ‘Bearer’ [space] and then your valid token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\"",
+                    Description = "Enter ï¿½Bearerï¿½ [space] and then your valid token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\"",
                 });
             swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {

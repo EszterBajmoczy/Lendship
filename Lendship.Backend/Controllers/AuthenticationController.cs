@@ -6,13 +6,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Lendship.Backend.Controllers
@@ -24,12 +22,14 @@ namespace Lendship.Backend.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
         private readonly ITokenService _tokenService;
+        private readonly IEmailService _emailService;
 
-        public AuthenticationController(UserManager<ApplicationUser> userManager, IConfiguration configuration, ITokenService tokenService)
+        public AuthenticationController(UserManager<ApplicationUser> userManager, IConfiguration configuration, ITokenService tokenService, IEmailService emailService)
         {
             _userManager = userManager;
             _configuration = configuration;
             _tokenService = tokenService;
+            _emailService = emailService;
         }
 
         [HttpPost]
@@ -54,7 +54,7 @@ namespace Lendship.Backend.Controllers
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
-
+            
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
             
@@ -148,6 +148,47 @@ namespace Lendship.Backend.Controllers
         {
             await _tokenService.DeactivateCurrentTokenAndRefreshTokenAsync(model.RefreshToken);
             return NoContent();
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] EmailModel model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if(user == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User not found!" });
+            }
+
+            var pswToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var frontendUrl = _configuration.GetSection("Frontend").GetValue("ChangePswUrl", "");
+
+            var url = frontendUrl + "?email=" + user.Email + "&token=" + pswToken;
+
+            _emailService.SendEmailAsync(user.UserName, model.Email, url);
+
+            return Ok();
+        }
+
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ResetPasswordModel model)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if (user == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User not found!" });
+            } else if (model.Password != model.ConfirmPassword)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "The two passwords not match!" });
+            }
+
+            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+
+            if (!result.Succeeded)
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "Password change failed." });
+            
+            return Ok();
         }
     }
 }
