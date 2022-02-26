@@ -1,4 +1,5 @@
 using Lendship.Backend.Authentication;
+using Lendship.Backend.DTO.Authentication;
 using Lendship.Backend.Interfaces.Services;
 using Lendship.Backend.Models;
 using Lendship.Backend.Services;
@@ -32,8 +33,8 @@ namespace Lendship.Backend
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             // For Identity
             services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<LendshipDbContext>();
-            //    .AddDefaultTokenProviders();
+                .AddEntityFrameworkStores<LendshipDbContext>()
+                .AddDefaultTokenProviders();
 
             //redis
             services.AddStackExchangeRedisCache(options =>
@@ -41,6 +42,8 @@ namespace Lendship.Backend
                 options.Configuration = Configuration["redis:connectionString"];
                 //options.InstanceName = "lendship";
             });
+
+            services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
 
             services.AddHttpContextAccessor();
 
@@ -50,6 +53,7 @@ namespace Lendship.Backend
             services.AddScoped<IConversationService, ConversationService>();
             services.AddScoped<IClosedGroupService, ClosedGroupService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IEmailService, EmailService>();
 
             //TODOoooooooooooooooooooooooo tesztelni
             services.AddScoped<TokenValidator>();
