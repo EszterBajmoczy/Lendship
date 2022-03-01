@@ -35,21 +35,12 @@ namespace Lendship.Backend.Models
         public DbSet<UsersAndConversations> UsersAndConversations { get; set; }
 
         public DbSet<SavedAdvertisement> SavedAdvertisements { get; set; }
-        
+
+        public DbSet<Notification> Notifications { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-        }
-
-        private List<Guid> mapStringToGuids(string v)
-        {
-            var result = new List<Guid>();
-            var ids = v.Split(',', StringSplitOptions.RemoveEmptyEntries);
-            foreach (var id in ids)
-            {
-                result.Add(new Guid(id));
-            }
-            return result;
         }
     }
 }
