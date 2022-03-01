@@ -1,4 +1,5 @@
 ﻿using Lendship.Backend.DTO;
+using System;
 using System.Collections.Generic;
 
 namespace Lendship.Backend.Interfaces.Services
@@ -12,5 +13,7 @@ namespace Lendship.Backend.Interfaces.Services
         void CreateMessage(MessageDto messageDto);
 
         IEnumerable<MessageDto> GetAllMessage(int conversationId);
+
+        int GetNewMessageCount();
     }
 }

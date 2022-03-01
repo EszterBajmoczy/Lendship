@@ -26,38 +26,21 @@ namespace Lendship.Backend.Models
 
         public DbSet<ClosedGroup> ClosedGroups { get; set; }
 
+        public DbSet<UsersAndClosedGroups> UsersAndClosedGroups { get; set; }
+
         public DbSet<Message> Messages { get; set; }
 
         public DbSet<Conversation> Conversation { get; set; }
+        
+        public DbSet<UsersAndConversations> UsersAndConversations { get; set; }
 
         public DbSet<SavedAdvertisement> SavedAdvertisements { get; set; }
-        
+
+        public DbSet<Notification> Notifications { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<Conversation>()
-                .Property(e => e.UserIds)
-                .HasConversion(
-                    v => string.Join(',', v),
-                    v => mapStringToGuids(v));
-
-            modelBuilder.Entity<ClosedGroup>()
-                .Property(e => e.UserIds)
-                .HasConversion(
-                    v => string.Join(',', v),
-                    v => mapStringToGuids(v));
-        }
-
-        private List<Guid> mapStringToGuids(string v)
-        {
-            var result = new List<Guid>();
-            var ids = v.Split(',', StringSplitOptions.RemoveEmptyEntries);
-            foreach (var id in ids)
-            {
-                result.Add(new Guid(id));
-            }
-            return result;
         }
     }
 }

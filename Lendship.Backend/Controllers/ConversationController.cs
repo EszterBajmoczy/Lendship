@@ -66,11 +66,12 @@ namespace Lendship.Backend.Controllers
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpPost]
-        [Route("/msg")]
+        [Route("msg")]
         public virtual IActionResult CreateMessage([FromBody]MessageDto message)
         {
             try
             {
+                message.New = true;
                 _conversationService.CreateMessage(message);
                 return StatusCode(201);
             }
@@ -110,6 +111,21 @@ namespace Lendship.Backend.Controllers
         {
             var msgs = _conversationService.GetAllMessage(conversationId);
             return new ObjectResult(JsonConvert.SerializeObject(msgs));
+        }
+
+        /// <summary>
+        /// get new msg count
+        /// </summary>
+        /// <remarks>Gets the new msg count</remarks>
+        /// <response code="200">count of the new msgs</response>
+        /// <response code="400">bad request</response>
+        /// <response code="401"></response>
+        [HttpGet]
+        [Route("new")]
+        public virtual IActionResult GetNewMessageCount()
+        {
+            var msgCount = _conversationService.GetNewMessageCount();
+            return new ObjectResult(JsonConvert.SerializeObject(msgCount));
         }
     }
 }

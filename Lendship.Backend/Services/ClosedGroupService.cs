@@ -1,13 +1,10 @@
 ﻿using Lendship.Backend.Converters;
 using Lendship.Backend.DTO;
-using Lendship.Backend.Exceptions;
 using Lendship.Backend.Interfaces.Converters;
 using Lendship.Backend.Interfaces.Services;
 using Lendship.Backend.Models;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 
@@ -35,7 +32,11 @@ namespace Lendship.Backend.Services
             var cGroup = _dbContext.ClosedGroups
                 .Where(c => c.AdvertismentId == advertisementId)
                 .FirstOrDefault();
-            var userIds = cGroup.UserIds.Select(cg => cg.ToString());
+
+            var userIds = _dbContext.UsersAndClosedGroups
+                                .Where(x => x.ClosedGroupId == cGroup.Id)
+                                .Select(x => x.UserId)
+                                .ToList();
 
             var users = _dbContext.Users.Where(u => userIds.Contains(u.Id)).ToList();
 
@@ -65,25 +66,45 @@ namespace Lendship.Backend.Services
             _dbContext.SaveChanges();
         }
 
-        public void UpdateClosedGroup(ClosedGroupDto closedGroup)
+        public void AddUserToClosedGroup(string userId, int closedGroupId)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var guid = new Guid(signedInUserId);
+            var validUser = _dbContext.Users.Any(x => x.Id == userId);
+            var validModification = _dbContext.UsersAndClosedGroups
+                                .Any(x => x.ClosedGroupId == closedGroupId && x.UserId == signedInUserId);
 
-            var userIds = closedGroup
-                             .Users
-                             .Where(x => x.Id.HasValue)
-                             .Select(x => x.Id.GetValueOrDefault())
-                             .ToList();
-
-            if (!userIds.Contains(guid))
+            if(!validUser || !validModification)
             {
-                userIds.Add(guid);
+                throw new InvalidOperationException("Modification not allowed.");
             }
 
-            var cGroup = _cgConverter.ConvertToEntity(closedGroup, userIds);
+            var newRelation = new UsersAndClosedGroups()
+            {
+                UserId = userId,
+                ClosedGroupId = closedGroupId
+            };
 
-            _dbContext.Update(cGroup);
+            _dbContext.UsersAndClosedGroups.Add(newRelation);
+            _dbContext.SaveChanges();
+        }
+
+        public void RemoveUserToClosedGroup(string userId, int closedGroupId)
+        {
+            var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var validUser = _dbContext.Users.Any(x => x.Id == userId);
+            var validModification = _dbContext.UsersAndClosedGroups
+                                .Any(x => x.ClosedGroupId == closedGroupId && x.UserId == signedInUserId);
+
+            var entity = _dbContext.UsersAndClosedGroups
+                                    .Where(u => u.ClosedGroupId == closedGroupId && u.UserId == userId)
+                                    .FirstOrDefault();
+
+            if (!validUser || !validModification)
+            {
+                throw new InvalidOperationException("Modification not allowed.");
+            }
+
+            _dbContext.UsersAndClosedGroups.Remove(entity);
             _dbContext.SaveChanges();
         }
     }

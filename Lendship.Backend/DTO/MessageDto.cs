@@ -52,6 +52,14 @@ namespace Lendship.Backend.DTO
         public string Content { get; set; }
 
         /// <summary>
+        /// Gets or Sets New
+        /// </summary>
+        [Required]
+
+        [DataMember(Name = "New")]
+        public bool New { get; set; }
+
+        /// <summary>
         /// Gets or Sets Date
         /// </summary>
         [DataMember(Name="date")]
@@ -69,6 +77,7 @@ namespace Lendship.Backend.DTO
             sb.Append("  ConversationId: ").Append(ConversationId).Append("\n");
             sb.Append("  UserFrom: ").Append(UserFrom).Append("\n");
             sb.Append("  Content: ").Append(Content).Append("\n");
+            sb.Append("  New: ").Append(New).Append("\n");
             sb.Append("  Date: ").Append(Date).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
@@ -125,6 +134,11 @@ namespace Lendship.Backend.DTO
                     Content == other.Content ||
                     Content != null &&
                     Content.Equals(other.Content)
+                ) &&
+                (
+                    New == other.New ||
+                    New != null &&
+                    New.Equals(other.New)
                 ) && 
                 (
                     Date == other.Date ||

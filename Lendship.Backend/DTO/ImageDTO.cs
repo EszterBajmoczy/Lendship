@@ -1,11 +1,7 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Lendship.Backend.DTO
 {
@@ -37,7 +33,7 @@ namespace Lendship.Backend.DTO
         {
             var sb = new StringBuilder();
             sb.Append("class Image {\n");
-            sb.Append("  Extension: ").Append(Name).Append("\n");
+            sb.Append("  Name: ").Append(Name).Append("\n");
             sb.Append("  Bytes: ").Append(Bytes).Append("\n");
             sb.Append("}\n");
             return sb.ToString();

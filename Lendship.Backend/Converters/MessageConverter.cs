@@ -17,13 +17,13 @@ namespace Lendship.Backend.Converters
 
         public MessageDto ConvertToDto(Message msg, int conversationId)
         {
-            //TODO evaluation
             return new MessageDto()
             {
                 Id = msg.Id,
                 ConversationId = conversationId,
                 UserFrom = _userConverter.ConvertToDto(msg.UserFrom),
                 Content = msg.Content,
+                New = msg.New,
                 Date = msg.Date
             };
         }
@@ -36,6 +36,7 @@ namespace Lendship.Backend.Converters
                 UserFrom = userFrom,
                 ConversationId = msgDto.ConversationId,
                 Content = msgDto.Content,
+                New = msgDto.New,
                 Date = msgDto.Date ?? DateTime.Now
             };
         }

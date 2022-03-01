@@ -29,7 +29,7 @@ namespace Lendship.Backend.DTO
         /// </summary>
 
         [DataMember(Name="id")]
-        public int? Id { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Gets or Sets AdvertisementId

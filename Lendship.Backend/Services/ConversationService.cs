@@ -45,8 +45,22 @@ namespace Lendship.Backend.Services
             var users = _dbContext.Users.Where(x => userIds.Contains(x.Id)).ToList();
 
             var conversation = _conversationConverter.ConvertToEntity(conversationDto, advertisement, null);
+            
 
             _dbContext.Conversation.Add(conversation);
+            _dbContext.SaveChanges();
+
+            foreach (var user in users)
+            {
+                var newRelation = new UsersAndConversations()
+                {
+                    ConversationId = conversation.Id,
+                    UserId = user.Id
+                };
+
+                _dbContext.UsersAndConversations.Add(newRelation);
+            }
+
             _dbContext.SaveChanges();
         }
 
@@ -73,16 +87,28 @@ namespace Lendship.Backend.Services
         {
             var resultList = new List<ConversationDto>();
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userGuid = new Guid(signedInUserId);
+
+            var userIds = _dbContext.UsersAndConversations
+                            .Where(x => x.UserId == signedInUserId)
+                            .Select(x => x.UserId)
+                            .ToList();
+
+            var conIds = _dbContext.UsersAndConversations
+                            .Where(x => x.UserId == signedInUserId)
+                            .Select(x => x.ConversationId)
+                            .ToList();
+
+            var users = _dbContext.Users
+                            .Where(u => userIds.Contains(u.Id))
+                            .ToList();
 
             var conversations = _dbContext.Conversation
-                        .Where(c => c.UserIds.Any(u => u == userGuid))
+                        .Where(c => conIds.Contains(c.Id))
                         .Include(c => c.Advertisement)
                         .ToList();
-
+            
             foreach (var con in conversations)
             {
-                var users = _dbContext.Users.Where(u => con.UserIds.Contains(new Guid(u.Id))).ToList();
                 var dto = _conversationConverter.ConvertToDto(con, users);
                 resultList.Add(dto);
             }
@@ -108,6 +134,22 @@ namespace Lendship.Backend.Services
             }
 
             return resultList;
+        }
+
+        public int GetNewMessageCount()
+        {
+            var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var conIds = _dbContext.UsersAndConversations
+                            .Where(x => x.UserId == signedInUserId)
+                            .Select(x => x.ConversationId)
+                            .ToList();
+
+            return _dbContext.Conversation
+                        .Include(c => c.Messages)
+                        .Include(c => c.Advertisement)
+                        .Where(c => conIds.Contains(c.Id) && c.Messages.Any(m => m.New))
+                        .Count();
         }
     }
 }

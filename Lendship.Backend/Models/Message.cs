@@ -19,6 +19,9 @@ namespace Lendship.Backend.Models
         public string Content { get; set; }
 
         [Required]
+        public bool New { get; set; }
+
+        [Required]
         public DateTime Date { get; set; }
     }
 }
