@@ -12,5 +12,9 @@ namespace Lendship.Backend.Interfaces.Services
         void UpdateReservation(ReservationDto reservation);
 
         IEnumerable<ReservationDto> GetReservationsForUser();
+
+        void UpdateReservationState(int reservationId, string state);
+
+        void AdmitReservation(int reservationId);
     }
 }
