@@ -88,7 +88,7 @@ namespace Lendship.Backend.Controllers
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpPut]
-        [Route("{userId}/{closedGroupId}")]
+        [Route("add/{userId}/{closedGroupId}")]
         public virtual IActionResult AddUserToClosedGroup([FromRoute][Required] string userId, [FromRoute][Required] int closedGroupId)
         {
             try
@@ -113,7 +113,7 @@ namespace Lendship.Backend.Controllers
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpPut]
-        [Route("{userId}/{closedGroupId}")]
+        [Route("remove/{userId}/{closedGroupId}")]
         public virtual IActionResult RemoveUserToClosedGroup([FromRoute][Required] string userId, [FromRoute][Required] int closedGroupId)
         {
             try
