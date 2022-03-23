@@ -10,6 +10,13 @@ SwaggerHub: https://app.swaggerhub.com/apis/EszterBajmoczy/Lendship.Backend/1.0.
 
 # Haladási napló:
 
+2022.03.13:
+- Notification / History implementation/modification
+  - kereshető a hirdetés címe alapján
+- fix reservation state update
+- about us information (appsettings.json-ben)
+- modify closed group
+
 2022.03.16:
 - JustInMind UI tervek
 - UI tervezés során felmerülő hiányosságok:
