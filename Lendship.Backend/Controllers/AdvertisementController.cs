@@ -132,14 +132,15 @@ namespace Lendship.Backend.Controllers
         /// <param name="category">advertisement categories</param>
         /// <param name="city">location of the advertisements</param>
         /// <param name="distance">distance from the city or from the users location</param>
+        /// <param name="word">word in title or description</param>
         /// <param name="sortBy">sorting the results</param>
         /// <response code="200">search results</response>
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpGet]
-        public virtual IActionResult GetAdvertisements([FromQuery]string advertisementType, [FromQuery]bool credit, [FromQuery]bool cash, [FromQuery]string category, [FromQuery]string city, [FromQuery]int distance, [FromQuery]string sortBy)
+        public virtual IActionResult GetAdvertisements([FromQuery]string advertisementType, [FromQuery]bool credit, [FromQuery]bool cash, [FromQuery]string category, [FromQuery]string city, [FromQuery]int distance, [FromQuery] string word, [FromQuery]string sortBy)
         {
-            var advertisements = _adService.GetAdvertisements(advertisementType, credit, cash, category, city, distance, sortBy);
+            var advertisements = _adService.GetAdvertisements(advertisementType, credit, cash, category, city, distance, word, sortBy);
             return new ObjectResult(JsonConvert.SerializeObject(advertisements));
         }
 
@@ -153,17 +154,18 @@ namespace Lendship.Backend.Controllers
         /// <param name="category">advertisement categories</param>
         /// <param name="city">location of the advertisements</param>
         /// <param name="distance">distance of the city or from the users location</param>
+        /// <param name="word">word in title or description</param>
         /// <param name="sortBy">sorting the results</param>
         /// <response code="200">search results matching criteria</response>
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpGet]
         [Route("own")]
-        public virtual IActionResult GetOwnAdvertisements([FromQuery]string advertisementType, [FromQuery]bool credit, [FromQuery]bool cash, [FromQuery]string category, [FromQuery]string city, [FromQuery]int distance, [FromQuery]string sortBy)
+        public virtual IActionResult GetOwnAdvertisements([FromQuery]string advertisementType, [FromQuery]bool credit, [FromQuery]bool cash, [FromQuery]string category, [FromQuery]string city, [FromQuery]int distance, [FromQuery] string word, [FromQuery]string sortBy)
         {
             try
             {
-                var advertisements = _adService.GetUsersAdvertisements(advertisementType, credit, cash, category, city, distance, sortBy);
+                var advertisements = _adService.GetUsersAdvertisements(advertisementType, credit, cash, category, city, distance, word, sortBy);
                 return new ObjectResult(JsonConvert.SerializeObject(advertisements));
             }
             catch (Exception e)
@@ -183,17 +185,18 @@ namespace Lendship.Backend.Controllers
         /// <param name="category">advertisement categories</param>
         /// <param name="city">location of the advertisements</param>
         /// <param name="distance">distance of the city or from the users location</param>
+        /// <param name="word">word in title or description</param>
         /// <param name="sortBy">sorting the results</param>
         /// <response code="200">search results matching criteria</response>
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpGet]
         [Route("saved")]
-        public virtual IActionResult GetSavedAdvertisements([FromQuery]string advertisementType, [FromQuery]bool credit, [FromQuery]bool cash, [FromQuery]string category, [FromQuery]string city, [FromQuery]int distance, [FromQuery]string sortBy)
+        public virtual IActionResult GetSavedAdvertisements([FromQuery]string advertisementType, [FromQuery]bool credit, [FromQuery]bool cash, [FromQuery]string category, [FromQuery]string city, [FromQuery]int distance, [FromQuery] string word, [FromQuery]string sortBy)
         {
             try
             {
-                var advertisements = _adService.GetSavedAdvertisements(advertisementType, credit, cash, category, city, distance, sortBy);
+                var advertisements = _adService.GetSavedAdvertisements(advertisementType, credit, cash, category, city, distance, word, sortBy);
                 return new ObjectResult(JsonConvert.SerializeObject(advertisements));
             }
             catch (Exception e)
