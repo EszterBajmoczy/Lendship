@@ -38,13 +38,14 @@ namespace Lendship.Backend.Controllers
         /// get all notification for the user
         /// </summary>
         /// <remarks>Gets all notification for the user</remarks>
+        /// <param name="searchInAdvertisementTitle">search for advertisement</param>
         /// <response code="200">users notifications</response>
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpGet]
-        public virtual IActionResult GetAllNotifications()
+        public virtual IActionResult GetAllNotifications([FromQuery] string searchInAdvertisementTitle)
         {
-            var notifications = _notificationService.GetAllNotifications();
+            var notifications = _notificationService.GetAllNotifications(searchInAdvertisementTitle);
             return new ObjectResult(JsonConvert.SerializeObject(notifications));
         }
 

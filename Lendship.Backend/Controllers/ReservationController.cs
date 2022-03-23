@@ -108,5 +108,30 @@ namespace Lendship.Backend.Controllers
                 return this.BadRequest(e.Message);
             }
         }
+
+        /// <summary>
+        /// updates reservation's state
+        /// </summary>
+        /// <remarks>Update reservation</remarks>
+        /// <param name="reservationId">id of the reservation</param>
+        /// <param name="state">reservation state</param>
+        /// <response code="201">item updated</response>
+        /// <response code="400">bad request</response>
+        /// <response code="401"></response>
+        [HttpPost]
+        [Route("state")]
+        public virtual IActionResult UpdateReservationState([FromQuery][Required()] int reservationId, [FromQuery][Required()] string state)
+        {
+            try
+            {
+                _reservationService.UpdateReservationState(reservationId, state);
+                return StatusCode(200);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception at updating reservation: " + e.Message);
+                return this.BadRequest(e.Message);
+            }
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace Lendship.Backend.Interfaces.Services
     {
         void CreateNotification(string msg, Reservation reservation, string UserId);
 
-        IEnumerable<NotificationDTO> GetAllNotifications();
+        IEnumerable<NotificationDTO> GetAllNotifications(string searchInAdvertisementTitle);
 
         IEnumerable<NotificationDTO> GetNewNotifications();
 
