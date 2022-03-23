@@ -10,7 +10,7 @@ SwaggerHub: https://app.swaggerhub.com/apis/EszterBajmoczy/Lendship.Backend/1.0.
 
 # Haladási napló:
 
-2022.03.13:
+2022.03.23:
 - Notification / History implementation/modification
   - kereshető a hirdetés címe alapján
 - fix reservation state update
