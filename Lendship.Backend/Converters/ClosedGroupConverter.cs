@@ -20,24 +20,22 @@ namespace Lendship.Backend.Converters
 
         public ClosedGroupDto ConvertToDto(ClosedGroup closedGroup, List<ApplicationUser> users)
         {
-            var userDtos = new List<UserDto>();
+            var userDtos = new List<string>();
 
             foreach (var user in users)
             {
-                //TODO evaulation
-                var userDto = _userConverter.ConvertToDto(user);
-                userDtos.Add(userDto);
+                userDtos.Add(user.Email);
             }
 
             return new ClosedGroupDto()
             {
                 Id = closedGroup.Id,
                 AdvertisementId = closedGroup.AdvertismentId,
-                Users = userDtos
+                UserEmails = userDtos
             };
         }
 
-        public ClosedGroup ConvertToEntity(ClosedGroupDto closedGroupDto, List<Guid> userIds)
+        public ClosedGroup ConvertToEntity(ClosedGroupDto closedGroupDto)
         {
             return new ClosedGroup()
             {

@@ -10,6 +10,6 @@ namespace Lendship.Backend.Interfaces.Converters
     {
         ClosedGroupDto ConvertToDto(ClosedGroup closedGroup, List<ApplicationUser> users);
 
-        ClosedGroup ConvertToEntity(ClosedGroupDto closedGroupDto, List<Guid> userIds);
+        ClosedGroup ConvertToEntity(ClosedGroupDto closedGroupDto);
     }
 }

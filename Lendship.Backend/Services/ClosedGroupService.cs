@@ -1,5 +1,6 @@
 ﻿using Lendship.Backend.Converters;
 using Lendship.Backend.DTO;
+using Lendship.Backend.Exceptions;
 using Lendship.Backend.Interfaces.Converters;
 using Lendship.Backend.Interfaces.Services;
 using Lendship.Backend.Models;
@@ -47,40 +48,54 @@ namespace Lendship.Backend.Services
         public void CreateClosedGroup(ClosedGroupDto closedGroup)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var guid = new Guid(signedInUserId);
 
-            var userIds = closedGroup
-                             .Users
-                             .Where(x => x.Id.HasValue)
-                             .Select(x => x.Id.GetValueOrDefault())
-                             .ToList();
+            var userIds = _dbContext.Users
+                        .Where(u => closedGroup.UserEmails.Contains(u.Email))
+                        .Select(u => u.Id)
+                        .ToList();
 
-            if (!userIds.Contains(guid))
+            if (!userIds.Contains(signedInUserId))
             {
-                userIds.Add(guid);
+                userIds.Add(signedInUserId);
             }
 
-            var cGroup = _cgConverter.ConvertToEntity(closedGroup, userIds);
-
+            var cGroup = _cgConverter.ConvertToEntity(closedGroup);
             _dbContext.ClosedGroups.Add(cGroup);
+            _dbContext.SaveChanges();
+
+            foreach (var userId in userIds)
+            {
+                var relation = new UsersAndClosedGroups()
+                {
+                    UserId = userId,
+                    ClosedGroupId = cGroup.Id
+                };
+                _dbContext.UsersAndClosedGroups.Add(relation);
+            }
+
             _dbContext.SaveChanges();
         }
 
-        public void AddUserToClosedGroup(string userId, int closedGroupId)
+        public void AddUserToClosedGroup(string email, int closedGroupId)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var validUser = _dbContext.Users.Any(x => x.Id == userId);
+            var user = _dbContext.Users
+                .Where(x => x.Email == email)
+                .FirstOrDefault();
             var validModification = _dbContext.UsersAndClosedGroups
                                 .Any(x => x.ClosedGroupId == closedGroupId && x.UserId == signedInUserId);
 
-            if(!validUser || !validModification)
+            if(!validModification)
             {
                 throw new InvalidOperationException("Modification not allowed.");
+            } else if (user == null)
+            {
+                throw new UserNotFoundException("User with the email address not found: " + email);
             }
 
             var newRelation = new UsersAndClosedGroups()
             {
-                UserId = userId,
+                UserId = user.Id,
                 ClosedGroupId = closedGroupId
             };
 
@@ -88,20 +103,26 @@ namespace Lendship.Backend.Services
             _dbContext.SaveChanges();
         }
 
-        public void RemoveUserToClosedGroup(string userId, int closedGroupId)
+        public void RemoveUserToClosedGroup(string email, int closedGroupId)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var validUser = _dbContext.Users.Any(x => x.Id == userId);
+            var user = _dbContext.Users
+                .Where(x => x.Email == email)
+                .FirstOrDefault();
             var validModification = _dbContext.UsersAndClosedGroups
                                 .Any(x => x.ClosedGroupId == closedGroupId && x.UserId == signedInUserId);
 
             var entity = _dbContext.UsersAndClosedGroups
-                                    .Where(u => u.ClosedGroupId == closedGroupId && u.UserId == userId)
+                                    .Where(u => u.ClosedGroupId == closedGroupId && u.UserId == user.Id)
                                     .FirstOrDefault();
 
-            if (!validUser || !validModification)
+            if (!validModification)
             {
                 throw new InvalidOperationException("Modification not allowed.");
+            }
+            else if (user == null)
+            {
+                throw new UserNotFoundException("User with the email address not found: " + email);
             }
 
             _dbContext.UsersAndClosedGroups.Remove(entity);
