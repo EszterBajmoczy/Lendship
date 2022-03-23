@@ -9,6 +9,15 @@ SwaggerHub: https://app.swaggerhub.com/apis/EszterBajmoczy/Lendship.Backend/1.0.
 
 
 # Haladási napló:
+
+2022.03.16:
+- JustInMind UI tervek
+- UI tervezés során felmerülő hiányosságok:
+  - Szabadszavas keresés
+  - History - foglalások / teljesült foglalások
+  - Céges kontakt, about us page - legyen adatbázisba mentve vagy webbe beégetve?
+  - Closed group hozzáadása - email alapján kellene lennie, ne listázza ki az embereket vagy igen? - akkor kellene azoknak a listázására is lekérdezés 
+
 2021.11.15:
 - Implement refresh token (issue 6)
 - Cancel token with Redis db (issue 1)
