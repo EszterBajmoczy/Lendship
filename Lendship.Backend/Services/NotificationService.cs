@@ -28,11 +28,11 @@ namespace Lendship.Backend.Services
             _notificationConverter = new NotificationConverter();
         }
 
-        public IEnumerable<NotificationDTO> GetAllNotifications()
+        public IEnumerable<NotificationDTO> GetAllNotifications(string searchInAdvertisementTitle)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             return _dbContext.Notifications
-                        .Where(n => n.UserId == signedInUserId)
+                        .Where(n => n.UserId == signedInUserId && (searchInAdvertisementTitle == null || n.AdvertisementTitle.Contains(searchInAdvertisementTitle)))
                         .Select(n => _notificationConverter.ConvertToDto(n))
                         .ToList();
         }
