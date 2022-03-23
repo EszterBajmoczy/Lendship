@@ -40,12 +40,12 @@ namespace Lendship.Backend.DTO
         public int AdvertisementId { get; set; }
 
         /// <summary>
-        /// Gets or Sets Users
+        /// Gets or Sets the UserEmails
         /// </summary>
         [Required]
         
-        [DataMember(Name="users")]
-        public List<UserDto> Users { get; set; }
+        [DataMember(Name="userEmails")]
+        public List<string> UserEmails { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -57,7 +57,7 @@ namespace Lendship.Backend.DTO
             sb.Append("class ClosedGroup {\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  AdvertisementId: ").Append(AdvertisementId).Append("\n");
-            sb.Append("  Users: ").Append(Users).Append("\n");
+            sb.Append("  UserEmails: ").Append(UserEmails).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -105,9 +105,9 @@ namespace Lendship.Backend.DTO
                     AdvertisementId.Equals(other.AdvertisementId)
                 ) && 
                 (
-                    Users == other.Users ||
-                    Users != null &&
-                    Users.SequenceEqual(other.Users)
+                    UserEmails == other.UserEmails ||
+                    UserEmails != null &&
+                    UserEmails.SequenceEqual(other.UserEmails)
                 );
         }
 
@@ -125,8 +125,8 @@ namespace Lendship.Backend.DTO
                     hashCode = hashCode * 59 + Id.GetHashCode();
                     if (AdvertisementId != null)
                     hashCode = hashCode * 59 + AdvertisementId.GetHashCode();
-                    if (Users != null)
-                    hashCode = hashCode * 59 + Users.GetHashCode();
+                    if (UserEmails != null)
+                    hashCode = hashCode * 59 + UserEmails.GetHashCode();
                 return hashCode;
             }
         }
