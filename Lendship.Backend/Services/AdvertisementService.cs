@@ -116,7 +116,7 @@ namespace Lendship.Backend.Services
             _dbContext.SaveChanges();
         }
 
-        public IEnumerable<AdvertisementDto> GetAdvertisements(string advertisementType, bool creditPayment, bool cashPayment, string category, string city, int distance, string sortBy)
+        public IEnumerable<AdvertisementDto> GetAdvertisements(string advertisementType, bool creditPayment, bool cashPayment, string category, string city, int distance, string word, string sortBy)
         {
             //TODO query string
             var resultList = new List<AdvertisementDto>();
@@ -135,7 +135,7 @@ namespace Lendship.Backend.Services
             return resultList;
         }
 
-        public IEnumerable<AdvertisementDto> GetUsersAdvertisements(string advertisementType, bool creditPayment, bool cashPayment, string category, string city, int distance, string sortBy)
+        public IEnumerable<AdvertisementDto> GetUsersAdvertisements(string advertisementType, bool creditPayment, bool cashPayment, string category, string city, int distance, string word, string sortBy)
         {
             //TODO query string
             var resultList = new List<AdvertisementDto>();
@@ -213,7 +213,7 @@ namespace Lendship.Backend.Services
             }
         }
 
-        private List<Advertisement> FilterAdvertisments(List<Advertisement> ads, string advertisementType, bool creditPayment, bool cashPayment, string category, string city, int distance, string sortBy)
+        private List<Advertisement> FilterAdvertisments(List<Advertisement> ads, string advertisementType, bool creditPayment, bool cashPayment, string category, string city, int distance, string word, string sortBy)
         {
             var result = ads;
             //TODO advertisemnetType!!
@@ -236,6 +236,11 @@ namespace Lendship.Backend.Services
                 ads = ads.Where(a => a.Category.Name == category).ToList();
             }
 
+            if (word != null)
+            {
+                ads = ads.Where(a => a.Title.Contains(word) || a.Description.Contains(word)).ToList();
+            }
+
             //TODO city and distance!!
 
             switch (sortBy)
@@ -246,8 +251,8 @@ namespace Lendship.Backend.Services
                 case "Credit":
                     ads = ads.OrderBy(a => a.Credit).ToList();
                     break;
-                case "Category":
-                    ads = ads.OrderBy(a => a.Category.Name).ToList();
+                case "Creation":
+                    ads = ads.OrderBy(a => a.Creation).ToList();
                     break;
                 default:
                     break;
