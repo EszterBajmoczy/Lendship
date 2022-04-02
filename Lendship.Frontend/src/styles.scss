@@ -1,2 +1,37 @@
 /* You can add global styles to this file, and also import other style files */
+$primary: #0D484A;
+$secondary: #282828;
+$success: #A1D651;
+$danger: #9E3025;
+$info: #1F9B94;
+$grey: #ffffff8c;
+
 @import "~bootstrap/scss/bootstrap";
+
+.rounded-circle {
+  margin-inline-end: 0.5em;
+}
+
+.nav-item {
+  padding-inline: 1em;
+}
+
+.navbar-dark .navbar-nav .nav-link.active {
+  color: #A1D651;
+}
+.background-d {
+  background-color: $secondary;
+}
+
+.footer {
+  background-color: $secondary;
+}
+
+.fa-globe {
+  color: $grey;
+}
+
+.fa-facebook-square {
+  color: $grey;
+}
+
