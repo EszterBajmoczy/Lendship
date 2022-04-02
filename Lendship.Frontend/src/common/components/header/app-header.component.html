@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-dark background-d " >
-  <div class="container-fluid col-lg-8 space-between">
+  <div class="container-fluid col-lg-10 space-between">
     <a class="navbar-brand" href="#">
       <img src="assets/img/Lendship_logo.png" width="114.4px" height="35.2px" alt="" class="d-inline-block">
     </a>
@@ -8,20 +8,20 @@
     </button>
     <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
       <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
+        <li class="nav-item" >
+          <a class="nav-link home-button" [routerLinkActive]="['active']" aria-current="page" [routerLink]="['home']">Home</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Advertisements</a>
+        <li class="nav-item" >
+          <a class="nav-link advertisements-button" [routerLinkActive]="['active']" [routerLink]="['advertisements']">Advertisements</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Reservations</a>
+        <li class="nav-item" >
+          <a class="nav-link reservations-button" [routerLinkActive]="['active']" [routerLink]="['reservations']">Reservations</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Messages</a>
+        <li class="nav-item" >
+          <a class="nav-link msg-button" [routerLinkActive]="['active']" [routerLink]="['messages']">Messages</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">
+        <li class="nav-item" >
+          <a class="nav-link login-button" [routerLinkActive]="['active']" [routerLink]="['login']" onclick="myFunction()">
             <i class="fa fa-user rounded-circle" width="30" height="30" ></i>
             Login
           </a>
