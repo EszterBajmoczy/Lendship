@@ -1,12 +1,5 @@
-/* You can add global styles to this file, and also import other style files */
-$primary: #0D484A;
-$secondary: #282828;
-$success: #A1D651;
-$danger: #9E3025;
-$info: #1F9B94;
-$grey: #ffffff8c;
-
 @import "~bootstrap/scss/bootstrap";
+@import "src/styles/colors.scss";
 
 .rounded-circle {
   margin-inline-end: 0.5em;
@@ -20,18 +13,25 @@ $grey: #ffffff8c;
   color: #A1D651;
 }
 .background-d {
-  background-color: $secondary;
+  background-color: $color-secondary;
 }
 
 .footer {
-  background-color: $secondary;
+  background-color: $color-secondary;
 }
 
 .fa-globe {
-  color: $grey;
+  color: $color-grey;
 }
 
 .fa-facebook-square {
-  color: $grey;
+  color: $color-grey;
 }
 
+.fa-right-from-bracket {
+  color: white;
+}
+
+body {
+  background-color: $color-primary;
+}
