@@ -2,6 +2,7 @@
 using Lendship.Backend.DTO.Authentication;
 using Lendship.Backend.DTO.Authentication.Authentication;
 using Lendship.Backend.Interfaces.Services;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
