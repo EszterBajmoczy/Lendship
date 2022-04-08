@@ -1,0 +1,41 @@
+<div class="container signIn col-lg-6 d-flex justify-content-center">
+  <div class="container px-lg-5">
+    <h1 class="m-4 text-center">Sign in</h1>
+    <form class="align-items-start m-4" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <span [textContent]="mymsg"></span>
+      <div class="d-flex justify-content-between mt-4">
+        <label class="col-lg-4" for="email">Email address:</label>
+        <input id="email" type="text" formControlName="email" placeholder="Email address">
+      </div>
+      <div class="error mb-4">
+        <div class="d-flex justify-content-end" *ngIf="!email?.valid && (email?.dirty || email?.touched)">
+          <div [hidden]="!email?.errors?.['required']">
+            <p class="form-error m-0">Email is required.</p>
+          </div>
+          <div [hidden]="!email?.errors?.['email']">
+            <p class="form-error m-0">Not valid email.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <label class="col-lg-4" for="password">Password:</label>
+        <input id="password" type="password" formControlName="password" placeholder="Password">
+      </div>
+      <div class="error mb-4">
+        <div class="error d-flex justify-content-end" *ngIf="!password?.valid && (password?.dirty || password?.touched)">
+          <div [hidden]="!password?.errors?.['required']">
+            <p class="form-error m-0">Password is required.</p>
+          </div>
+          <div [hidden]="!password?.errors?.['minlength']">
+            <p class="form-error m-0">Password must be minimum 6 charachter long.</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="d-flex justify-content-center mt-4">
+        <button class="btn btn-info" type="submit" >Sign in</button>
+      </p>
+    </form>
+  </div>
+</div>

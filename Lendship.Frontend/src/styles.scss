@@ -1,0 +1,37 @@
+@import "~bootstrap/scss/bootstrap";
+@import "src/styles/colors.scss";
+
+.rounded-circle {
+  margin-inline-end: 0.5em;
+}
+
+.nav-item {
+  padding-inline: 1em;
+}
+
+.navbar-dark .navbar-nav .nav-link.active {
+  color: #A1D651;
+}
+.background-d {
+  background-color: $color-secondary;
+}
+
+.footer {
+  background-color: $color-secondary;
+}
+
+.fa-globe {
+  color: $color-grey;
+}
+
+.fa-facebook-square {
+  color: $color-grey;
+}
+
+.fa-right-from-bracket {
+  color: white;
+}
+
+body {
+  background-color: $color-primary;
+}

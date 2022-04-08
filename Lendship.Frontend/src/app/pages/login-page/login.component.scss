@@ -1,0 +1,38 @@
+@import "src/styles/colors.scss";
+@import "src/styles/buttons";
+
+.signIn {
+  background-color: rgba(40, 40, 40, 0.4);
+  padding-block: 2em;
+  color: $color-success;
+}
+
+label {
+  color: white;
+}
+
+input {
+  width: 70%;
+}
+
+.form-error {
+  color: $color-danger;
+}
+
+.error {
+  min-height: 24px;
+}
+
+//set placeholder colors
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: $color-info;
+  opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: $color-info;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+  color: $color-info;
+}
