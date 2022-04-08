@@ -124,7 +124,7 @@ namespace Lendship.Backend.Services
             var ads = _dbContext.Advertisements
                         .ToList();
 
-            ads = FilterAdvertisments(ads, advertisementType, creditPayment, cashPayment, category, city, distance, sortBy);
+            ads = FilterAdvertisments(ads, advertisementType, creditPayment, cashPayment, category, city, distance, word, sortBy);
 
             foreach (var ad in ads)
             {
@@ -145,7 +145,7 @@ namespace Lendship.Backend.Services
                         .Where(a => a.User.Id == signedInUserId)
                         .ToList();
 
-            ads = FilterAdvertisments(ads, advertisementType, creditPayment, cashPayment, category, city, distance, sortBy);
+            ads = FilterAdvertisments(ads, advertisementType, creditPayment, cashPayment, category, city, distance, word, sortBy);
 
             foreach (var ad in ads)
             {
@@ -156,7 +156,7 @@ namespace Lendship.Backend.Services
             return resultList;
         }
 
-        public IEnumerable<AdvertisementDto> GetSavedAdvertisements(string advertisementType, bool creditPayment, bool cashPayment, string category, string city, int distance, string sortBy)
+        public IEnumerable<AdvertisementDto> GetSavedAdvertisements(string advertisementType, bool creditPayment, bool cashPayment, string category, string city, int distance, string word, string sortBy)
         {
             //TODO query string
             var resultList = new List<AdvertisementDto>();
@@ -168,7 +168,7 @@ namespace Lendship.Backend.Services
                 .Where(a => savedAds.Contains(a.Id))
                 .ToList();
 
-            advertisements = FilterAdvertisments(advertisements, advertisementType, creditPayment, cashPayment, category, city, distance, sortBy);
+            advertisements = FilterAdvertisments(advertisements, advertisementType, creditPayment, cashPayment, category, city, distance, word, sortBy);
 
             foreach(var ad in advertisements)
             {
