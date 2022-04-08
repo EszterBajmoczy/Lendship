@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark background-d " >
   <div class="container-fluid col-lg-10 space-between">
     <a class="navbar-brand" href="#">
-      <img src="assets/img/Lendship_logo.png" width="114.4px" height="35.2px" alt="" class="d-inline-block">
+      <img src="../../../../assets/img/Lendship_logo.png" width="114.4px" height="35.2px" alt="" class="d-inline-block">
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -21,9 +21,14 @@
           <a class="nav-link msg-button" [routerLinkActive]="['active']" [routerLink]="['messages']">Messages</a>
         </li>
         <li class="nav-item" >
-          <a class="nav-link login-button" [routerLinkActive]="['active']" [routerLink]="['login']" onclick="myFunction()">
-            <i class="fa fa-user rounded-circle" width="30" height="30" ></i>
-            Login
+          <a class="nav-link login-button" [routerLinkActive]="['active']" [routerLink]="[nameUrl]">
+            <i class="fa fa-user rounded-circle" width="30" height="30"></i>
+            <span [textContent]="name"></span>
+          </a>
+        </li>
+        <li *ngIf="isLoggedIn" class="nav-item" >
+          <a class="nav-link login-button" [routerLink]="['home']" (click)="logout()">
+            <span>Logout</span>
           </a>
         </li>
       </ul>
