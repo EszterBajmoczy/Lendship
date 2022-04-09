@@ -72,9 +72,13 @@ namespace Lendship.Backend.Services
 
         public List<ImageDTO> GetImages(int advertisementId)
         {
-            var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var imgLocation = _configuration.GetSection("Image").GetValue("LocationFolder", "Resources/Images");
-            var directory = Path.Combine(imgLocation, signedInUserId, advertisementId.ToString());
+            var userId = _dbContext.Advertisements
+                .Include(a => a.User)
+                .Where(a => a.Id == advertisementId)
+                .Select(a => a.User.Id)
+                .FirstOrDefault();
+            var imgLocation = _configuration.GetSection("Image").GetValue("LocationFolder", "Resources\\Images");
+            var directory = Path.Combine(imgLocation, userId, advertisementId.ToString());
 
             List<ImageDTO> result = new List<ImageDTO>();
 

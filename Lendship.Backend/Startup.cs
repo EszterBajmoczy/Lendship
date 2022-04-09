@@ -162,6 +162,7 @@ namespace Lendship.Backend
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
             app.UseRouting();
 
