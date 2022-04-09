@@ -5,5 +5,6 @@ export interface Advertisement {
   credit: number,
   latitude: number,
   longitude: number,
-  location: string
+  location: string,
+  imageLocation: string
 }
