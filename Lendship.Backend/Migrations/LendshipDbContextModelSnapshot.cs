@@ -56,6 +56,9 @@ namespace Lendship.Backend.Migrations
                     b.Property<int>("EvaluationAsLenderCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("ImageLocation")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("Latitude")
                         .HasColumnType("decimal(8,6)");
 
@@ -328,6 +331,27 @@ namespace Lendship.Backend.Migrations
                     b.HasIndex("UserToId");
 
                     b.ToTable("EvaluationLenders");
+                });
+
+            modelBuilder.Entity("Lendship.Backend.Models.ImageLocation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AdvertisementId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdvertisementId");
+
+                    b.ToTable("ImageLocations");
                 });
 
             modelBuilder.Entity("Lendship.Backend.Models.Message", b =>
@@ -698,6 +722,15 @@ namespace Lendship.Backend.Migrations
                     b.Navigation("UserTo");
                 });
 
+            modelBuilder.Entity("Lendship.Backend.Models.ImageLocation", b =>
+                {
+                    b.HasOne("Lendship.Backend.Models.Advertisement", null)
+                        .WithMany("ImageLocations")
+                        .HasForeignKey("AdvertisementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Lendship.Backend.Models.Message", b =>
                 {
                     b.HasOne("Lendship.Backend.Models.Conversation", null)
@@ -777,6 +810,11 @@ namespace Lendship.Backend.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Lendship.Backend.Models.Advertisement", b =>
+                {
+                    b.Navigation("ImageLocations");
                 });
 
             modelBuilder.Entity("Lendship.Backend.Models.Conversation", b =>

@@ -139,6 +139,7 @@ namespace Lendship.Backend.Controllers
         [Route("profile")]
         public virtual IActionResult GetImage()
         {
+            //deprecated
             try
             {
                 var img = _imgService.GetImage();
@@ -162,6 +163,7 @@ namespace Lendship.Backend.Controllers
         [Route("{advertisementId}")]
         public virtual IActionResult GetImges([FromRoute][Required] int advertisementId)
         {
+            //deprecated
             try
             {
                 var imges = _imgService.GetImages(advertisementId);

@@ -54,6 +54,7 @@ namespace Lendship.Backend.Converters
                 IsPublic = ad.IsPublic,
                 Category = ad.Category.Name,
                 Availabilities = availabilityDtos,
+                ImageLocations = ad.ImageLocations.Select(i => i.Location).ToList(),
                 Creation = ad.Creation
             };
         }

@@ -38,6 +38,8 @@ namespace Lendship.Backend.Models
 
         public DbSet<Notification> Notifications { get; set; }
 
+        public DbSet<ImageLocation> ImageLocations { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

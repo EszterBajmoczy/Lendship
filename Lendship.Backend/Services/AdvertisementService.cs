@@ -36,6 +36,7 @@ namespace Lendship.Backend.Services
             var advertisement = _dbContext.Advertisements
                 .Include(a => a.User)
                 .Include(a => a.Category)
+                .Include(a => a.ImageLocations)
                 .Where(a => a.Id == advertisementId)
                 .FirstOrDefault();
             var availabilities = _dbContext.Availabilites.Where(a => a.Advertisement.Id == advertisementId).ToList();
@@ -122,6 +123,7 @@ namespace Lendship.Backend.Services
             var resultList = new List<AdvertisementDto>();
 
             var ads = _dbContext.Advertisements
+                        .Include(a => a.ImageLocations)
                         .ToList();
 
             ads = FilterAdvertisments(ads, advertisementType, creditPayment, cashPayment, category, city, distance, word, sortBy);
@@ -142,6 +144,7 @@ namespace Lendship.Backend.Services
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var ads = _dbContext.Advertisements
+                        .Include(a => a.ImageLocations)
                         .Where(a => a.User.Id == signedInUserId)
                         .ToList();
 
@@ -165,6 +168,7 @@ namespace Lendship.Backend.Services
 
             var savedAds = _dbContext.SavedAdvertisements.Where(sa => sa.UserId == signedInUserId).Select(a => a.AdvertisementId).ToList();
             var advertisements = _dbContext.Advertisements
+                .Include(a => a.ImageLocations)
                 .Where(a => savedAds.Contains(a.Id))
                 .ToList();
 

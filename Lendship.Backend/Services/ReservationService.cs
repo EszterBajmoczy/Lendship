@@ -53,6 +53,7 @@ namespace Lendship.Backend.Services
 
             var reservations = _dbContext.Reservations
                         .Include(r => r.Advertisement)
+                        .Include(a => a.Advertisement.ImageLocations)
                         .ToList();
 
             foreach (var res in reservations)

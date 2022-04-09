@@ -23,4 +23,10 @@
     <PackageReference Include="System.Collections" Version="4.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\profile\8b1b52a5-37df-4ae4-83d1-1f599566b073\" />
+    <Folder Include="wwwroot\images\profile\g163f3c2-ae68-42b9-b4cf-0dd9ce49b36e\" />
+    <Folder Include="wwwroot\images\profile\f163f3c2-ae68-48b9-b4cf-0dd9ce49b36e\" />
+  </ItemGroup>
+
 </Project>

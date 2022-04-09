@@ -18,6 +18,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using Lendship.Backend.Models;
 
 namespace Lendship.Backend.DTO
 { 
@@ -124,6 +125,14 @@ namespace Lendship.Backend.DTO
         public List<AvailabilityDto> Availabilities { get; set; }
 
         /// <summary>
+        /// Gets or Sets ImageLocations
+        /// </summary>
+        [Required]
+
+        [DataMember(Name = "imageLocations")]
+        public List<string> ImageLocations { get; set; }
+
+        /// <summary>
         /// Gets or Sets Creation
         /// </summary>
         [Required]
@@ -153,10 +162,11 @@ namespace Lendship.Backend.DTO
             sb.Append("  Category: ").Append(Category).Append("\n");
             sb.Append("  Availabilities: ").Append(Availabilities).Append("\n");
             sb.Append("  Creation: ").Append(Creation).Append("\n");
+            sb.Append("  ImageLocations: ").Append(ImageLocations).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
-
+        
         /// <summary>
         /// Returns the JSON string presentation of the object
         /// </summary>
@@ -253,13 +263,19 @@ namespace Lendship.Backend.DTO
                     Availabilities == other.Availabilities ||
                     Availabilities != null &&
                     Availabilities.SequenceEqual(other.Availabilities)
-                ) && 
+                ) &&
+                (
+                    ImageLocations == other.ImageLocations ||
+                    ImageLocations != null &&
+                    ImageLocations.SequenceEqual(other.ImageLocations)
+                ) &&
                 (
                     Creation == other.Creation ||
                     Creation != null &&
                     Creation.Equals(other.Creation)
                 );
         }
+        
 
         /// <summary>
         /// Gets the hash code
@@ -297,7 +313,9 @@ namespace Lendship.Backend.DTO
                     hashCode = hashCode * 59 + Category.GetHashCode();
                     if (Availabilities != null)
                     hashCode = hashCode * 59 + Availabilities.GetHashCode();
-                    if (Creation != null)
+                    if (ImageLocations != null)
+                    hashCode = hashCode * 59 + ImageLocations.GetHashCode();
+                if (Creation != null)
                     hashCode = hashCode * 59 + Creation.GetHashCode();
                 return hashCode;
             }
