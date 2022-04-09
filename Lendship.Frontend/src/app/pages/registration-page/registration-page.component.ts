@@ -2,17 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { PasswordMatchingValidator} from "../../shared/password-matching";
 import { FormBuilder, Validators} from "@angular/forms";
 import { AuthService} from "../../services/auth/auth.service";
-import { Router} from "@angular/router";
+import { LocationValidator} from "../../shared/valid-location";
+import { GeocodingService} from "../../services/geocoding/geocoding.service";
 
 @Component({
   selector: 'app-registration-page',
   templateUrl: './registration-page.component.html',
   styleUrls: ['./registration-page.component.scss'],
-  providers: [AuthService]
+  providers: [AuthService, LocationValidator]
 })
 export class RegistrationPageComponent implements OnInit {
 
-  constructor(private formBuilder: FormBuilder, private authService: AuthService, private router: Router) { }
+  constructor(private formBuilder: FormBuilder, private authService: AuthService, private locationValidator: LocationValidator, private geoCodingService: GeocodingService) { }
 
   ngOnInit(): void {
   }
@@ -20,7 +21,9 @@ export class RegistrationPageComponent implements OnInit {
   registrationForm = this.formBuilder.group({
     name: ['', [Validators.required]],
     email: ['', [Validators.required, Validators.email]],
-    location: ['', [Validators.required]],
+    location: ['', [Validators.required], [this.locationValidator.exists.bind(this.locationValidator)]],
+    latitude: [],
+    longitude: [],
     password: ['', [Validators.required, Validators.minLength(6), Validators.pattern(new RegExp(/^(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&+="!_()']).*$/i))]],
     confirmPassword: ['', [Validators.required, Validators.minLength(6), Validators.pattern(new RegExp(/^(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&+="!_()']).*$/i))]],
   }, { validators: PasswordMatchingValidator });
@@ -37,6 +40,14 @@ export class RegistrationPageComponent implements OnInit {
     return this.registrationForm.get("location");
   }
 
+  set latitude(value: number) {
+    this.registrationForm.get("latitude")?.setValue(value);
+  }
+
+  set longitude(value: number) {
+    this.registrationForm.get("longitude")?.setValue(value);
+  }
+
   get password() {
     return this.registrationForm.get("password");
   }
@@ -46,11 +57,17 @@ export class RegistrationPageComponent implements OnInit {
   }
 
   onSubmit(){
-    //TODO
     if(this.registrationForm.invalid){
       return;
     }
+    this.geoCodingService.getLatLong(this.registrationForm.get("location")?.value)
+      .subscribe(data => {
+        console.log("haho " + data);
+        this.latitude = data['latt'];
+        this.longitude = data['longt'];
 
-    this.authService.register(this.registrationForm.value);
+        this.authService.register(this.registrationForm.value);
+      })
+
   }
 }

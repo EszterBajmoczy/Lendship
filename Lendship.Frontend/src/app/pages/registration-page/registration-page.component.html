@@ -25,7 +25,7 @@
           <div [hidden]="!email?.errors?.['required']">
             <p class="form-error m-0">Email is required.</p>
           </div>
-          <div [hidden]="!email?.errors?.['email']">
+          <div [hidden]="email?.errors?.['required'] || !email?.errors?.['email']">
             <p class="form-error m-0">Not valid email.</p>
           </div>
         </div>
@@ -43,6 +43,9 @@
           <div [hidden]="!location?.errors?.['required']">
             <p class="form-error m-0">Location is required.</p>
           </div>
+          <div [hidden]="location?.errors?.['required'] || !location?.errors?.['locationValidator']">
+            <p class="form-error m-0">Invalid location.</p>
+          </div>
         </div>
       </div>
 
@@ -55,11 +58,11 @@
           <div [hidden]="!password?.errors?.['required']">
             <p class="form-error m-0">Password is required.</p>
           </div>
-          <div [hidden]="!password?.errors?.['minlength']">
+          <div [hidden]="password?.errors?.['required'] || !password?.errors?.['minlength']">
             <p class="form-error m-0">Password must be minimum 6 charachter long.</p>
           </div>
-          <div [hidden]="password?.errors?.['minlength'] && password?.errors?.['pattern']">
-            <p class="form-error m-0">Password must contain upper and lowcase letters, number, special character.</p>
+          <div [hidden]="password?.errors?.['minlength'] || password?.errors?.['required'] || password?.errors?.['pattern']">
+            <p class="form-error m-0">Password must contain uppercase, lowcase letters, number, special character.</p>
           </div>
         </div>
       </div>
@@ -73,10 +76,10 @@
           <div [hidden]="!confirmPassword?.errors?.['required']">
             <p class="form-error m-0">Password must be repeated.</p>
           </div>
-          <div [hidden]="!confirmPassword?.errors?.['minlength']">
+          <div [hidden]="confirmPassword?.errors?.['required'] || !confirmPassword?.errors?.['minlength']">
             <p class="form-error m-0">Password must be minimum 6 charachter long.</p>
           </div>
-          <div [hidden]="confirmPassword?.errors?.['minlength'] && confirmPassword?.errors?.['pattern']">
+          <div [hidden]="confirmPassword?.errors?.['minlength'] || confirmPassword?.errors?.['required'] || confirmPassword?.errors?.['pattern']">
             <p class="form-error m-0">Password must contain upper and lowcase letters, number, special character.</p>
           </div>
         </div>
