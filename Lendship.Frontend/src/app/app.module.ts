@@ -10,7 +10,6 @@ import { AppHeaderComponent} from "./components/common/header/app-header.compone
 import { AppFooterComponent} from "./components/common/footer/app-footer.componenet";
 import { LoginComponent } from './pages/login-page/login.component';
 import { RegistrationPageComponent } from "./pages/registration-page/registration-page.component";
-import { AdvertisementComponent } from './components/advertisement/advertisement.component';
 
 
 @NgModule({
@@ -21,7 +20,6 @@ import { AdvertisementComponent } from './components/advertisement/advertisement
         AppFooterComponent,
         LoginComponent,
         RegistrationPageComponent,
-        AdvertisementComponent
     ],
   imports: [
     BrowserModule,
