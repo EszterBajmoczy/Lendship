@@ -31,6 +31,8 @@ namespace Lendship.Backend.Authentication
 
         public int EvaluationAsLenderCount { get; set; }
 
+        public string ImageLocation { get; set; }
+
         [Required]
         public DateTime Registration { get; set; }
     }

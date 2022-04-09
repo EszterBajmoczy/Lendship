@@ -1,5 +1,6 @@
 ﻿using Lendship.Backend.Authentication;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -42,6 +43,6 @@ namespace Lendship.Backend.Models
         [Required]
         public DateTime Creation { get; set; }
 
-
+        public ICollection<ImageLocation> ImageLocations { get; set; }
     }
 }
