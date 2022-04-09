@@ -1,12 +1,6 @@
-﻿using Lendship.Backend.Authentication;
-using Lendship.Backend.DTO;
+﻿using Lendship.Backend.DTO;
 using Lendship.Backend.Interfaces.Converters;
 using Lendship.Backend.Models;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Lendship.Backend.Converters
 {

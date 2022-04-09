@@ -49,8 +49,8 @@ namespace Lendship.Backend.Controllers
                 UserName = model.Name,
                 Credit = 0,
                 EmailNotificationsEnabled = true,
-                Latitude = 3,
-                Longitude = 2,
+                Latitude = model.Latitude,
+                Longitude = model.Longitude,
                 Registration = DateTime.Now
             };
 

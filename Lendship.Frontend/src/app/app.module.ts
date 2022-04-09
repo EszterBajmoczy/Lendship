@@ -19,7 +19,7 @@ import { RegistrationPageComponent } from "./pages/registration-page/registratio
         AppHeaderComponent,
         AppFooterComponent,
         LoginComponent,
-        RegistrationPageComponent
+        RegistrationPageComponent,
     ],
   imports: [
     BrowserModule,

@@ -1,4 +1,4 @@
-import { Injectable, Output, EventEmitter } from '@angular/core';
+import { Injectable } from '@angular/core';
 import jwt_decode from 'jwt-decode';
 import { LocalStorageService} from "../localstorage/localstorage.service";
 
@@ -10,8 +10,8 @@ export class JWTTokenService {
   decodedToken: { [key: string]: string; } | undefined;
 
   constructor(private localstorageService: LocalStorageService) {
-    var token = localstorageService.get("ACCESS_TOKEN");
-    if(token != null && token != ""){
+    let token = localstorageService.get("ACCESS_TOKEN");
+    if(token !== null) {
       console.log("T: " +token);
       this.setToken(token);
     }

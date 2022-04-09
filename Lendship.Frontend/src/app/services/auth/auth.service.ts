@@ -3,7 +3,7 @@ import { LoginUser} from "../../models/login-user";
 import { RegisterUser} from "../../models/registration-user";
 import { LoginResponse} from "../../models/response-login";
 import { HttpClient, HttpErrorResponse} from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LocalStorageService} from "../localstorage/localstorage.service";
 import { JWTTokenService} from "../jwttoken/jwttoken.service";
@@ -14,7 +14,11 @@ import { Router } from '@angular/router';
 })
 export class AuthService {
 
-  constructor(private http: HttpClient, private localstorageService: LocalStorageService, private tokenService: JWTTokenService, private router: Router ) { }
+  constructor(
+    private http: HttpClient,
+    private localstorageService: LocalStorageService,
+    private tokenService: JWTTokenService,
+    private router: Router ) { }
 
   public login(userData: LoginUser) {
     const loginCall = this.http.post<LoginResponse>("https://localhost:44377/Authentication/login",userData)
@@ -32,23 +36,12 @@ export class AuthService {
   }
 
   public register(userData: RegisterUser) {
-    //TODO lat long
-    let s = new RegisterUser()
-    s.name = userData.name;
-    s.email = userData.email;
-    s.password = userData.password;
-    s.latitude = "47";
-    s.longitude = "18";
-
-
-    console.log(s);
-    const registerCall = this.http.post<LoginResponse>("https://localhost:44377/Authentication/register",s)
+    const registerCall = this.http.post<LoginResponse>("https://localhost:44377/Authentication/register",userData)
       .pipe(
         catchError(this.handleError));
 
     registerCall.subscribe(response => {
       this.saveLoginData(response)
-
       this.login(userData);
     });
   }
@@ -65,6 +58,14 @@ export class AuthService {
 
   public getUserName() : string {
     return this.tokenService.getUserName() ?? "";
+  }
+
+  public getAccessToken() : string {
+    return this.localstorageService.get("ACCESS_TOKEN") ?? "";
+  }
+
+  public getRefreshToken() : string {
+    return this.localstorageService.get("REFRESH_TOKEN") ?? "";
   }
 
   public logout() {
