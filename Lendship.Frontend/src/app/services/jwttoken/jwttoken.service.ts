@@ -11,13 +11,14 @@ export class JWTTokenService {
 
   constructor(private localstorageService: LocalStorageService) {
     var token = localstorageService.get("ACCESS_TOKEN");
-    if(token){
+    if(token != null && token != ""){
+      console.log("T: " +token);
       this.setToken(token);
     }
   }
 
   setToken(token: string) {
-    if (token) {
+    if (token != null && token != "") {
       this.jwtToken = token;
       this.decodedToken = jwt_decode(this.jwtToken);
     }
@@ -25,12 +26,10 @@ export class JWTTokenService {
 
   removeToken() {
     this.jwtToken = "";
-    console.log("token "+this.jwtToken)
-    this.decodedToken = undefined;
   }
 
   decodeToken() {
-    if (this.jwtToken) {
+    if (this.jwtToken != null && this.jwtToken != "") {
       this.decodedToken = jwt_decode(this.jwtToken);
     }
   }
@@ -40,18 +39,24 @@ export class JWTTokenService {
   }
 
   getUserName() {
-    this.decodeToken();
-    return this.decodedToken ? this.decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] : null;
+    if (this.jwtToken != null && this.jwtToken != "") {
+      return this.decodedToken ? this.decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] : null;
+    }
+    return "";
   }
 
   getUserId() {
-    this.decodeToken();
-    return this.decodedToken ? this.decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] : null;
+    if (this.jwtToken != null && this.jwtToken != "") {
+      return this.decodedToken ? this.decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] : null;
+    }
+    return "";
   }
 
   getExpiryTime() {
-    this.decodeToken();
-    return this.decodedToken ? this.decodedToken['exp'] : null;
+    if (this.jwtToken != null && this.jwtToken != "") {
+      return this.decodedToken ? this.decodedToken['exp'] : null;
+    }
+    return "";
   }
 
   isTokenExpired(): boolean {
