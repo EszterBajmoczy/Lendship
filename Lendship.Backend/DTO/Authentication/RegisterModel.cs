@@ -18,9 +18,9 @@ namespace Lendship.Backend.DTO.Authentication
         public string Password { get; set; }
 
         [Required(ErrorMessage = "Longitude is required")]
-        public string Longitude { get; set; }
+        public decimal Longitude { get; set; }
 
         [Required(ErrorMessage = "Latitude is required")]
-        public string Latitude { get; set; }
+        public decimal Latitude { get; set; }
     }
 }
