@@ -1,0 +1,91 @@
+<div class="container-fluid form-container col-lg-6 d-flex justify-content-center">
+  <div class="container px-lg-5">
+    <h1 class="text-center mb-5 mt-2">Registration</h1>
+    <form class="align-items-start m-4" [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+
+      <div class="d-flex justify-content-between mt-4">
+        <label class="col-lg-4" for="name">Username:</label>
+        <input id="name" type="text" formControlName="name" placeholder="Username">
+      </div>
+      <div class="error mb-4">
+        <div class="d-flex justify-content-end" *ngIf="!name?.valid && (name?.dirty || name?.touched)">
+          <div [hidden]="!name?.errors?.['required']">
+            <p class="form-error m-0">Username is required.</p>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="d-flex justify-content-between mt-4">
+        <label class="col-lg-4" for="email">Email address:</label>
+        <input id="email" type="text" formControlName="email" placeholder="Email address">
+      </div>
+      <div class="error mb-4">
+        <div class="d-flex justify-content-end" *ngIf="!email?.valid && (email?.dirty || email?.touched)">
+          <div [hidden]="!email?.errors?.['required']">
+            <p class="form-error m-0">Email is required.</p>
+          </div>
+          <div [hidden]="!email?.errors?.['email']">
+            <p class="form-error m-0">Not valid email.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between mt-4">
+        <label class="col-lg-4" for="location">Location:</label>
+        <input id="location" type="text" formControlName="location" placeholder="Location">
+      </div>
+      <div class="error mb-4">
+        <div class="d-flex justify-content-end">
+          <p class="form-info m-0">This information is private, no one will see it.</p>
+        </div>
+        <div class="d-flex justify-content-end" *ngIf="!location?.valid && (location?.dirty || location?.touched)">
+          <div [hidden]="!location?.errors?.['required']">
+            <p class="form-error m-0">Location is required.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <label class="col-lg-4" for="password">Password:</label>
+        <input id="password" type="password" formControlName="password" placeholder="Password" >
+      </div>
+      <div class="error mb-4">
+        <div class="error d-flex justify-content-end" *ngIf="!password?.valid && (password?.dirty || password?.touched)">
+          <div [hidden]="!password?.errors?.['required']">
+            <p class="form-error m-0">Password is required.</p>
+          </div>
+          <div [hidden]="!password?.errors?.['minlength']">
+            <p class="form-error m-0">Password must be minimum 6 charachter long.</p>
+          </div>
+          <div [hidden]="password?.errors?.['minlength'] && password?.errors?.['pattern']">
+            <p class="form-error m-0">Password must contain upper and lowcase letters, number, special character.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <label class="col-lg-4" for="confirmPassword">Confirm password:</label>
+        <input id="confirmPassword" type="password" formControlName="confirmPassword" placeholder="Password">
+      </div>
+      <div class="error mb-4">
+        <div class="error d-flex justify-content-end" *ngIf="!confirmPassword?.valid && (confirmPassword?.dirty || confirmPassword?.touched)">
+          <div [hidden]="!confirmPassword?.errors?.['required']">
+            <p class="form-error m-0">Password must be repeated.</p>
+          </div>
+          <div [hidden]="!confirmPassword?.errors?.['minlength']">
+            <p class="form-error m-0">Password must be minimum 6 charachter long.</p>
+          </div>
+          <div [hidden]="confirmPassword?.errors?.['minlength'] && confirmPassword?.errors?.['pattern']">
+            <p class="form-error m-0">Password must contain upper and lowcase letters, number, special character.</p>
+          </div>
+        </div>
+      </div>
+
+
+      <p class="d-flex justify-content-center mt-4">
+        <button class="btn btn-info" type="submit" [disabled]="!registrationForm.valid">Register</button>
+      </p>
+    </form>
+  </div>
+</div>

@@ -1,4 +1,4 @@
-export interface LoginUser {
-  email: string;
-  password: string;
+export class LoginUser {
+  email: string | undefined;
+  password: string | undefined;
 }
