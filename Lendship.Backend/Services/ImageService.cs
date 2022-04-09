@@ -31,23 +31,35 @@ namespace Lendship.Backend.Services
 
         public void DeleteProfileImage()
         {
-            var imgLocation = _configuration.GetSection("Image").GetValue("ProfileLocationFolder", "Resources/Images");
+            var imgLocation = _configuration.GetSection("Image").GetValue("ProfileLocationFolder", "wwwroot\\images\\profile");
             DeleteFiles(imgLocation);
+
+            var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = _dbContext.Users.Where(u => u.Id == signedInUserId).FirstOrDefault();
+
+            user.ImageLocation = "";
+            _dbContext.Update(user);
+            _dbContext.SaveChanges();
+
         }
 
         public void DeleteImages(int advertisementId)
         {
-            var imgLocation = _configuration.GetSection("Image").GetValue("LocationFolder", "Resources/Images");
+            var imgLocation = _configuration.GetSection("Image").GetValue("LocationFolder", "wwwroot\\images");
             DeleteFiles(imgLocation, advertisementId);
         }
 
         public void DeleteImageFromAdvertisement(int advertisementId, string fileName)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var location = _configuration.GetSection("Image").GetValue("LocationFolder", "Resources/Images");
+            var location = _configuration.GetSection("Image").GetValue("LocationFolder", "wwwroot\\images");
             var directory = Path.Combine(location, signedInUserId, advertisementId.ToString(), fileName);
 
             File.Delete(directory);
+
+            var images =_dbContext.ImageLocations.Where(i => i.AdvertisementId == advertisementId);
+            _dbContext.RemoveRange(images);
+            _dbContext.SaveChanges();
         }
 
         private void DeleteFiles(string location, int? advertisementId = null)
@@ -68,6 +80,10 @@ namespace Lendship.Backend.Services
             {
                 Console.WriteLine("No file in the directory." + e.Message);
             }
+
+            var images = _dbContext.ImageLocations.Where(i => i.AdvertisementId == advertisementId);
+            _dbContext.RemoveRange(images);
+            _dbContext.SaveChanges();
         }
 
         public List<ImageDTO> GetImages(int advertisementId)
@@ -77,7 +93,7 @@ namespace Lendship.Backend.Services
                 .Where(a => a.Id == advertisementId)
                 .Select(a => a.User.Id)
                 .FirstOrDefault();
-            var imgLocation = _configuration.GetSection("Image").GetValue("LocationFolder", "Resources\\Images");
+            var imgLocation = _configuration.GetSection("Image").GetValue("LocationFolder", "wwwroot\\images");
             var directory = Path.Combine(imgLocation, userId, advertisementId.ToString());
 
             List<ImageDTO> result = new List<ImageDTO>();
@@ -101,7 +117,7 @@ namespace Lendship.Backend.Services
         public ImageDTO GetImage()
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var imgLocation = _configuration.GetSection("Image").GetValue("ProfileLocationFolder", "Resources/Images");
+            var imgLocation = _configuration.GetSection("Image").GetValue("ProfileLocationFolder", "wwwroot\\images\\profile");
 
             var directory = Path.Combine(imgLocation, signedInUserId);
 
@@ -135,11 +151,16 @@ namespace Lendship.Backend.Services
             }
 
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var imgLocation = _configuration.GetSection("Image").GetValue("ProfileLocationFolder", "Resources/Images");
+            var user = _dbContext.Users.Where(u => u.Id == signedInUserId).FirstOrDefault();
+            var imgLocation = _configuration.GetSection("Image").GetValue("ProfileLocationFolder", "wwwroot\\images\\profile");
 
             var path = Path.Combine(imgLocation, signedInUserId);
 
-            UploadImg(file, path);
+            var fullpath = UploadProfileImg(file, path);
+            user.ImageLocation = fullpath;
+
+            _dbContext.Update(user);
+            _dbContext.SaveChanges();
         }
 
         public void UploadImages(IFormFileCollection files, int advertisementId)
@@ -155,7 +176,7 @@ namespace Lendship.Backend.Services
                 throw new UpdateNotAllowedException("The advertisement does not belong to this user.");
             }
 
-            var imgLocation = _configuration.GetSection("Image").GetValue("LocationFolder", "Resources/Images");
+            var imgLocation = _configuration.GetSection("Image").GetValue("LocationFolder", "wwwroot\\images");
 
             foreach (var file in files)
             {
@@ -165,6 +186,26 @@ namespace Lendship.Backend.Services
 
                 UploadImg(file, path);
             }
+            _dbContext.SaveChanges();
+        }
+
+        private string UploadProfileImg(IFormFile file, string path)
+        {
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            var fileName = GetUniqueFileName(path, file.ContentType);
+
+            var fullPath = Path.Combine(path, fileName);
+
+            using (var stream = new FileStream(fullPath, FileMode.Create))
+            {
+                file.CopyTo(stream);
+            }
+
+            return fullPath;
         }
 
         private void UploadImg(IFormFile file, string path)
@@ -181,6 +222,12 @@ namespace Lendship.Backend.Services
             using (var stream = new FileStream(fullPath, FileMode.Create))
             {
                 file.CopyTo(stream);
+
+                _dbContext.ImageLocations.Add(new ImageLocation()
+                {
+                    AdvertisementId = 2,
+                    Location = fullPath
+                });
             }
         }
 

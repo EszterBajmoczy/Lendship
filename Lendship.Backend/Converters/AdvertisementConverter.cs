@@ -1,6 +1,7 @@
 ﻿using Lendship.Backend.DTO;
 using Lendship.Backend.Interfaces.Converters;
 using Lendship.Backend.Models;
+using System.Linq;
 
 namespace Lendship.Backend.Converters
 {
@@ -15,8 +16,9 @@ namespace Lendship.Backend.Converters
                 Price = ad.Price,
                 Credit = ad.Credit,
                 Latitude = ad.Latitude,
-                Longitude = ad.Longitude
-            };
+                Longitude = ad.Longitude,
+                ImageLocation = ad.ImageLocations.FirstOrDefault().Location
+        };
         }
     }
 }
