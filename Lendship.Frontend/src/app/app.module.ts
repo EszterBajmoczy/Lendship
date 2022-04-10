@@ -11,6 +11,7 @@ import { AppFooterComponent} from "./components/common/footer/app-footer.compone
 import { LoginComponent } from './pages/login-page/login.component';
 import { RegistrationPageComponent } from "./pages/registration-page/registration-page.component";
 import { AdvertisementsPageComponent } from './pages/advertisements-page/advertisements-page.component';
+import { AdvertisementInfoPageComponent } from './pages/advertisement-info-page/advertisement-info-page.component';
 
 
 @NgModule({
@@ -22,6 +23,7 @@ import { AdvertisementsPageComponent } from './pages/advertisements-page/adverti
         LoginComponent,
         RegistrationPageComponent,
         AdvertisementsPageComponent,
+        AdvertisementInfoPageComponent,
     ],
   imports: [
     BrowserModule,
