@@ -1,16 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {catchError} from "rxjs/operators";
-import {Observable, throwError} from "rxjs";
+import { Observable, throwError } from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class GeocodingService {
-  //positionstack
-  //baseUrl = "http://api.positionstack.com/v1/"
-  //api_key = "d57005395dc614d7f5551e2841d2a80d";
-
   //geocode.xyz
   baseUrl = "https://geocode.xyz/";
   api_key = "318774527394438479612x29999";

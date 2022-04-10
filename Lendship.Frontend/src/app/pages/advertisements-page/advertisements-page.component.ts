@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { AdvertisementService} from "../../services/advertisement/advertisement.service";
+import { Advertisement } from "../../models/advertisement";
+import { GeocodingService} from "../../services/geocoding/geocoding.service";
 
 @Component({
   selector: 'app-advertisements-page',
