@@ -1,5 +1,8 @@
 <div class="container col-lg-10">
-  <button class="btn-success-long d-flex mt-2 mb-2" (click)="showOwn = !showOwn">
+  <div class="d-flex justify-content-end mb-lg-4">
+    <button class="btn btn-success align-self-end" href="advertisements/new">New Advertisement</button>
+  </div>
+  <button class="btn btn-success-long d-flex mt-2 mb-2" (click)="showOwn = !showOwn">
     <p class="m-1">Own advertisements</p>
     <i [hidden]="showOwn" class="fa fa-angle-right m-1 fa-lg"></i>
     <i [hidden]="!showOwn" class="fa fa-angle-down m-1 fa-lg"></i>
@@ -17,7 +20,7 @@
     </div>
   </div>
 
-  <button class="btn-success-long d-flex mt-2 mb-2" (click)="loadSavedAdvertisements()">
+  <button class="btn btn-success-long d-flex mt-2 mb-2" (click)="loadSavedAdvertisements()">
     <p class="m-1">Saved advertisements</p>
     <i [hidden]="showSaved" class="fa fa-angle-right m-1 fa-lg"></i>
     <i [hidden]="!showSaved" class="fa fa-angle-down m-1 fa-lg"></i>
