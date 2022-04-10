@@ -23,13 +23,13 @@ export class HomePageComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  cardClicked(id: number) {
+    this.router.navigate(['advertisement', id]);
+  }
+
   loadAdvertisements(){
     this.adService.getAdvertisements()
       .subscribe(
         data => this.ads = data);
-  }
-
-  cardClicked(id: number) {
-    this.router.navigate(['advertisement', id]);
   }
 }
