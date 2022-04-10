@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AdvertisementService} from "../../services/advertisement/advertisement.service";
 import { Advertisement } from "../../models/advertisement";
-import { GeocodingService} from "../../services/geocoding/geocoding.service";
+import { Router} from "@angular/router";
 
 @Component({
   selector: 'app-advertisements-page',
@@ -15,7 +15,7 @@ export class AdvertisementsPageComponent implements OnInit {
   showOwn: boolean = true;
   showSaved: boolean = false;
 
-  constructor(private adService: AdvertisementService, private geocodingService: GeocodingService) {
+  constructor(private adService: AdvertisementService, private router: Router) {
     this.adService.getOwnAdvertisements()
       .subscribe(ads => this.ownAds = ads)
   }
@@ -33,6 +33,6 @@ export class AdvertisementsPageComponent implements OnInit {
   }
 
   cardClicked(id: number) {
-
+    this.router.navigate(['advertisement', id]);
   }
 }

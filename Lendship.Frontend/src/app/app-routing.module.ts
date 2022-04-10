@@ -4,6 +4,7 @@ import { HomePageComponent} from "./pages/home-page/home-page.component";
 import { LoginComponent} from "./pages/login-page/login.component";
 import { RegistrationPageComponent} from "./pages/registration-page/registration-page.component";
 import { AdvertisementsPageComponent} from "./pages/advertisements-page/advertisements-page.component";
+import {AdvertisementInfoPageComponent} from "./pages/advertisement-info-page/advertisement-info-page.component";
 
 const routes: Routes = [
   {
@@ -26,6 +27,10 @@ const routes: Routes = [
   {
     path: 'advertisements',
     component: AdvertisementsPageComponent
+  },
+  {
+    path: 'advertisement/:id',
+    component: AdvertisementInfoPageComponent
   }
 ];
 

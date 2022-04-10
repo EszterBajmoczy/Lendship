@@ -1,18 +1,12 @@
 import {Availability} from "./availability";
 import {User} from "./user";
+import {Advertisement} from "./advertisement";
 
-export interface AdvertisementDetail {
-  id: number,
+export interface AdvertisementDetail extends Advertisement {
   user: User,
-  title: string,
   description: string,
-  InstructionManual: string,
-  price: number,
-  credit: number,
+  instructionManual: string,
   deposit: number,
-  latitude: number,
-  longitude: number,
-  location: string
   isPublic: boolean,
   category: string,
   availabilities: Availability[],

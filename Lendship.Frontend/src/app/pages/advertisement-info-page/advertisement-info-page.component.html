@@ -1,1 +1,49 @@
-<p>advertisement-info-page works!</p>
+<div *ngIf="ad" class="container col-lg-10">
+  <div class="d-flex profile-info align-items-center mt-2 mb-lg-4">
+    <div class="me-4">
+      <img class="img-profile" src="https://localhost:44377/images/OLASDGREFDDLLWER.jpg">
+    </div>
+    <div>
+      <p class="user-name">{{ad.user.name}}</p>
+      <p><i class="fa fa-star me-2"></i>as advertiser: {{ad.user.evaluationAsAdvertiser}} ({{ad.user.evaluationAsAdvertiserCount}} vote)</p>
+      <p><i class="fa fa-star me-2"></i>as lender: {{ad.user.evaluationAsLender}} ({{ad.user.evaluationAsLenderCount}} vote)</p>
+    </div>
+  </div>
+
+  <div class="bg-white align-content-center">
+    <h3 class="text-center p-4">{{ad.title}}</h3>
+    <div class="d-flex justify-content-between">
+      <div>
+        <table class="col-8 m-2">
+          <tr>
+            <th>Price:</th>
+            <th>{{ad.price}} Ft</th>
+          </tr>
+          <tr>
+            <th>Credit:</th>
+            <th>{{ad.credit}}</th>
+          </tr>
+          <tr>
+            <th>Location:</th>
+            <th>{{ad.location}}</th>
+          </tr>
+        </table>
+        <p class="m-4">{{ad.description}}</p>
+      </div>
+
+      <div class="gallery col-4 m-4">
+        <img *ngFor="let image of ad.imageLocations" src="https://localhost:44377/images{{image}}" class="w-100">
+
+      </div>
+    </div>
+    <div [hidden]="!ad.instructionManual" class="m-4">
+      <p>Instruction manual:</p>
+      <p>{{ad.instructionManual}}</p>
+    </div>
+
+    <div class="d-flex justify-content-center p-2">
+      <button class="btn btn-primary m-2">Send message</button>
+      <button class="btn btn-primary m-2">Reserve</button>
+    </div>
+  </div>
+</div>

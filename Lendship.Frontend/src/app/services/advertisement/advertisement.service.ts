@@ -5,6 +5,7 @@ import {map, Observable, throwError} from 'rxjs';
 import { Advertisement } from "../../models/advertisement";
 import { AuthService } from "../auth/auth.service";
 import { GeocodingService} from "../geocoding/geocoding.service";
+import {AdvertisementDetail} from "../../models/advertisement-detail";
 
 @Injectable({
   providedIn: 'root'
@@ -23,8 +24,28 @@ export class AdvertisementService {
     return this.http.get<Advertisement[]>("https://localhost:44377/Advertisement", { headers: this.headers})
       .pipe(
         map((response: Advertisement[]) => this.setLocations(response)),
-        catchError(this.handleError))
-      ;
+        catchError(this.handleError));
+  }
+
+  getOwnAdvertisements(): Observable<Advertisement[]>{
+    return this.http.get<Advertisement[]>("https://localhost:44377/Advertisement/own", { headers: this.headers})
+      .pipe(
+        map((response: Advertisement[]) => this.setLocations(response)),
+        catchError(this.handleError));
+  }
+
+  getSavedAdvertisements(): Observable<Advertisement[]>{
+    return this.http.get<Advertisement[]>("https://localhost:44377/Advertisement/saved", { headers: this.headers})
+      .pipe(
+        map((response: Advertisement[]) => this.setLocations(response)),
+        catchError(this.handleError));
+  }
+
+  getAdvertisementDetailById(id: number): Observable<AdvertisementDetail>{
+    return this.http.get<AdvertisementDetail>("https://localhost:44377/Advertisement/" + id, { headers: this.headers})
+      .pipe(
+        map((response: AdvertisementDetail) => this.setLocation(response)),
+        catchError(this.handleError));
   }
 
   setLocations(ads: Advertisement[]){
@@ -36,16 +57,10 @@ export class AdvertisementService {
     return ads;
   }
 
-  getOwnAdvertisements(): Observable<Advertisement[]>{
-    return this.http.get<Advertisement[]>("https://localhost:44377/Advertisement/own", { headers: this.headers})
-      .pipe(
-        catchError(this.handleError));
-  }
-
-  getSavedAdvertisements(): Observable<Advertisement[]>{
-    return this.http.get<Advertisement[]>("https://localhost:44377/Advertisement/saved", { headers: this.headers})
-      .pipe(
-        catchError(this.handleError));
+  setLocation(ad: AdvertisementDetail): AdvertisementDetail{
+    this.geocodingService.getAddress(ad.latitude, ad.longitude)
+      .subscribe(location => ad.location = location["city"]);
+    return ad;
   }
 
   private handleError(error: HttpErrorResponse) {
