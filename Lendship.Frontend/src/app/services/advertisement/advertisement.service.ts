@@ -1,24 +1,49 @@
 import { Injectable } from '@angular/core';
 import { catchError } from "rxjs/operators";
 import { HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import {map, Observable, throwError} from 'rxjs';
 import { Advertisement } from "../../models/advertisement";
 import { AuthService } from "../auth/auth.service";
+import { GeocodingService} from "../geocoding/geocoding.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdvertisementService {
+  headers: HttpHeaders
 
-  constructor(private http: HttpClient, private authService: AuthService) { }
-
-  getAdvertisements(): Observable<Advertisement[]>{
-    let headers = new HttpHeaders({
+  constructor(private http: HttpClient, private authService: AuthService, private geocodingService: GeocodingService) {
+    this.headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${this.authService.getAccessToken()}`
-    })
+    });
+  }
 
-    return this.http.get<Advertisement[]>("https://localhost:44377/Advertisement", { headers: headers})
+  getAdvertisements(): Observable<Advertisement[]>{
+    return this.http.get<Advertisement[]>("https://localhost:44377/Advertisement", { headers: this.headers})
+      .pipe(
+        map((response: Advertisement[]) => this.setLocations(response)),
+        catchError(this.handleError))
+      ;
+  }
+
+  setLocations(ads: Advertisement[]){
+    ads.forEach((ad) => {
+      this.geocodingService.getAddress(ad.latitude, ad.longitude)
+        .subscribe(location => ad.location = location["city"]);
+    });
+    console.log(ads);
+    return ads;
+  }
+
+  getOwnAdvertisements(): Observable<Advertisement[]>{
+    return this.http.get<Advertisement[]>("https://localhost:44377/Advertisement/own", { headers: this.headers})
+      .pipe(
+        catchError(this.handleError));
+  }
+
+  getSavedAdvertisements(): Observable<Advertisement[]>{
+    return this.http.get<Advertisement[]>("https://localhost:44377/Advertisement/saved", { headers: this.headers})
       .pipe(
         catchError(this.handleError));
   }
