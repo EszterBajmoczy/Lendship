@@ -59,10 +59,10 @@
             <p class="form-error m-0">Password is required.</p>
           </div>
           <div [hidden]="password?.errors?.['required'] || !password?.errors?.['minlength']">
-            <p class="form-error m-0">Password must be minimum 6 charachter long.</p>
+            <p class="form-error m-0">Password must be minimum 6 character long.</p>
           </div>
           <div [hidden]="password?.errors?.['minlength'] || password?.errors?.['required'] || password?.errors?.['pattern']">
-            <p class="form-error m-0">Password must contain uppercase, lowcase letters, number, special character.</p>
+            <p class="form-error m-0">Password must contain uppercase, lowercase letters, number, special character.</p>
           </div>
         </div>
       </div>

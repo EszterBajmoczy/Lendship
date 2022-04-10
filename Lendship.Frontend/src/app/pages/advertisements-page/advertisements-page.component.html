@@ -1,0 +1,38 @@
+<div class="container col-lg-10">
+  <button class="btn-success-long d-flex mt-2 mb-2" (click)="showOwn = !showOwn">
+    <p class="m-1">Own advertisements</p>
+    <i [hidden]="showOwn" class="fa fa-angle-right m-1 fa-lg"></i>
+    <i [hidden]="!showOwn" class="fa fa-angle-down m-1 fa-lg"></i>
+  </button>
+  <div *ngIf="showOwn" class="card-container d-flex flex-wrap justify-content-between" >
+    <div *ngFor="let ad of ownAds" class="card m-3" style="width: 18rem; height: 22rem" (click)="cardClicked(ad.id)">
+      <img src="https://localhost:44377/images/OLASDGREFDDLLWER.jpg" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">{{ad.title}}</h5>
+        <div class="d-flex justify-content-between mt-4 mb-0">
+          <p class="ad-details">{{ad.location}}</p>
+          <p class="ad-details">{{ad.price}} Ft</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-success-long d-flex mt-2 mb-2" (click)="loadSavedAdvertisements()">
+    <p class="m-1">Saved advertisements</p>
+    <i [hidden]="showSaved" class="fa fa-angle-right m-1 fa-lg"></i>
+    <i [hidden]="!showSaved" class="fa fa-angle-down m-1 fa-lg"></i>
+  </button>
+  <div *ngIf="showSaved" class="card-container d-flex flex-wrap justify-content-between">
+    <div *ngFor="let ad of savedAds" class="card m-3" style="width: 18rem; height: 22rem" (click)="cardClicked(ad.id)">
+      <img src="https://localhost:44377/images/OLASDGREFDDLLWER.jpg" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">{{ad.title}}</h5>
+        <div class="d-flex justify-content-between mt-4 mb-0">
+          <p class="ad-details">{{ad.location}}</p>
+          <p class="ad-details">{{ad.price}} Ft</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

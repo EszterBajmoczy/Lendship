@@ -10,6 +10,8 @@ import { AppHeaderComponent} from "./components/common/header/app-header.compone
 import { AppFooterComponent} from "./components/common/footer/app-footer.componenet";
 import { LoginComponent } from './pages/login-page/login.component';
 import { RegistrationPageComponent } from "./pages/registration-page/registration-page.component";
+import { AdvertisementsPageComponent } from './pages/advertisements-page/advertisements-page.component';
+import { AdvertisementInfoPageComponent } from './pages/advertisement-info-page/advertisement-info-page.component';
 
 
 @NgModule({
@@ -20,6 +22,8 @@ import { RegistrationPageComponent } from "./pages/registration-page/registratio
         AppFooterComponent,
         LoginComponent,
         RegistrationPageComponent,
+        AdvertisementsPageComponent,
+        AdvertisementInfoPageComponent,
     ],
   imports: [
     BrowserModule,
