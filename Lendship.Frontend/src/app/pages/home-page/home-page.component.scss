@@ -1,19 +1,2 @@
-@import "src/styles/colors.scss";
+@import "src/styles/cards.scss";
 
-.card-title {
-  color: $color-secondary
-}
-
-.ad-details {
-  color: $color-info;
-  margin-bottom: 0;
-}
-.card-container::after {
-  content: "";
-  flex: auto;
-}
-
-.card-img-top {
-  object-fit: cover;
-  max-height: 15rem;
-}
