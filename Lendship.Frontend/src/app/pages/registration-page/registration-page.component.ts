@@ -67,6 +67,5 @@ export class RegistrationPageComponent implements OnInit {
 
         this.authService.register(this.registrationForm.value);
       })
-
   }
 }

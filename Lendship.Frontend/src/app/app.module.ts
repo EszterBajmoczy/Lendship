@@ -12,6 +12,7 @@ import { LoginComponent } from './pages/login-page/login.component';
 import { RegistrationPageComponent } from "./pages/registration-page/registration-page.component";
 import { AdvertisementsPageComponent } from './pages/advertisements-page/advertisements-page.component';
 import { AdvertisementInfoPageComponent } from './pages/advertisement-info-page/advertisement-info-page.component';
+import { ProfilePageComponent } from './pages/profile-page/profile-page.component';
 
 
 @NgModule({
@@ -24,6 +25,7 @@ import { AdvertisementInfoPageComponent } from './pages/advertisement-info-page/
         RegistrationPageComponent,
         AdvertisementsPageComponent,
         AdvertisementInfoPageComponent,
+        ProfilePageComponent,
     ],
   imports: [
     BrowserModule,

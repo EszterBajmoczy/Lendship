@@ -1,29 +1,6 @@
 @import "src/styles/colors.scss";
 @import "src/styles/buttons.scss";
-
-
-.img-profile {
-  height: 80px;
-  width: 80px;
-  border: 0;
-  border-radius: 50%;
-}
-
-.profile-info .user-name {
-  color: $color-success;
-  font-size: x-large;
-  margin: 0;
-}
-
-.fa-star {
-  color: yellow;
-}
-
-.profile-info p{
-  color: $color-info;
-  font-size: small;
-  margin: 0;
-}
+@import "src/styles/profile-infos";
 
 .gallery {
   max-width: 50%;
