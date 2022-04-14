@@ -9,11 +9,11 @@
  */
 
 using System;
-using System.Linq;
 using System.Text;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
+using static Lendship.Backend.DTO.ReservationDetailDto;
 
 namespace Lendship.Backend.DTO
 {
@@ -31,83 +31,13 @@ namespace Lendship.Backend.DTO
         public int? Id { get; set; }
 
         /// <summary>
-        /// Gets or Sets Advertisement
-        /// </summary>
-        [DataMember(Name="advertisement")]
-        public AdvertisementDto? Advertisement { get; set; }
-
-        /// <summary>
-        /// Gets or Sets ReservationState
-        /// </summary>
-        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public enum ReservationStateEnum
-        {
-            
-            /// <summary>
-            /// Enum CreatedEnum for Created
-            /// </summary>
-            [EnumMember(Value = "Created")]
-            CreatedEnum = 1,
-            
-            /// <summary>
-            /// Enum AcceptedEnum for Accepted
-            /// </summary>
-            [EnumMember(Value = "Accepted")]
-            AcceptedEnum = 2,
-            
-            /// <summary>
-            /// Enum DeclinedEnum for Declined
-            /// </summary>
-            [EnumMember(Value = "Declined")]
-            DeclinedEnum = 3,
-            
-            /// <summary>
-            /// Enum ResignedEnum for Resigned
-            /// </summary>
-            [EnumMember(Value = "Resigned")]
-            ResignedEnum = 4,
-            
-            /// <summary>
-            /// Enum ClosedEnum for Closed
-            /// </summary>
-            [EnumMember(Value = "Closed")]
-            ClosedEnum = 5
-        }
-
-        /// <summary>
         /// Gets or Sets ReservationState
         /// </summary>
         [Required]
         
         [DataMember(Name="reservationState")]
         public ReservationStateEnum? ReservationState { get; set; }
-
-        /// <summary>
-        /// Gets or Sets Comment
-        /// </summary>
-
-        [DataMember(Name="comment")]
-        public string Comment { get; set; }
-
-        /// <summary>
-        /// Gets or Sets AdmittedByAdvertiser
-        /// </summary>
-
-        [DataMember(Name="admittedByAdvertiser")]
-        public bool? AdmittedByAdvertiser { get; set; }
-
-        /// <summary>
-        /// Gets or Sets AdmittedByLender
-        /// </summary>
-
-        [DataMember(Name="admittedByLender")]
-        public bool? AdmittedByLender { get; set; }
-
-        /// <summary>
-        /// Gets or Sets DateFrom
-        /// </summary>
-        [Required]
-        
+                
         [DataMember(Name="dateFrom")]
         public DateTime? DateFrom { get; set; }
 
@@ -128,11 +58,6 @@ namespace Lendship.Backend.DTO
             var sb = new StringBuilder();
             sb.Append("class Reservation {\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
-            sb.Append("  Advertisement: ").Append(Advertisement).Append("\n");
-            sb.Append("  ReservationState: ").Append(ReservationState).Append("\n");
-            sb.Append("  Comment: ").Append(Comment).Append("\n");
-            sb.Append("  AdmittedByAdvertiser: ").Append(AdmittedByAdvertiser).Append("\n");
-            sb.Append("  AdmittedByLender: ").Append(AdmittedByLender).Append("\n");
             sb.Append("  DateFrom: ").Append(DateFrom).Append("\n");
             sb.Append("  DateTo: ").Append(DateTo).Append("\n");
             sb.Append("}\n");
@@ -177,31 +102,6 @@ namespace Lendship.Backend.DTO
                     Id.Equals(other.Id)
                 ) && 
                 (
-                    Advertisement == other.Advertisement ||
-                    Advertisement != null &&
-                    Advertisement.Equals(other.Advertisement)
-                ) && 
-                (
-                    ReservationState == other.ReservationState ||
-                    ReservationState != null &&
-                    ReservationState.Equals(other.ReservationState)
-                ) && 
-                (
-                    Comment == other.Comment ||
-                    Comment != null &&
-                    Comment.Equals(other.Comment)
-                ) && 
-                (
-                    AdmittedByAdvertiser == other.AdmittedByAdvertiser ||
-                    AdmittedByAdvertiser != null &&
-                    AdmittedByAdvertiser.Equals(other.AdmittedByAdvertiser)
-                ) && 
-                (
-                    AdmittedByLender == other.AdmittedByLender ||
-                    AdmittedByLender != null &&
-                    AdmittedByLender.Equals(other.AdmittedByLender)
-                ) && 
-                (
                     DateFrom == other.DateFrom ||
                     DateFrom != null &&
                     DateFrom.Equals(other.DateFrom)
@@ -225,16 +125,6 @@ namespace Lendship.Backend.DTO
                 // Suitable nullity checks etc, of course :)
                     if (Id != null)
                     hashCode = hashCode * 59 + Id.GetHashCode();
-                    if (Advertisement != null)
-                    hashCode = hashCode * 59 + Advertisement.GetHashCode();
-                    if (ReservationState != null)
-                    hashCode = hashCode * 59 + ReservationState.GetHashCode();
-                    if (Comment != null)
-                    hashCode = hashCode * 59 + Comment.GetHashCode();
-                    if (AdmittedByAdvertiser != null)
-                    hashCode = hashCode * 59 + AdmittedByAdvertiser.GetHashCode();
-                    if (AdmittedByLender != null)
-                    hashCode = hashCode * 59 + AdmittedByLender.GetHashCode();
                     if (DateFrom != null)
                     hashCode = hashCode * 59 + DateFrom.GetHashCode();
                     if (DateTo != null)
@@ -244,7 +134,7 @@ namespace Lendship.Backend.DTO
         }
 
         #region Operators
-        #pragma warning disable 1591
+#pragma warning disable 1591
 
         public static bool operator ==(ReservationDto left, ReservationDto right)
         {

@@ -3,11 +3,7 @@ using Lendship.Backend.DTO;
 using Lendship.Backend.Interfaces.Converters;
 using Lendship.Backend.Models;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using static Lendship.Backend.DTO.ReservationDto;
+using static Lendship.Backend.DTO.ReservationDetailDto;
 
 namespace Lendship.Backend.Converters
 {
@@ -20,10 +16,10 @@ namespace Lendship.Backend.Converters
             _adConverter = adConverter;
         }
 
-        public ReservationDto ConvertToDto(Reservation reservation)
+        public ReservationDetailDto ConvertToDetailDto(Reservation reservation)
         {
             var adDto = _adConverter.ConvertToDto(reservation.Advertisement);
-            return new ReservationDto
+            return new ReservationDetailDto
             {
                 Id = reservation.Id,
                 Advertisement = adDto,
@@ -36,7 +32,18 @@ namespace Lendship.Backend.Converters
             };
         }
 
-        public Reservation ConvertToEntity(ReservationDto reservationDto, ApplicationUser user, Advertisement advertisement)
+        public ReservationDto ConvertToDto(Reservation reservation)
+        {
+            return new ReservationDto
+            {
+                Id = reservation.Id,
+                ReservationState = GetReservationEnumState(reservation.ReservationState),
+                DateFrom = reservation.DateFrom,
+                DateTo = reservation.DateTo,
+            };
+        }
+
+        public Reservation ConvertToEntity(ReservationDetailDto reservationDto, ApplicationUser user, Advertisement advertisement)
         {
             var reservation = new Reservation
             {

@@ -29,7 +29,7 @@ namespace Lendship.Backend.Services
             _reservationConverter = new ReservationConverter(new AdvertisementConverter());
         }
                 
-        public void CreateReservation(ReservationDto reservationDto, int advertisementId)
+        public void CreateReservation(ReservationDetailDto reservationDto, int advertisementId)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -47,9 +47,9 @@ namespace Lendship.Backend.Services
             _dbContext.SaveChanges();
         }
 
-        public IEnumerable<ReservationDto> GetReservations()
+        public IEnumerable<ReservationDetailDto> GetReservations()
         {
-            var resultList = new List<ReservationDto>();
+            var resultList = new List<ReservationDetailDto>();
 
             var reservations = _dbContext.Reservations
                         .Include(r => r.Advertisement)
@@ -58,16 +58,16 @@ namespace Lendship.Backend.Services
 
             foreach (var res in reservations)
             {
-                var dto = _reservationConverter.ConvertToDto(res);
+                var dto = _reservationConverter.ConvertToDetailDto(res);
                 resultList.Add(dto);
             }
 
             return resultList;
         }
 
-        public IEnumerable<ReservationDto> GetReservationsForUser()
+        public IEnumerable<ReservationDetailDto> GetReservationsForUser()
         {
-            var resultList = new List<ReservationDto>();
+            var resultList = new List<ReservationDetailDto>();
 
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var reservations = _dbContext.Reservations
@@ -78,14 +78,14 @@ namespace Lendship.Backend.Services
 
             foreach (var res in reservations)
             {
-                var dto = _reservationConverter.ConvertToDto(res);
+                var dto = _reservationConverter.ConvertToDetailDto(res);
                 resultList.Add(dto);
             }
 
             return resultList;
         }
 
-        public void UpdateReservation(ReservationDto reservationDto)
+        public void UpdateReservation(ReservationDetailDto reservationDto)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -216,6 +216,24 @@ namespace Lendship.Backend.Services
                 default:
                     return ReservationState.Created;
             }
+        }
+
+        public IEnumerable<ReservationDto> GetReservationsForAdvertisement(int advertisementId)
+        {
+            var resultList = new List<ReservationDto>();
+
+            var reservations = _dbContext.Reservations
+                                    .Include(r => r.Advertisement)
+                                    .Where(r => r.Advertisement.Id == advertisementId)
+                                    .ToList();
+
+            foreach (var res in reservations)
+            {
+                var dto = _reservationConverter.ConvertToDto(res);
+                resultList.Add(dto);
+            }
+
+            return resultList;
         }
     }
 }

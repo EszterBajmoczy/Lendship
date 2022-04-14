@@ -5,16 +5,19 @@ namespace Lendship.Backend.Interfaces.Services
 {
     public interface IReservationService
     {
-        IEnumerable<ReservationDto> GetReservations();
+        IEnumerable<ReservationDetailDto> GetReservations();
 
-        void CreateReservation(ReservationDto reservation, int advertisementId);
+        void CreateReservation(ReservationDetailDto reservation, int advertisementId);
 
-        void UpdateReservation(ReservationDto reservation);
+        void UpdateReservation(ReservationDetailDto reservation);
 
-        IEnumerable<ReservationDto> GetReservationsForUser();
+        IEnumerable<ReservationDetailDto> GetReservationsForUser();
 
         void UpdateReservationState(int reservationId, string state);
 
         void AdmitReservation(int reservationId);
+
+        IEnumerable<ReservationDto> GetReservationsForAdvertisement(int advertisementId);
+
     }
 }

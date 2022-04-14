@@ -43,7 +43,7 @@ namespace Lendship.Backend.Controllers
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpPost]
-        public virtual IActionResult CreateReservation([FromQuery][Required()]int advertisementId, [FromBody]ReservationDto reservation)
+        public virtual IActionResult CreateReservation([FromQuery][Required()]int advertisementId, [FromBody]ReservationDetailDto reservation)
         {
             try
             {
@@ -95,7 +95,7 @@ namespace Lendship.Backend.Controllers
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpPut]
-        public virtual IActionResult UpdateReservation([FromBody]ReservationDto reservation)
+        public virtual IActionResult UpdateReservation([FromBody]ReservationDetailDto reservation)
         {
             try
             {
@@ -132,6 +132,22 @@ namespace Lendship.Backend.Controllers
                 Console.WriteLine("Exception at updating reservation: " + e.Message);
                 return this.BadRequest(e.Message);
             }
+        }
+
+        /// <summary>
+        /// get the reservations for the advertisements
+        /// </summary>
+        /// <remarks>Gets the reservations for the advertisements</remarks>
+        /// <param name="advertisementId">property or service</param>
+        /// <response code="200">reservations for the advertisements</response>
+        /// <response code="400">bad request</response>
+        /// <response code="401"></response>
+        [HttpGet]
+        [Route("{advertisementId}")]
+        public virtual IActionResult GetReservationsForAdvertisements([FromRoute][Required] int advertisementId)
+        {
+            var reservations = _reservationService.GetReservationsForAdvertisement(advertisementId);
+            return new ObjectResult(JsonConvert.SerializeObject(reservations));
         }
     }
 }
