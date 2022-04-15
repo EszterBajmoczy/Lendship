@@ -1,26 +1,5 @@
-@import "src/styles/colors.scss";
-@import "src/styles/buttons.scss";
-@import "src/styles/profile-infos";
+@import "src/styles/colors";
 
-.gallery {
-  max-width: 50%;
-  height: auto;
-}
-
-th {
-  font-weight: normal;
-}
-
-p {
-  text-align: justify;
-}
-
-.dp-hidden {
-  width: 0;
-  margin: 0;
-  border: none;
-  padding: 0;
-}
 .custom-day {
   text-align: center;
   padding: 0.185rem 0.25rem;
@@ -37,4 +16,13 @@ p {
 }
 .custom-day.faded {
   background-color: rgba(2, 117, 216, 0.5);
+}
+.not-available {
+  background-color: grey;
+  color: white;
+}
+
+.reserved {
+  background-color: $color-danger;
+  color: white;
 }

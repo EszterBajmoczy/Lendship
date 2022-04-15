@@ -58,6 +58,10 @@ export class AdvertisementService {
   }
 
   setLocation(ad: AdvertisementDetail): AdvertisementDetail{
+    ad.availabilities.forEach(av => {
+      av.dateTo = new Date(av.dateTo);
+      av.dateFrom = new Date(av.dateFrom);
+    })
     this.geocodingService.getAddress(ad.latitude, ad.longitude)
       .subscribe(location => ad.location = location["city"]);
     return ad;
