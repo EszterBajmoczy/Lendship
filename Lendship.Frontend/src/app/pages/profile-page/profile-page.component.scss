@@ -1,0 +1,38 @@
+@import "src/styles/buttons";
+@import "src/styles/colors";
+@import "src/styles/profile-infos";
+@import "src/styles/forms";
+
+.img-profile {
+  height: 10rem;
+  width: 10rem;
+}
+
+.img-profile-sm {
+  height: 3rem;
+  width: 3rem;
+  border: 0;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.evaluationSection {
+  background-color: rgba(40, 40, 40, 0.4);
+}
+.evSection {
+  background-color: rgba(40, 40, 40, 0.4);
+}
+
+.comment {
+  background-color: lightgrey;
+}
+
+.sum {
+  color: $color-info;
+}
+
+.stars {
+  background-color: white;
+  border-radius: 20rem;
+  width: 20rem;
+}

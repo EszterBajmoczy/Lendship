@@ -7,9 +7,12 @@ namespace Lendship.Backend.Interfaces.Converters
 {
     public interface IReservationConverter
     {
-        Reservation ConvertToEntity(ReservationDto reservationDto, ApplicationUser user, Advertisement advertisement);
+        Reservation ConvertToEntity(ReservationDetailDto reservationDto, ApplicationUser user, Advertisement advertisement);
+
+        ReservationDetailDto ConvertToDetailDto(Reservation reservation);
 
         ReservationDto ConvertToDto(Reservation reservation);
+
 
     }
 }

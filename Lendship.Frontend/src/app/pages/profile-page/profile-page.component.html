@@ -1,0 +1,157 @@
+<div class="container col-lg-10">
+  <div class="d-flex profile-info align-items-center justify-content-center mt-2 mb-lg-4">
+    <div class="me-4">
+      <img class="img-profile" src="https://localhost:44377/images/profile/8b1b52a5-37df-4ae4-83d1-1f599566b073/AGDSDGGDFERSRQER.jpg" alt="">
+    </div>
+    <div>
+      <p class="user-name">{{user?.name}}</p>
+      <p><i class="fa fa-star me-2"></i>as advertiser: {{user?.evaluationAsAdvertiser}} ({{user?.evaluationAsAdvertiserCount}} vote)</p>
+      <p><i class="fa fa-star me-2"></i>as lender: {{user?.evaluationAsLender}} ({{user?.evaluationAsLenderCount}} vote)</p>
+      <p class="mt-2">
+        <i *ngIf="!user?.emailNotification" class="fa-solid fa-x"></i>
+        <i *ngIf="user?.emailNotification" class="fa fa-check"></i>
+        Email notifications
+      </p>
+    </div>
+  </div>
+  <div class="text-center">
+    <p *ngIf="user?.location">
+      <i class="fa-solid fa-location-dot"></i>
+      {{user?.location}}
+    </p>
+  </div>
+
+  <div>
+    <button class="btn-success-long d-flex mt-2 mb-0" (click)="loadAdvertiserEvaluations()">
+      <p class="m-1">Evaluation as advertiser</p>
+      <i [hidden]="showAdvertiserEvaluations" class="fa fa-angle-right m-1 fa-lg"></i>
+      <i [hidden]="!showAdvertiserEvaluations" class="fa fa-angle-down m-1 fa-lg"></i>
+    </button>
+
+    <div *ngIf="showAdvertiserEvaluations" class="evaluationSection pb-2">
+      <p class="text-center sum p-2">{{user?.evaluationAsAdvertiser}} (from {{user?.evaluationAsAdvertiserCount}} vote)</p>
+
+      <div *ngFor="let ev of evaluationsAdvertiser" class="evSection p-2 m-4">
+        <div>
+          <div class="d-flex profile-info justify-content-start align-items-center mt-2 mb-lg-4">
+            <div class="me-4">
+              <img class="img-profile-sm" src="https://localhost:44377/images/profile/8b1b52a5-37df-4ae4-83d1-1f599566b073/AGDSDGGDFERSRQER.jpg" alt="">
+            </div>
+            <div>
+              <p class="user-name-m">{{ev.userFrom.name}}</p>
+              <p>{{ev.creation}}</p>
+            </div>
+          </div>
+          <div class="d-flex justify-content-center">
+            <div>
+              <div class="stars d-flex justify-content-between bg-white ps-2 pe-2 m-1" >
+                <p class="mb-0">Flexibility</p>
+                <div>
+                  <i class="fa fa-star me-2" [ngStyle]="{'color': ev.flexibility > 0 ? '#1F9B94' : '#ffffff8c'}"></i>
+                  <i class="fa fa-star me-2" [ngStyle]="{'color': ev.flexibility > 1 ? '#1F9B94' : '#ffffff8c'}"></i>
+                  <i class="fa fa-star me-2" [ngStyle]="{'color': ev.flexibility > 2 ? '#1F9B94' : '#ffffff8c'}"></i>
+                  <i class="fa fa-star me-2" [ngStyle]="{'color': ev.flexibility > 3 ? '#1F9B94' : '#ffffff8c'}"></i>
+                  <i class="fa fa-star me-0" [ngStyle]="{'color': ev.flexibility > 4 ? '#1F9B94' : '#ffffff8c'}"></i>
+                </div>
+              </div>
+
+              <div class="stars d-flex justify-content-between bg-white ps-2 pe-2 m-1" >
+                <p class="mb-0">Reliability</p>
+                <div>
+                  <i class="fa fa-star me-2" [ngStyle]="{'color': ev.reliability > 0 ? '#1F9B94' : '#ffffff8c'}"></i>
+                  <i class="fa fa-star me-2" [ngStyle]="{'color': ev.reliability > 1 ? '#1F9B94' : '#ffffff8c'}"></i>
+                  <i class="fa fa-star me-2" [ngStyle]="{'color': ev.reliability > 2 ? '#1F9B94' : '#ffffff8c'}"></i>
+                  <i class="fa fa-star me-2" [ngStyle]="{'color': ev.reliability > 3 ? '#1F9B94' : '#ffffff8c'}"></i>
+                  <i class="fa fa-star me-0" [ngStyle]="{'color': ev.reliability > 4 ? '#1F9B94' : '#ffffff8c'}"></i>
+                </div>
+              </div>
+
+              <div class="stars d-flex justify-content-between bg-white ps-2 pe-2 m-1" >
+                <p class="mb-0">Quality of product</p>
+                <div>
+                  <i class="fa fa-star me-2" [ngStyle]="{'color': ev.qualityOfProduct > 0 ? '#1F9B94' : '#ffffff8c'}"></i>
+                  <i class="fa fa-star me-2" [ngStyle]="{'color': ev.qualityOfProduct > 1 ? '#1F9B94' : '#ffffff8c'}"></i>
+                  <i class="fa fa-star me-2" [ngStyle]="{'color': ev.qualityOfProduct > 2 ? '#1F9B94' : '#ffffff8c'}"></i>
+                  <i class="fa fa-star me-2" [ngStyle]="{'color': ev.qualityOfProduct > 3 ? '#1F9B94' : '#ffffff8c'}"></i>
+                  <i class="fa fa-star me-0" [ngStyle]="{'color': ev.qualityOfProduct > 4 ? '#1F9B94' : '#ffffff8c'}"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div  *ngIf="ev.comment != null" class="comment d-flex p-2 mt-2">
+            <p class="pe-5">Comment:</p>
+            <p>{{ev.comment}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <button class="btn-success-long d-flex mt-2 mb-2" (click)="loadLenderEvaluations()">
+      <p class="m-1">Evaluation as lender</p>
+      <i [hidden]="showLenderEvaluations" class="fa fa-angle-right m-1 fa-lg"></i>
+      <i [hidden]="!showLenderEvaluations" class="fa fa-angle-down m-1 fa-lg"></i>
+    </button>
+
+    <div *ngIf="showLenderEvaluations" class="evaluationSection pb-2">
+      <p class="text-center sum p-2">{{user?.evaluationAsLender}} (from {{user?.evaluationAsLender}} vote)</p>
+
+      <div *ngFor="let ev of evaluationsLender" class="evSection p-2 m-4">
+        <div>
+          <div class="d-flex profile-info justify-content-start align-items-center mt-2 mb-lg-4">
+            <div class="me-4">
+              <img class="img-profile-sm" src="https://localhost:44377/images/profile/8b1b52a5-37df-4ae4-83d1-1f599566b073/AGDSDGGDFERSRQER.jpg" alt="">
+            </div>
+            <div>
+              <p class="user-name-m">{{ev.userFrom.name}}</p>
+              <p>{{ev.creation}}</p>
+            </div>
+          </div>
+          <div class="d-flex justify-content-center">
+            <div>
+              <div class="stars d-flex justify-content-between bg-white ps-2 pe-2 m-1" >
+                <p class="mb-0">Flexibility</p>
+                <div>
+                  <i class="fa fa-star me-2" [ngStyle]="{'color': ev.flexibility > 0 ? '#1F9B94' : '#ffffff8c'}"></i>
+                  <i class="fa fa-star me-2" [ngStyle]="{'color': ev.flexibility > 1 ? '#1F9B94' : '#ffffff8c'}"></i>
+                  <i class="fa fa-star me-2" [ngStyle]="{'color': ev.flexibility > 2 ? '#1F9B94' : '#ffffff8c'}"></i>
+                  <i class="fa fa-star me-2" [ngStyle]="{'color': ev.flexibility > 3 ? '#1F9B94' : '#ffffff8c'}"></i>
+                  <i class="fa fa-star me-0" [ngStyle]="{'color': ev.flexibility > 4 ? '#1F9B94' : '#ffffff8c'}"></i>
+                </div>
+              </div>
+
+              <div class="stars d-flex justify-content-between bg-white ps-2 pe-2 m-1" >
+                <p class="mb-0">Reliability</p>
+                <div>
+                  <i class="fa fa-star me-2" [ngStyle]="{'color': ev.reliability > 0 ? '#1F9B94' : '#ffffff8c'}"></i>
+                  <i class="fa fa-star me-2" [ngStyle]="{'color': ev.reliability > 1 ? '#1F9B94' : '#ffffff8c'}"></i>
+                  <i class="fa fa-star me-2" [ngStyle]="{'color': ev.reliability > 2 ? '#1F9B94' : '#ffffff8c'}"></i>
+                  <i class="fa fa-star me-2" [ngStyle]="{'color': ev.reliability > 3 ? '#1F9B94' : '#ffffff8c'}"></i>
+                  <i class="fa fa-star me-0" [ngStyle]="{'color': ev.reliability > 4 ? '#1F9B94' : '#ffffff8c'}"></i>
+                </div>
+              </div>
+
+              <div class="stars d-flex justify-content-between bg-white ps-2 pe-2 m-1" >
+                <p class="mb-0">Quality of product</p>
+                <div>
+                  <i class="fa fa-star me-2" [ngStyle]="{'color': ev.qualityOfProduct > 0 ? '#1F9B94' : '#ffffff8c'}"></i>
+                  <i class="fa fa-star me-2" [ngStyle]="{'color': ev.qualityOfProduct > 1 ? '#1F9B94' : '#ffffff8c'}"></i>
+                  <i class="fa fa-star me-2" [ngStyle]="{'color': ev.qualityOfProduct > 2 ? '#1F9B94' : '#ffffff8c'}"></i>
+                  <i class="fa fa-star me-2" [ngStyle]="{'color': ev.qualityOfProduct > 3 ? '#1F9B94' : '#ffffff8c'}"></i>
+                  <i class="fa fa-star me-0" [ngStyle]="{'color': ev.qualityOfProduct > 4 ? '#1F9B94' : '#ffffff8c'}"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div  *ngIf="ev.comment != null" class="comment d-flex p-2 mt-2">
+            <p class="pe-5">Comment:</p>
+            <p>{{ev.comment}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

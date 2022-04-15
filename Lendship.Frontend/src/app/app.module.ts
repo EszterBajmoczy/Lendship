@@ -3,6 +3,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule} from "@angular/forms";
 import { HttpClientModule } from '@angular/common/http';
 
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FormsModule } from '@angular/forms';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomePageComponent } from './pages/home-page/home-page.component';
@@ -13,6 +16,8 @@ import { RegistrationPageComponent } from "./pages/registration-page/registratio
 import { AdvertisementsPageComponent } from './pages/advertisements-page/advertisements-page.component';
 import { AdvertisementInfoPageComponent } from './pages/advertisement-info-page/advertisement-info-page.component';
 import { AdvertisementCreateComponent } from './pages/advertisement-create/advertisement-create.component';
+import { ProfilePageComponent } from './pages/profile-page/profile-page.component';
+import { ReservationPopupComponent } from './pages/popup/reservation-popup/reservation-popup.component';
 
 
 @NgModule({
@@ -26,12 +31,16 @@ import { AdvertisementCreateComponent } from './pages/advertisement-create/adver
         AdvertisementsPageComponent,
         AdvertisementInfoPageComponent,
         AdvertisementCreateComponent,
+        ProfilePageComponent,
+        ReservationPopupComponent,
     ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
+    FormsModule,
+    NgbModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
