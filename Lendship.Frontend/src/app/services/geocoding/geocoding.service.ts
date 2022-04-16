@@ -29,7 +29,6 @@ export class GeocodingService {
       locate: lat + ',' + long,
       json: '1'
     }
-    console.log(lat +"-"+ long);
     return this.http.get(this.baseUrl, {params});
   }
 

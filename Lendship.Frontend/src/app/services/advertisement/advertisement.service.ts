@@ -6,6 +6,7 @@ import { Advertisement } from "../../models/advertisement";
 import { AuthService } from "../auth/auth.service";
 import { GeocodingService} from "../geocoding/geocoding.service";
 import {AdvertisementDetail} from "../../models/advertisement-detail";
+import {LoginResponse} from "../../models/response-login";
 
 @Injectable({
   providedIn: 'root'
@@ -48,10 +49,17 @@ export class AdvertisementService {
         catchError(this.handleError));
   }
 
+  createAdvertisement(ad: AdvertisementDetail): Observable<number>{
+    return this.http.post<any>("https://localhost:44377/Advertisement/", ad, { headers: this.headers})
+      .pipe(
+        catchError(this.handleError));
+  }
+
   setLocations(ads: Advertisement[]){
     ads.forEach((ad) => {
-      this.geocodingService.getAddress(ad.latitude, ad.longitude)
-        .subscribe(location => ad.location = location["city"]);
+      ad.location = "MockLocation";
+      /*this.geocodingService.getAddress(ad.latitude, ad.longitude)
+        .subscribe(location => ad.location = location["city"]);*/
     });
     console.log(ads);
     return ads;
@@ -68,7 +76,6 @@ export class AdvertisementService {
   }
 
   private handleError(error: HttpErrorResponse) {
-    console.log("Error auth");
     if (error.status === 0) {
       // A client-side or network error occurred. Handle it accordingly.
       console.error('An error occurred:', error.error);

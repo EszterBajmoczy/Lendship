@@ -5,7 +5,7 @@ import {AuthService} from "../auth/auth.service";
 import {Advertisement} from "../../models/advertisement";
 import {map, throwError} from "rxjs";
 import {IReservation, Reservation} from "../../models/reservation";
-import {Availability} from "../../models/availability";
+import {IAvailability} from "../../models/availability";
 
 @Injectable({
   providedIn: 'root'
@@ -13,16 +13,17 @@ import {Availability} from "../../models/availability";
 export class ReservationService {
   headers: HttpHeaders;
 
-  constructor(private http: HttpClient, private authService: AuthService) { this.headers = new HttpHeaders({
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${this.authService.getAccessToken()}`
-  });
+  constructor(private http: HttpClient, private authService: AuthService) {
+    this.headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${this.authService.getAccessToken()}`
+    });
   }
 
   getReservationForAdvertisement(advertisementId: number){
-    return this.http.get<Availability[]>("https://localhost:44377/Reservation/" + advertisementId, { headers: this.headers})
+    return this.http.get<IAvailability[]>("https://localhost:44377/Reservation/" + advertisementId, { headers: this.headers})
       .pipe(
-        map((response: Availability[]) => this.convertDateFormat(response)),
+        map((response: IAvailability[]) => this.convertDateFormat(response)),
         catchError(this.handleError));
   }
 
@@ -33,7 +34,7 @@ export class ReservationService {
         catchError(this.handleError));
   }
 
-  convertDateFormat(ads: Availability[]){
+  convertDateFormat(ads: IAvailability[]){
     ads.forEach(av => {
       av.dateTo = new Date(av.dateTo ?? '');
       av.dateFrom = new Date(av.dateFrom ?? '');

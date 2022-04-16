@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { NgbCalendar, NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import { ReservationService} from "../../../services/reservation/reservation.service";
-import {Availability} from "../../../models/availability";
+import {IAvailability} from "../../../models/availability";
 
 @Component({
   selector: 'app-reservation-popup',
@@ -10,8 +10,8 @@ import {Availability} from "../../../models/availability";
 })
 export class ReservationPopupComponent implements OnInit {
   @Input() id: number = 0;
-  @Input() availabilities: Availability[] | undefined;
-  reserved: Availability[] | undefined;
+  @Input() availabilities: IAvailability[] | undefined;
+  reserved: IAvailability[] | undefined;
 
   hoveredDate: NgbDate | null = null;
 
@@ -30,8 +30,6 @@ export class ReservationPopupComponent implements OnInit {
         this.reserved = response;
       })
   }
-
-  isWeekend = (date: NgbDate) =>  this.calendar.getWeekday(date) >= 6;
 
   isDisabled = (date: NgbDate, current?: {year: number, month: number}) => {
     let notAvailable = this.notAvailable(date);
