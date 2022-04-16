@@ -127,7 +127,6 @@ namespace Lendship.Backend.DTO
         /// <summary>
         /// Gets or Sets ImageLocations
         /// </summary>
-        [Required]
 
         [DataMember(Name = "imageLocations")]
         public List<string> ImageLocations { get; set; }
@@ -135,7 +134,6 @@ namespace Lendship.Backend.DTO
         /// <summary>
         /// Gets or Sets Creation
         /// </summary>
-        [Required]
         
         [DataMember(Name="creation")]
         public DateTime? Creation { get; set; }

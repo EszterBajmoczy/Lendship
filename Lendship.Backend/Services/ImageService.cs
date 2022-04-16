@@ -176,15 +176,13 @@ namespace Lendship.Backend.Services
                 throw new UpdateNotAllowedException("The advertisement does not belong to this user.");
             }
 
-            var imgLocation = _configuration.GetSection("Image").GetValue("LocationFolder", "wwwroot\\images");
-
             foreach (var file in files)
             {
                 CheckFileFormat(file.ContentType);
 
-                var path = Path.Combine(imgLocation, signedInUserId, advertisementId.ToString());
+                var path = Path.Combine("/", signedInUserId, advertisementId.ToString());
 
-                UploadImg(file, path);
+                UploadImg(file, path, advertisementId);
             }
             _dbContext.SaveChanges();
         }
@@ -208,7 +206,7 @@ namespace Lendship.Backend.Services
             return fullPath;
         }
 
-        private void UploadImg(IFormFile file, string path)
+        private void UploadImg(IFormFile file, string path, int advertisementId)
         {
             if (!Directory.Exists(path))
             {
@@ -225,7 +223,7 @@ namespace Lendship.Backend.Services
 
                 _dbContext.ImageLocations.Add(new ImageLocation()
                 {
-                    AdvertisementId = 2,
+                    AdvertisementId = advertisementId,
                     Location = fullPath
                 });
             }
