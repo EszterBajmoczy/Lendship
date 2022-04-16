@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { LoginUser} from "../../models/login-user";
 import { RegisterUser} from "../../models/registration-user";
 import { LoginResponse} from "../../models/response-login";
-import { HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import {of, tap, throwError} from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LocalStorageService} from "../localstorage/localstorage.service";
@@ -24,11 +24,11 @@ export class AuthService {
     private tokenService: JWTTokenService,
     private router: Router )
   {
-    this.baseUrl = environment.baseUrl + "Authentication/";
+    this.baseUrl = environment.baseUrl + "Authentication";
   }
 
   public login(userData: LoginUser) {
-    const loginCall = this.http.post<LoginResponse>(this.baseUrl + "login",userData)
+    const loginCall = this.http.post<LoginResponse>(this.baseUrl + "/login",userData)
       .pipe(
         catchError(this.handleError));
 
@@ -43,7 +43,7 @@ export class AuthService {
   }
 
   public register(userData: RegisterUser) {
-    const registerCall = this.http.post<LoginResponse>(this.baseUrl + "register",userData)
+    const registerCall = this.http.post<LoginResponse>(this.baseUrl + "/register",userData)
       .pipe(
         catchError(this.handleError));
 
@@ -84,7 +84,7 @@ export class AuthService {
   }
 
   refreshToken() {
-    return this.http.post<LoginResponse>(this.baseUrl + "refresh", {
+    return this.http.post<LoginResponse>(this.baseUrl + "/refresh", {
       refreshToken: this.getRefreshToken(),
     })
       .pipe(
@@ -96,6 +96,13 @@ export class AuthService {
           return of(false);
         })
       );
+  }
+
+  getHeaders(): HttpHeaders{
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${this.getAccessToken()}`
+    });
   }
 
   private handleError(error: HttpErrorResponse) {
