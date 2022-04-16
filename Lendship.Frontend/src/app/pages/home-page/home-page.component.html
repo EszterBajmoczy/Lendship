@@ -1,5 +1,3 @@
-<p class="fw-bold">Welcome!</p>
-
 <div *ngIf="isLoggedIn" class="card-container container d-flex flex-wrap col-lg-10 justify-content-between">
 
   <div *ngFor="let ad of ads" class="card m-3" style="width: 18rem; height: 22rem" (click)="cardClicked(ad.id)">

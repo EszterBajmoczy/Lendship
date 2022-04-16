@@ -68,8 +68,8 @@ namespace Lendship.Backend.Controllers
         {
             try
             {
-                _adService.CreateAdvertisement(advertisement);
-                return StatusCode(201);
+                int id = _adService.CreateAdvertisement(advertisement);
+                return new ObjectResult(id);
             } catch (Exception e)
             {
                 Console.WriteLine("Exception at creating advertisement: " + e.Message);

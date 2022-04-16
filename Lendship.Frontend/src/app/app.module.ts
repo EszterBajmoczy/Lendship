@@ -14,9 +14,12 @@ import { AppFooterComponent} from "./components/common/footer/app-footer.compone
 import { LoginComponent } from './pages/login-page/login.component';
 import { RegistrationPageComponent } from "./pages/registration-page/registration-page.component";
 import { AdvertisementsPageComponent } from './pages/advertisements-page/advertisements-page.component';
-import { AdvertisementInfoPageComponent } from './pages/advertisement-info-page/advertisement-info-page.component';
+import { AdvertisementInfoComponent } from './pages/advertisement-info-page/advertisement-info.component';
+import { AdvertisementCreateComponent } from './pages/advertisement-create/advertisement-create.component';
 import { ProfilePageComponent } from './pages/profile-page/profile-page.component';
 import { ReservationPopupComponent } from './pages/popup/reservation-popup/reservation-popup.component';
+import { CreateAdvertisementPopupComponent } from "./pages/popup/create-advertisement-popup/create-advertisement-popup.component";
+import { FileUploadComponent } from './components/common/file-upload/file-upload/file-upload.component';
 
 
 @NgModule({
@@ -28,9 +31,12 @@ import { ReservationPopupComponent } from './pages/popup/reservation-popup/reser
         LoginComponent,
         RegistrationPageComponent,
         AdvertisementsPageComponent,
-        AdvertisementInfoPageComponent,
+        AdvertisementInfoComponent,
+        AdvertisementCreateComponent,
         ProfilePageComponent,
         ReservationPopupComponent,
+        CreateAdvertisementPopupComponent,
+        FileUploadComponent,
     ],
   imports: [
     BrowserModule,

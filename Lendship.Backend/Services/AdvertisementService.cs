@@ -45,7 +45,7 @@ namespace Lendship.Backend.Services
             return advertisementDto;
         }
 
-        public void CreateAdvertisement(AdvertisementDetailsDto advertisement)
+        public int CreateAdvertisement(AdvertisementDetailsDto advertisement)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -61,6 +61,8 @@ namespace Lendship.Backend.Services
 
             _dbContext.Advertisements.Add(ad);
             _dbContext.SaveChanges();
+
+            return ad.Id;
         }
 
         public void UpdateAdvertisement(AdvertisementDetailsDto advertisement)

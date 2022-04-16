@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AdvertisementInfoPageComponent } from './advertisement-info-page.component';
+import { AdvertisementInfoComponent } from './advertisement-info.component';
 
 describe('AdvertisementInfoPageComponent', () => {
-  let component: AdvertisementInfoPageComponent;
-  let fixture: ComponentFixture<AdvertisementInfoPageComponent>;
+  let component: AdvertisementInfoComponent;
+  let fixture: ComponentFixture<AdvertisementInfoComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AdvertisementInfoPageComponent ]
+      declarations: [ AdvertisementInfoComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AdvertisementInfoPageComponent);
+    fixture = TestBed.createComponent(AdvertisementInfoComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

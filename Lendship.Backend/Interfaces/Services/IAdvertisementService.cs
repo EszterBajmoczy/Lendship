@@ -10,7 +10,7 @@ namespace Lendship.Backend.Interfaces.Services
     {
         AdvertisementDetailsDto GetAdvertisement(int advertisementId);
 
-        void CreateAdvertisement(AdvertisementDetailsDto advertisement);
+        int CreateAdvertisement(AdvertisementDetailsDto advertisement);
 
         void UpdateAdvertisement(AdvertisementDetailsDto advertisement);
 

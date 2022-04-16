@@ -1,18 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute} from "@angular/router";
-import { AdvertisementService} from "../../services/advertisement/advertisement.service";
-import {AdvertisementDetail} from "../../models/advertisement-detail";
-import {ModalDismissReasons, NgbCalendar, NgbDate, NgbDateParserFormatter, NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {ReservationService} from "../../services/reservation/reservation.service";
-import {Reservation} from "../../models/reservation";
-import {formatDate} from "@angular/common";
+import { ActivatedRoute } from "@angular/router";
+import { AdvertisementService } from "../../services/advertisement/advertisement.service";
+import { AdvertisementDetail } from "../../models/advertisement-detail";
+import { NgbCalendar, NgbDate, NgbDateParserFormatter, NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { ReservationService } from "../../services/reservation/reservation.service";
+import { Reservation } from "../../models/reservation";
 
 @Component({
   selector: 'app-advertisement-info-page',
-  templateUrl: './advertisement-info-page.component.html',
-  styleUrls: ['./advertisement-info-page.component.scss']
+  templateUrl: './advertisement-info.component.html',
+  styleUrls: ['./advertisement-info.component.scss']
 })
-export class AdvertisementInfoPageComponent implements OnInit {
+export class AdvertisementInfoComponent implements OnInit {
   id: number = -1;
   ad: AdvertisementDetail | undefined;
 
