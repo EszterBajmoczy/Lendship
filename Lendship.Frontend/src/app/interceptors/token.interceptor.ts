@@ -12,6 +12,7 @@ import {environment} from "../../environments/environment";
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
+  private shouldLogout = false;
   private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(
     null
@@ -54,6 +55,13 @@ export class TokenInterceptor implements HttpInterceptor {
   }
 
   private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
+    if(this.shouldLogout){
+      this.authService.logout();
+      this.shouldLogout = false;
+    } else {
+      this.shouldLogout = true;
+
+    }
     if (!this.isRefreshing) {
       this.isRefreshing = true;
       this.refreshTokenSubject.next(null);

@@ -8,6 +8,7 @@ import { AdvertisementInfoComponent } from "./pages/advertisement-info-page/adve
 import { AdvertisementCreateComponent } from "./pages/advertisement-create/advertisement-create.component";
 import { ProfilePageComponent } from "./pages/profile-page/profile-page.component";
 import { ConversationsPageComponent } from "./pages/conversations-page/conversations-page.component";
+import {ConversationInfoPageComponent} from "./pages/conversation-info-page/conversation-info-page.component";
 
 const routes: Routes = [
   {
@@ -46,6 +47,10 @@ const routes: Routes = [
   {
     path: 'conversations',
     component: ConversationsPageComponent
+  },
+  {
+    path: 'conversations/:advertisementId/:conversationId',
+    component: ConversationInfoPageComponent
   }
 ];
 

@@ -75,7 +75,7 @@ namespace Lendship.Backend.Services
                 throw new ConversationNotFoundException("Conversation not exists.");
             }
 
-            var userFrom = _dbContext.Users.Where(x => x.Id == messageDto.UserFrom.Id.ToString()).FirstOrDefault();
+            var userFrom = _dbContext.Users.Where(x => x.Id == signedInUserId).FirstOrDefault();
 
             var message = _messageConverter.ConvertToEntity(messageDto, userFrom);
 

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Conversation} from "../../models/conversation";
 import {ConversationService} from "../../services/conversation/conversation.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-conversations-page',
@@ -10,7 +11,7 @@ import {ConversationService} from "../../services/conversation/conversation.serv
 export class ConversationsPageComponent implements OnInit {
   conversations = new Array<Conversation>();
 
-  constructor(private conversationService: ConversationService) {
+  constructor(private conversationService: ConversationService, private router: Router) {
     conversationService.getAllConversation()
       .subscribe((cons) => {
         console.log(cons);
@@ -21,4 +22,7 @@ export class ConversationsPageComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  openConversation(advertisementId: number, conversationId: number) {
+    this.router.navigateByUrl('conversations/' + advertisementId + "/" + conversationId);
+  }
 }

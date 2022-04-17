@@ -6,6 +6,7 @@ import {map, Observable, throwError} from "rxjs";
 import {Conversation} from "../../models/conversation";
 import {catchError} from "rxjs/operators";
 import {AdvertisementDetail} from "../../models/advertisement-detail";
+import {Message} from "../../models/message";
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +37,18 @@ export class ConversationService {
           });
           return cons;
         }),
+        catchError(this.handleError));
+  }
+
+  getMessagesForConversation(conversationId: number): Observable<Message[]> {
+    return this.http.get<Message[]>(this.baseUrl + conversationId, { headers: this.headers})
+      .pipe(
+        catchError(this.handleError));
+  }
+
+  sendMessage(msg: Message) {
+    return this.http.post<Message>(this.baseUrl + "msg", msg, { headers: this.headers })
+      .pipe(
         catchError(this.handleError));
   }
 
