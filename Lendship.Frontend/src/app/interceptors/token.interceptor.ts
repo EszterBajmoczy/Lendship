@@ -8,6 +8,7 @@ import {
 import {BehaviorSubject, Observable, throwError, switchMap, take, filter} from 'rxjs';
 import {AuthService} from "../services/auth/auth.service";
 import {catchError} from "rxjs/operators";
+import {environment} from "../../environments/environment";
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
@@ -22,7 +23,7 @@ export class TokenInterceptor implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    if(!request.url.includes("geocode")){
+    if(!request.url.includes(environment.geocodingBaseUrl)){
       if (this.authService.getAccessToken()) {
         request = this.addToken(request, this.authService.getAccessToken());
       }
