@@ -3,14 +3,17 @@ import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import {Observable, throwError} from 'rxjs';
 import {AuthService} from "../auth/auth.service";
 import {catchError} from "rxjs/operators";
+import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class FileUploadService {
-  headers: HttpHeaders;
+  private baseUrl: string;
+  private headers: HttpHeaders;
 
   constructor(private http:HttpClient, private authService: AuthService) {
+    this.baseUrl = environment.baseUrl + "Image/";
     this.headers = new HttpHeaders({
       'Authorization': `Bearer ${this.authService.getAccessToken()}`,
     });
@@ -21,7 +24,7 @@ export class FileUploadService {
     files.forEach((file) => {
       formData.append(file.name, file);
     })
-    return this.http.post("https://localhost:44377/Image/" + advertisementId, formData, {headers: this.headers})
+    return this.http.post(this.baseUrl + advertisementId, formData, {headers: this.headers})
       .pipe(
         catchError(this.handleError));
   }

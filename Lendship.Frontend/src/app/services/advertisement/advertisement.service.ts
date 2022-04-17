@@ -1,56 +1,55 @@
 import { Injectable } from '@angular/core';
 import { catchError } from "rxjs/operators";
-import { HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
-import {map, Observable, throwError} from 'rxjs';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { map, Observable, throwError } from 'rxjs';
 import { Advertisement } from "../../models/advertisement";
 import { AuthService } from "../auth/auth.service";
-import { GeocodingService} from "../geocoding/geocoding.service";
-import {AdvertisementDetail} from "../../models/advertisement-detail";
-import {LoginResponse} from "../../models/response-login";
+import { GeocodingService } from "../geocoding/geocoding.service";
+import { AdvertisementDetail } from "../../models/advertisement-detail";
+import { environment } from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdvertisementService {
-  headers: HttpHeaders
+  private baseUrl: string;
+  private headers: HttpHeaders
 
   constructor(private http: HttpClient, private authService: AuthService, private geocodingService: GeocodingService) {
-    this.headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${this.authService.getAccessToken()}`
-    });
+    this.baseUrl = environment.baseUrl + "Advertisement/";
+    this.headers = authService.getHeaders();
   }
 
   getAdvertisements(): Observable<Advertisement[]>{
-    return this.http.get<Advertisement[]>("https://localhost:44377/Advertisement", { headers: this.headers})
+    return this.http.get<Advertisement[]>(this.baseUrl, { headers: this.headers})
       .pipe(
         map((response: Advertisement[]) => this.setLocations(response)),
         catchError(this.handleError));
   }
 
   getOwnAdvertisements(): Observable<Advertisement[]>{
-    return this.http.get<Advertisement[]>("https://localhost:44377/Advertisement/own", { headers: this.headers})
+    return this.http.get<Advertisement[]>(this.baseUrl + "own", { headers: this.headers})
       .pipe(
         map((response: Advertisement[]) => this.setLocations(response)),
         catchError(this.handleError));
   }
 
   getSavedAdvertisements(): Observable<Advertisement[]>{
-    return this.http.get<Advertisement[]>("https://localhost:44377/Advertisement/saved", { headers: this.headers})
+    return this.http.get<Advertisement[]>(this.baseUrl + "saved", { headers: this.headers})
       .pipe(
         map((response: Advertisement[]) => this.setLocations(response)),
         catchError(this.handleError));
   }
 
   getAdvertisementDetailById(id: number): Observable<AdvertisementDetail>{
-    return this.http.get<AdvertisementDetail>("https://localhost:44377/Advertisement/" + id, { headers: this.headers})
+    return this.http.get<AdvertisementDetail>(this.baseUrl + id, { headers: this.headers})
       .pipe(
         map((response: AdvertisementDetail) => this.setLocation(response)),
         catchError(this.handleError));
   }
 
   createAdvertisement(ad: AdvertisementDetail): Observable<number>{
-    return this.http.post<any>("https://localhost:44377/Advertisement/", ad, { headers: this.headers})
+    return this.http.post<any>(this.baseUrl, ad, { headers: this.headers})
       .pipe(
         catchError(this.handleError));
   }

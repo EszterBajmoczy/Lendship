@@ -2,26 +2,25 @@ import { Injectable } from '@angular/core';
 import { catchError } from "rxjs/operators";
 import { HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import {AuthService} from "../auth/auth.service";
-import {Advertisement} from "../../models/advertisement";
 import {map, throwError} from "rxjs";
-import {IReservation, Reservation} from "../../models/reservation";
+import {Reservation} from "../../models/reservation";
 import {IAvailability} from "../../models/availability";
+import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReservationService {
-  headers: HttpHeaders;
+  private baseUrl: string;
+  private headers: HttpHeaders;
 
   constructor(private http: HttpClient, private authService: AuthService) {
-    this.headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${this.authService.getAccessToken()}`
-    });
+    this.baseUrl = environment.baseUrl + "Reservation/";
+    this.headers = authService.getHeaders();
   }
 
   getReservationForAdvertisement(advertisementId: number){
-    return this.http.get<IAvailability[]>("https://localhost:44377/Reservation/" + advertisementId, { headers: this.headers})
+    return this.http.get<IAvailability[]>(this.baseUrl + advertisementId, { headers: this.headers})
       .pipe(
         map((response: IAvailability[]) => this.convertDateFormat(response)),
         catchError(this.handleError));
@@ -29,7 +28,7 @@ export class ReservationService {
 
   reserve(advertisementId: number, res: Reservation){
     console.log(res);
-    return this.http.post("https://localhost:44377/Reservation/?advertisementId=" + advertisementId, res, { headers: this.headers})
+    return this.http.post(this.baseUrl + "?advertisementId=" + advertisementId, res, { headers: this.headers})
       .pipe(
         catchError(this.handleError));
   }

@@ -5,44 +5,43 @@ import { map, Observable, throwError } from 'rxjs';
 import { AuthService } from "../auth/auth.service";
 import { UserDetail } from "../../models/user-detail";
 import { GeocodingService} from "../geocoding/geocoding.service";
-import {AdvertisementDetail} from "../../models/advertisement-detail";
 import {EvaluationAdvertiser, EvaluationLender} from "../../models/evaluations";
+import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-  headers: HttpHeaders
+  private baseUrl: string;
+  private headers: HttpHeaders;
 
   constructor(private http: HttpClient, private authService: AuthService, private geoCodingService: GeocodingService) {
-    this.headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${this.authService.getAccessToken()}`
-    });
+    this.baseUrl = environment.baseUrl;
+    this.headers = authService.getHeaders();
   }
 
   getUser(): Observable<UserDetail>{
-    return this.http.get<UserDetail>("https://localhost:44377/Profile", { headers: this.headers})
+    return this.http.get<UserDetail>(this.baseUrl + "Profile/", { headers: this.headers})
       .pipe(
         map((response: UserDetail) => this.setLocation(response)),
         catchError(this.handleError));
   }
 
   getOtherUser(id: string): Observable<UserDetail>{
-    return this.http.get<UserDetail>("https://localhost:44377/Profile/" + id, { headers: this.headers})
+    return this.http.get<UserDetail>(this.baseUrl + "Profile/" + id, { headers: this.headers})
       .pipe(
         map((response: UserDetail) => this.setLocation(response)),
         catchError(this.handleError));
   }
 
   getEvaluationAdvertiserUser(id: string): Observable<EvaluationAdvertiser[]>{
-    return this.http.get<EvaluationAdvertiser[]>("https://localhost:44377/EvaluationAdvertiser/" + id, { headers: this.headers})
+    return this.http.get<EvaluationAdvertiser[]>(this.baseUrl + "EvaluationAdvertiser/" + id, { headers: this.headers})
       .pipe(
         catchError(this.handleError));
   }
 
   getEvaluationLenderUser(id: string): Observable<EvaluationLender[]>{
-    return this.http.get<EvaluationLender[]>("https://localhost:44377/EvaluationLender/" + id, { headers: this.headers})
+    return this.http.get<EvaluationLender[]>(this.baseUrl + "/EvaluationLender/" + id, { headers: this.headers})
       .pipe(
         catchError(this.handleError));
   }
