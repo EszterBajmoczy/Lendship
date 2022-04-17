@@ -32,17 +32,18 @@ namespace Lendship.Backend.Services
             _messageConverter = new MessageConverter(userConverter);
         }
 
-        public void CreateConversation(ConversationDto conversationDto)
+        public int CreateConversation(ConversationDto conversationDto)
         {
-            var advertisement = _dbContext.Advertisements.Where(x => x.Id == conversationDto.AdvertisementId).FirstOrDefault();
+            var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var advertisement = _dbContext.Advertisements
+                .Include(x => x.User)
+                .Where(x => x.Id == conversationDto.AdvertisementId)
+                .FirstOrDefault();
 
             if (advertisement == null)
             {
                 throw new AdvertisementNotFoundException("Advertisement not exists.");
             }
-
-            var userIds = conversationDto.Users.Select(u => u.Id.ToString());
-            var users = _dbContext.Users.Where(x => userIds.Contains(x.Id)).ToList();
 
             var conversation = _conversationConverter.ConvertToEntity(conversationDto, advertisement, null);
             
@@ -50,18 +51,24 @@ namespace Lendship.Backend.Services
             _dbContext.Conversation.Add(conversation);
             _dbContext.SaveChanges();
 
-            foreach (var user in users)
+            var newRelationFirst = new UsersAndConversations()
             {
-                var newRelation = new UsersAndConversations()
-                {
-                    ConversationId = conversation.Id,
-                    UserId = user.Id
-                };
+                ConversationId = conversation.Id,
+                UserId = signedInUserId
+            };
 
-                _dbContext.UsersAndConversations.Add(newRelation);
-            }
+            var newRelationSecond = new UsersAndConversations()
+            {
+                ConversationId = conversation.Id,
+                UserId = advertisement.User.Id
+            };
+
+            _dbContext.UsersAndConversations.Add(newRelationFirst);
+            _dbContext.UsersAndConversations.Add(newRelationSecond);
 
             _dbContext.SaveChanges();
+
+            return conversation.Id;
         }
 
         public void CreateMessage(MessageDto messageDto)

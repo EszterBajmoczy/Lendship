@@ -39,11 +39,6 @@ namespace Lendship.Backend.Converters
 
         public Conversation ConvertToEntity(ConversationDto conversationDto, Advertisement advertisement, List<Message> msgs)
         {
-            var users = conversationDto
-                .Users
-                .Where(x => x.Id.HasValue)
-                .ToList();
-
             return new Conversation()
             {
                 Id = conversationDto.Id ?? 0,

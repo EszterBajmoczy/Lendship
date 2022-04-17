@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {Conversation} from "../../models/conversation";
+import {IConversation} from "../../models/conversation";
 import {ConversationService} from "../../services/conversation/conversation.service";
 import {Router} from "@angular/router";
 
@@ -9,7 +9,7 @@ import {Router} from "@angular/router";
   styleUrls: ['./conversations-page.component.scss']
 })
 export class ConversationsPageComponent implements OnInit {
-  conversations = new Array<Conversation>();
+  conversations = new Array<IConversation>();
 
   constructor(private conversationService: ConversationService, private router: Router) {
     conversationService.getAllConversation()

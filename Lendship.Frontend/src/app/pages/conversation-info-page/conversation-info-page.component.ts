@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {Message} from "../../models/message";
 import {ConversationService} from "../../services/conversation/conversation.service";
 import {AdvertisementService} from "../../services/advertisement/advertisement.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {AdvertisementDetail} from "../../models/advertisement-detail";
 import {AuthService} from "../../services/auth/auth.service";
 import { DatePipe } from '@angular/common'
@@ -37,6 +37,7 @@ export class ConversationInfoPageComponent implements OnInit {
     private authService: AuthService,
     private datePipe: DatePipe,
     private formBuilder: FormBuilder,
+    private router: Router,
     activatedRoute: ActivatedRoute)
   {
     this.userId = authService.getUserId();
@@ -108,5 +109,9 @@ export class ConversationInfoPageComponent implements OnInit {
             this.messages = this.categorizeMessages(msgs);
           })
       });
+  }
+
+  advertisementClicked() {
+    this.router.navigateByUrl('advertisement/'+ this.advertisementId);
   }
 }

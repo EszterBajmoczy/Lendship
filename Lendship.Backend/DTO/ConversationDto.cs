@@ -50,7 +50,6 @@ namespace Lendship.Backend.DTO
         /// <summary>
         /// Gets or Sets Users
         /// </summary>
-        [Required]
         
         [DataMember(Name="users")]
         public List<UserDto> Users { get; set; }

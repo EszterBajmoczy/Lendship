@@ -3,7 +3,7 @@ import {AuthService} from "../auth/auth.service";
 import {environment} from "../../../environments/environment";
 import {HttpClient, HttpErrorResponse, HttpHeaders} from "@angular/common/http";
 import {map, Observable, throwError} from "rxjs";
-import {Conversation} from "../../models/conversation";
+import {Conversation, IConversation} from "../../models/conversation";
 import {catchError} from "rxjs/operators";
 import {AdvertisementDetail} from "../../models/advertisement-detail";
 import {Message} from "../../models/message";
@@ -20,10 +20,10 @@ export class ConversationService {
     this.headers = authService.getHeaders();
   }
 
-  getAllConversation(): Observable<Conversation[]>{
-    return this.http.get<Conversation[]>(this.baseUrl, { headers: this.headers})
+  getAllConversation(): Observable<IConversation[]>{
+    return this.http.get<IConversation[]>(this.baseUrl, { headers: this.headers})
       .pipe(
-        map((cons: Conversation[]) => {
+        map((cons: IConversation[]) => {
           cons.forEach((con) => {
             let result = "";
             con.users.forEach((user) => {
@@ -52,6 +52,11 @@ export class ConversationService {
         catchError(this.handleError));
   }
 
+  createConversation(con: Conversation): Observable<number> {
+    return this.http.post<number>(this.baseUrl, con, { headers: this.headers })
+      .pipe(
+        catchError(this.handleError));
+  }
 
   private handleError(error: HttpErrorResponse) {
     if (error.status === 0) {

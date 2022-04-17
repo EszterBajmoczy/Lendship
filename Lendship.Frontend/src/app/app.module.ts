@@ -23,6 +23,7 @@ import { FileUploadComponent } from './components/common/file-upload/file-upload
 import { TokenInterceptor } from "./interceptors/token.interceptor";
 import { ConversationsPageComponent } from './pages/conversations-page/conversations-page.component';
 import { ConversationInfoPageComponent } from './pages/conversation-info-page/conversation-info-page.component';
+import { MessagePopupComponent } from './pages/popup/message-popup/message-popup.component';
 
 @NgModule({
     declarations: [
@@ -41,6 +42,7 @@ import { ConversationInfoPageComponent } from './pages/conversation-info-page/co
         FileUploadComponent,
         ConversationsPageComponent,
         ConversationInfoPageComponent,
+        MessagePopupComponent,
     ],
   imports: [
     BrowserModule,
