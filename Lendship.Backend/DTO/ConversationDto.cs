@@ -50,10 +50,16 @@ namespace Lendship.Backend.DTO
         /// <summary>
         /// Gets or Sets Users
         /// </summary>
-        [Required]
         
         [DataMember(Name="users")]
         public List<UserDto> Users { get; set; }
+
+        /// <summary>
+        /// Gets or Sets HasNewMessage
+        /// </summary>
+
+        [DataMember(Name = "hasNewMessage")]
+        public bool HasNewMessage { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -67,6 +73,7 @@ namespace Lendship.Backend.DTO
             sb.Append("  AdvertisementId: ").Append(AdvertisementId).Append("\n");
             sb.Append("  ConversationName: ").Append(ConversationName).Append("\n");
             sb.Append("  Users: ").Append(Users).Append("\n");
+            sb.Append("  HasNewMessage: ").Append(HasNewMessage).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -122,6 +129,9 @@ namespace Lendship.Backend.DTO
                     Users == other.Users ||
                     Users != null &&
                     Users.SequenceEqual(other.Users)
+                ) &&
+                (
+                    HasNewMessage == other.HasNewMessage
                 );
         }
 
@@ -143,6 +153,8 @@ namespace Lendship.Backend.DTO
                     hashCode = hashCode * 59 + ConversationName.GetHashCode();
                     if (Users != null)
                     hashCode = hashCode * 59 + Users.GetHashCode();
+                    if (HasNewMessage != null)
+                    hashCode = hashCode * 59 + HasNewMessage.GetHashCode();
                 return hashCode;
             }
         }

@@ -8,7 +8,7 @@ namespace Lendship.Backend.Interfaces.Services
     {
         IEnumerable<ConversationDto> GetAllConversation(string searchString);
 
-        void CreateConversation(ConversationDto conversationDto);
+        int CreateConversation(ConversationDto conversationDto);
 
         void CreateMessage(MessageDto messageDto);
 

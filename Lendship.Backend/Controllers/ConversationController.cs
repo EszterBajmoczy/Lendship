@@ -46,8 +46,8 @@ namespace Lendship.Backend.Controllers
         {
             try
             {
-                _conversationService.CreateConversation(conversation);
-                return StatusCode(201);
+                int id = _conversationService.CreateConversation(conversation);
+                return new ObjectResult(id);
             }
             catch (Exception e)
             {

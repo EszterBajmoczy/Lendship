@@ -69,6 +69,10 @@ export class AuthService {
     return this.tokenService.getUserName() ?? "";
   }
 
+  public getUserId() : string {
+    return this.tokenService.getUserId() ?? "";
+  }
+
   public getAccessToken() : string {
     return this.localstorageService.get("ACCESS_TOKEN") ?? "";
   }
@@ -81,6 +85,7 @@ export class AuthService {
     localStorage.removeItem('ACCESS_TOKEN');
     localStorage.removeItem('REFRESH_TOKEN');
     this.tokenService.removeToken();
+    this.router.navigateByUrl('home');
   }
 
   refreshToken() {

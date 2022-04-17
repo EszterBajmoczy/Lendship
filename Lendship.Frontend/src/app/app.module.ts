@@ -21,6 +21,9 @@ import { ReservationPopupComponent } from './pages/popup/reservation-popup/reser
 import { CreateAdvertisementPopupComponent } from "./pages/popup/create-advertisement-popup/create-advertisement-popup.component";
 import { FileUploadComponent } from './components/common/file-upload/file-upload/file-upload.component';
 import { TokenInterceptor } from "./interceptors/token.interceptor";
+import { ConversationsPageComponent } from './pages/conversations-page/conversations-page.component';
+import { ConversationInfoPageComponent } from './pages/conversation-info-page/conversation-info-page.component';
+import { MessagePopupComponent } from './pages/popup/message-popup/message-popup.component';
 
 @NgModule({
     declarations: [
@@ -37,6 +40,9 @@ import { TokenInterceptor } from "./interceptors/token.interceptor";
         ReservationPopupComponent,
         CreateAdvertisementPopupComponent,
         FileUploadComponent,
+        ConversationsPageComponent,
+        ConversationInfoPageComponent,
+        MessagePopupComponent,
     ],
   imports: [
     BrowserModule,
