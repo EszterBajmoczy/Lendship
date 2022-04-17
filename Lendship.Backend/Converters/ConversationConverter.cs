@@ -16,7 +16,7 @@ namespace Lendship.Backend.Converters
             _userConverter = userConverter;
         }
 
-        public ConversationDto ConvertToDto(Conversation conversation, List<ApplicationUser> users)
+        public ConversationDto ConvertToDto(Conversation conversation, List<ApplicationUser> users, bool hasNewMessage)
         {
             var userDtos = new List<UserDto>();
             
@@ -32,7 +32,8 @@ namespace Lendship.Backend.Converters
                 Id = conversation.Id,
                 AdvertisementId = conversation.Advertisement.Id,
                 ConversationName = conversation.Name,
-                Users = userDtos
+                Users = userDtos,
+                HasNewMessage = hasNewMessage
             };
         }
 

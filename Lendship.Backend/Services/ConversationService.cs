@@ -88,18 +88,10 @@ namespace Lendship.Backend.Services
             var resultList = new List<ConversationDto>();
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var userIds = _dbContext.UsersAndConversations
-                            .Where(x => x.UserId == signedInUserId)
-                            .Select(x => x.UserId)
-                            .ToList();
 
             var conIds = _dbContext.UsersAndConversations
                             .Where(x => x.UserId == signedInUserId)
                             .Select(x => x.ConversationId)
-                            .ToList();
-
-            var users = _dbContext.Users
-                            .Where(u => userIds.Contains(u.Id))
                             .ToList();
 
             var conversations = _dbContext.Conversation
@@ -109,7 +101,17 @@ namespace Lendship.Backend.Services
             
             foreach (var con in conversations)
             {
-                var dto = _conversationConverter.ConvertToDto(con, users);
+                var userIds = _dbContext.UsersAndConversations
+                            .Where(x => x.ConversationId == con.Id && x.UserId != signedInUserId)
+                            .Select(x => x.UserId)
+                            .ToList();
+
+                var users = _dbContext.Users.Where(u => userIds.Contains(u.Id)).ToList();
+                var hasNewMessage = _dbContext.Messages
+                                        .Where(m => m.ConversationId == con.Id && m.New)
+                                        .ToList();
+
+                var dto = _conversationConverter.ConvertToDto(con, users, hasNewMessage.Count != 0);
                 resultList.Add(dto);
             }
 

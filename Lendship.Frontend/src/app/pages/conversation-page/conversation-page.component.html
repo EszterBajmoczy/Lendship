@@ -1,1 +1,14 @@
-<p>messages-page works!</p>
+<div class="container">
+  <div *ngIf="conversations.length == 0">
+    <p>No conversations.</p>
+  </div>
+  <div *ngFor="let con of conversations" class="conversation-section d-flex justify-content-between align-items-center mb-2">
+
+    <p #square (window:resize)="0" [ngStyle]="{'height.px': square.offsetWidth }" *ngIf="con.hasNewMessage" class="has-new-msg p-1 ms-1" style="position: absolute;">New</p>
+    <div class="d-flex align-items-center">
+      <img class="img-conversation ms-4" src="https://localhost:44377/images/profile/8b1b52a5-37df-4ae4-83d1-1f599566b073/AGDSDGGDFERSRQER.jpg" alt="">
+      <p class="conversation-name m-3">{{con.userString}}</p>
+    </div>
+    <p class="conversation-name me-4">{{con.conversationName}}</p>
+  </div>
+</div>
