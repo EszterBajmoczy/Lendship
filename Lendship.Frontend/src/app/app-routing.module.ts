@@ -7,7 +7,7 @@ import { AdvertisementsPageComponent } from "./pages/advertisements-page/adverti
 import { AdvertisementInfoComponent } from "./pages/advertisement-info-page/advertisement-info.component";
 import { AdvertisementCreateComponent } from "./pages/advertisement-create/advertisement-create.component";
 import { ProfilePageComponent } from "./pages/profile-page/profile-page.component";
-import { ConversationPageComponent } from "./pages/conversation-page/conversation-page.component";
+import { ConversationsPageComponent } from "./pages/conversations-page/conversations-page.component";
 
 const routes: Routes = [
   {
@@ -45,7 +45,7 @@ const routes: Routes = [
   },
   {
     path: 'conversations',
-    component: ConversationPageComponent
+    component: ConversationsPageComponent
   }
 ];
 

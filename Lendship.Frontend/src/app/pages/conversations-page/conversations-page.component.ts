@@ -3,11 +3,11 @@ import {Conversation} from "../../models/conversation";
 import {ConversationService} from "../../services/conversation/conversation.service";
 
 @Component({
-  selector: 'app-conversation-page',
-  templateUrl: './conversation-page.component.html',
-  styleUrls: ['./conversation-page.component.scss']
+  selector: 'app-conversations-page',
+  templateUrl: './conversations-page.component.html',
+  styleUrls: ['./conversations-page.component.scss']
 })
-export class ConversationPageComponent implements OnInit {
+export class ConversationsPageComponent implements OnInit {
   conversations = new Array<Conversation>();
 
   constructor(private conversationService: ConversationService) {
