@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule} from "@angular/forms";
-import { HttpClientModule } from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
@@ -20,7 +20,7 @@ import { ProfilePageComponent } from './pages/profile-page/profile-page.componen
 import { ReservationPopupComponent } from './pages/popup/reservation-popup/reservation-popup.component';
 import { CreateAdvertisementPopupComponent } from "./pages/popup/create-advertisement-popup/create-advertisement-popup.component";
 import { FileUploadComponent } from './components/common/file-upload/file-upload/file-upload.component';
-
+import { TokenInterceptor } from "./interceptors/token.interceptor";
 
 @NgModule({
     declarations: [
@@ -46,7 +46,9 @@ import { FileUploadComponent } from './components/common/file-upload/file-upload
     FormsModule,
     NgbModule,
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

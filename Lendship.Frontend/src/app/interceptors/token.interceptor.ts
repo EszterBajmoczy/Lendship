@@ -18,22 +18,14 @@ export class TokenInterceptor implements HttpInterceptor {
 
   constructor(private authService: AuthService) {}
 
-  intercgept(request: HttpRequest<any>, next: HttpHandler) {
-
-    //request = request.clone({ headers: request.headers.set('Content-Type', 'application/json') });
-    let token: string | null = localStorage.getItem("accessToken");
-    if (token) {
-      request = request.clone({ headers: request.headers.set('Authorization', 'Bearer ' + token) });
-    }
-    return next.handle(request);
-  }
-
   intercept(
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    if (this.authService.getAccessToken()) {
-      request = this.addToken(request, this.authService.getAccessToken());
+    if(!request.url.includes("geocode")){
+      if (this.authService.getAccessToken()) {
+        request = this.addToken(request, this.authService.getAccessToken());
+      }
     }
 
     return next.handle(request).pipe(
@@ -68,8 +60,8 @@ export class TokenInterceptor implements HttpInterceptor {
       return this.authService.refreshToken().pipe(
         switchMap((token: any) => {
           this.isRefreshing = false;
-          this.refreshTokenSubject.next(token['result'].accessToken);
-          return next.handle(this.addToken(request, token['result'].accessToken));
+          this.refreshTokenSubject.next(token.token);
+          return next.handle(this.addToken(request, token.token));
         })
       );
     } else {
