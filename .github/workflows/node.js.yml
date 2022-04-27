@@ -27,5 +27,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
-    - run: npm run build Lendship.Frontend/
-    - run: npm test --prefix Lendship.Frontend/
+      working-directory: Lendship.Frontend
+    - run: npm run build
+      working-directory: Lendship.Frontend
+    - run: npm test
+      working-directory: Lendship.Frontend
