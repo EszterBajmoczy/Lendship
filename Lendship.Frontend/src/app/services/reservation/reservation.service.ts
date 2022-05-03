@@ -6,6 +6,7 @@ import {map, throwError} from "rxjs";
 import {Reservation} from "../../models/reservation";
 import {IAvailability} from "../../models/availability";
 import {environment} from "../../../environments/environment";
+import {IReservationDetail} from "../../models/reservation-detail";
 
 @Injectable({
   providedIn: 'root'
@@ -22,18 +23,41 @@ export class ReservationService {
   getReservationForAdvertisement(advertisementId: number){
     return this.http.get<IAvailability[]>(this.baseUrl + advertisementId, { headers: this.headers})
       .pipe(
-        map((response: IAvailability[]) => this.convertDateFormat(response)),
+        map((response: IAvailability[]) => this.convertDateFormats(response)),
         catchError(this.handleError));
   }
 
   reserve(advertisementId: number, res: Reservation){
-    console.log(res);
     return this.http.post(this.baseUrl + "?advertisementId=" + advertisementId, res, { headers: this.headers})
       .pipe(
         catchError(this.handleError));
   }
 
-  convertDateFormat(ads: IAvailability[]){
+  getReservationsForUsersAdvertisement()  {
+    return this.http.get<IReservationDetail[]>(this.baseUrl, { headers: this.headers})
+      .pipe(
+        map((response: IReservationDetail[]) => {
+          response.forEach(r => {
+            r.dateTo = new Date(r.dateTo ?? '');
+            r.dateFrom = new Date(r.dateFrom ?? '');
+          })
+        }),
+        catchError(this.handleError));
+  }
+
+  getUsersReservations() {
+    return this.http.get<IReservationDetail[]>(this.baseUrl + "/for", { headers: this.headers})
+      .pipe(
+        map((response: IReservationDetail[]) => {
+          response.forEach(r => {
+            r.dateTo = new Date(r.dateTo ?? '');
+            r.dateFrom = new Date(r.dateFrom ?? '');
+          })
+        }),
+        catchError(this.handleError));
+  }
+
+  private convertDateFormats(ads: IAvailability[]){
     ads.forEach(av => {
       av.dateTo = new Date(av.dateTo ?? '');
       av.dateFrom = new Date(av.dateFrom ?? '');
