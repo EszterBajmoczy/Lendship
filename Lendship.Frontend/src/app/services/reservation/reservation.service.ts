@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { catchError } from "rxjs/operators";
 import { HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import {AuthService} from "../auth/auth.service";
-import {map, throwError} from "rxjs";
+import {map, Observable, throwError} from "rxjs";
 import {Reservation} from "../../models/reservation";
 import {IAvailability} from "../../models/availability";
 import {environment} from "../../../environments/environment";
 import {IReservationDetail} from "../../models/reservation-detail";
+import {Advertisement} from "../../models/advertisement";
 
 @Injectable({
   providedIn: 'root'
@@ -20,10 +21,10 @@ export class ReservationService {
     this.headers = authService.getHeaders();
   }
 
-  getReservationForAdvertisement(advertisementId: number){
+  getReservationForAdvertisement(advertisementId: number): Observable<IAvailability[]> {
     return this.http.get<IAvailability[]>(this.baseUrl + advertisementId, { headers: this.headers})
       .pipe(
-        map((response: IAvailability[]) => this.convertDateFormats(response)),
+        map((response: IAvailability[]) => this.convertAvailabilityDateFormats(response)),
         catchError(this.handleError));
   }
 
@@ -33,31 +34,29 @@ export class ReservationService {
         catchError(this.handleError));
   }
 
-  getReservationsForUsersAdvertisement()  {
+  getReservationsForUsersAdvertisement(): Observable<IReservationDetail[]>  {
     return this.http.get<IReservationDetail[]>(this.baseUrl, { headers: this.headers})
       .pipe(
-        map((response: IReservationDetail[]) => {
-          response.forEach(r => {
-            r.dateTo = new Date(r.dateTo ?? '');
-            r.dateFrom = new Date(r.dateFrom ?? '');
-          })
-        }),
+        map((response: IReservationDetail[]) => this.convertReservationDateFormats(response)),
         catchError(this.handleError));
   }
 
-  getUsersReservations() {
-    return this.http.get<IReservationDetail[]>(this.baseUrl + "/for", { headers: this.headers})
+  getUsersReservations(): Observable<IReservationDetail[]> {
+    return this.http.get<IReservationDetail[]>(this.baseUrl + "for", { headers: this.headers})
       .pipe(
-        map((response: IReservationDetail[]) => {
-          response.forEach(r => {
-            r.dateTo = new Date(r.dateTo ?? '');
-            r.dateFrom = new Date(r.dateFrom ?? '');
-          })
-        }),
+        map((response: IReservationDetail[]) => this.convertReservationDateFormats(response)),
         catchError(this.handleError));
   }
 
-  private convertDateFormats(ads: IAvailability[]){
+  private convertReservationDateFormats(res: IReservationDetail[]){
+    res.forEach(r => {
+      r.dateTo = new Date(r.dateTo ?? '');
+      r.dateFrom = new Date(r.dateFrom ?? '');
+    })
+    return res;
+  }
+
+  private convertAvailabilityDateFormats(ads: IAvailability[]){
     ads.forEach(av => {
       av.dateTo = new Date(av.dateTo ?? '');
       av.dateFrom = new Date(av.dateFrom ?? '');
