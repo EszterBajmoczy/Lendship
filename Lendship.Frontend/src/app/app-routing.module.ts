@@ -9,6 +9,7 @@ import { AdvertisementCreateComponent } from "./pages/advertisement-create/adver
 import { ProfilePageComponent } from "./pages/profile-page/profile-page.component";
 import { ConversationsPageComponent } from "./pages/conversations-page/conversations-page.component";
 import {ConversationInfoPageComponent} from "./pages/conversation-info-page/conversation-info-page.component";
+import {ReservationPageComponent} from "./pages/reservation-page/reservation-page.component";
 
 const routes: Routes = [
   {
@@ -39,6 +40,10 @@ const routes: Routes = [
   {
     path: 'profile',
     component: ProfilePageComponent
+  },
+  {
+    path: 'reservations',
+    component: ReservationPageComponent
   },
   {
     path: 'advertisements/new',
