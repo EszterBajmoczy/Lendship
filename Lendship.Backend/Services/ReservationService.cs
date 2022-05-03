@@ -26,7 +26,7 @@ namespace Lendship.Backend.Services
             _dbContext = dbContext;
 
             //TODO inject converters!!
-            _reservationConverter = new ReservationConverter(new AdvertisementConverter());
+            _reservationConverter = new ReservationConverter(new AdvertisementConverter(), new UserConverter());
         }
                 
         public void CreateReservation(ReservationDetailDto reservationDto, int advertisementId)
@@ -73,6 +73,7 @@ namespace Lendship.Backend.Services
             var reservations = _dbContext.Reservations
                                     .Include(r => r.Advertisement)
                                     .Include(r => r.Advertisement.User)
+                                    .Include(r => r.User)
                                     .Where(r => r.Advertisement.User.Id == signedInUserId)
                                     .ToList();
 
