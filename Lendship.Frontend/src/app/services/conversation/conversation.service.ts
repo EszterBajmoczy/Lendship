@@ -5,7 +5,6 @@ import {HttpClient, HttpErrorResponse, HttpHeaders} from "@angular/common/http";
 import {map, Observable, throwError} from "rxjs";
 import {Conversation, IConversation} from "../../models/conversation";
 import {catchError} from "rxjs/operators";
-import {AdvertisementDetail} from "../../models/advertisement-detail";
 import {Message} from "../../models/message";
 
 @Injectable({

@@ -1,13 +1,15 @@
 import {NgbDate} from "@ng-bootstrap/ng-bootstrap";
 import {Advertisement} from "./advertisement";
+import {User} from "./user";
 
 export interface IReservationDetail {
   id: number;
   advertisement: Advertisement;
-  reservationState: number;
+  reservationState: string;
   comment: string;
   admittedByAdvertiser: boolean;
   admittedByLender: boolean;
+  user: User;
   dateFrom: Date;
   dateTo: Date;
 }
@@ -15,14 +17,14 @@ export interface IReservationDetail {
 export class ReservationDetail {
   id: number;
   advertisement: Advertisement;
-  reservationState: number;
+  reservationState: string;
   comment: string;
   admittedByAdvertiser: boolean;
   admittedByLender: boolean;
   dateFrom: string;
   dateTo: string;
 
-  constructor(id: number, ad: Advertisement, reservationsState: number, comment: string, admittedByAdvertiser: boolean, admittedByLender: boolean, dateFrom: NgbDate, dateTo: NgbDate) {
+  constructor(id: number, ad: Advertisement, reservationsState: string, comment: string, admittedByAdvertiser: boolean, admittedByLender: boolean, dateFrom: NgbDate, dateTo: NgbDate) {
     this.id = id;
     this.advertisement = ad;
     this.reservationState = reservationsState;
