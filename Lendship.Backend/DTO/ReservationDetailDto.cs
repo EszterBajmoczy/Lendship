@@ -104,6 +104,13 @@ namespace Lendship.Backend.DTO
         public bool? AdmittedByLender { get; set; }
 
         /// <summary>
+        /// Gets or Sets User
+        /// </summary>
+
+        [DataMember(Name = "user")]
+        public UserDto? User { get; set; }
+
+        /// <summary>
         /// Gets or Sets DateFrom
         /// </summary>
         [Required]
@@ -134,6 +141,7 @@ namespace Lendship.Backend.DTO
             sb.Append("  Comment: ").Append(Comment).Append("\n");
             sb.Append("  AdmittedByAdvertiser: ").Append(AdmittedByAdvertiser).Append("\n");
             sb.Append("  AdmittedByLender: ").Append(AdmittedByLender).Append("\n");
+            sb.Append("  User: ").Append(User).Append("\n");
             sb.Append("  DateFrom: ").Append(DateFrom).Append("\n");
             sb.Append("  DateTo: ").Append(DateTo).Append("\n");
             sb.Append("}\n");
@@ -201,7 +209,12 @@ namespace Lendship.Backend.DTO
                     AdmittedByLender == other.AdmittedByLender ||
                     AdmittedByLender != null &&
                     AdmittedByLender.Equals(other.AdmittedByLender)
-                ) && 
+                ) &&
+                (
+                    User == other.User ||
+                    User != null &&
+                    User.Equals(other.User)
+                ) &&
                 (
                     DateFrom == other.DateFrom ||
                     DateFrom != null &&
@@ -236,6 +249,8 @@ namespace Lendship.Backend.DTO
                     hashCode = hashCode * 59 + AdmittedByAdvertiser.GetHashCode();
                     if (AdmittedByLender != null)
                     hashCode = hashCode * 59 + AdmittedByLender.GetHashCode();
+                    if (User != null)
+                    hashCode = hashCode * 59 + User.GetHashCode();
                     if (DateFrom != null)
                     hashCode = hashCode * 59 + DateFrom.GetHashCode();
                     if (DateTo != null)

@@ -1,3 +1,5 @@
+import {User} from "./user";
+
 export interface Advertisement {
   id: number,
   title: string,
@@ -6,5 +8,6 @@ export interface Advertisement {
   latitude: number,
   longitude: number,
   location: string,
-  imageLocation: string
+  imageLocation: string,
+  user: User
 }

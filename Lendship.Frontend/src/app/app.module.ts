@@ -24,6 +24,7 @@ import { TokenInterceptor } from "./interceptors/token.interceptor";
 import { ConversationsPageComponent } from './pages/conversations-page/conversations-page.component';
 import { ConversationInfoPageComponent } from './pages/conversation-info-page/conversation-info-page.component';
 import { MessagePopupComponent } from './pages/popup/message-popup/message-popup.component';
+import { ReservationPageComponent } from './pages/reservation-page/reservation-page.component';
 
 @NgModule({
     declarations: [
@@ -43,6 +44,7 @@ import { MessagePopupComponent } from './pages/popup/message-popup/message-popup
         ConversationsPageComponent,
         ConversationInfoPageComponent,
         MessagePopupComponent,
+        ReservationPageComponent,
     ],
   imports: [
     BrowserModule,
