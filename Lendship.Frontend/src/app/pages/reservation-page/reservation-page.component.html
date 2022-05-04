@@ -1,1 +1,99 @@
-<p>reservation-page works!</p>
+<div class="container col-lg-10" >
+
+  <button class="btn btn-success-long d-flex mt-2 mb-2" (click)="showReservationsForUser = !showReservationsForUser">
+    <p class="m-1">Reservations for my advertisements</p>
+    <i [hidden]="showReservationsForUser" class="fa fa-angle-right m-1 fa-lg"></i>
+    <i [hidden]="!showReservationsForUser" class="fa fa-angle-down m-1 fa-lg"></i>
+  </button>
+  <div *ngIf="showReservationsForUser" class="card-container d-flex flex-wrap justify-content-between" >
+    <div *ngFor="let res of reservationsForUsersAdvertisements" class="w-100 d-flex justify-content-between align-items-center m-2"
+         [ngClass]="{closed: res.reservationState === 'Closed', declined: res.reservationState === 'Declined'}">
+      <div class="date-text col-1">2201.02.01 <br>-<br> 0201.02.13</div>
+
+      <div class="conversation-ad-section d-flex justify-content-between align-items-center w-100 pe-2 h-1001"
+           (click)="reservationClicked(res)">
+        <img src="https://localhost:44377/images{{res.advertisement.imageLocation}}" class="img-ad m-1" alt="...">
+        <div class="w-100 ps-4 pe-4">
+          <h5 class="title pt-2 mb-2">{{res.advertisement?.title}}</h5>
+          <div class="d-flex justify-content-between">
+            <p class="ad-details">{{res.advertisement?.location}}</p>
+            <p class="ad-details">{{res.advertisement?.price}} Ft</p>
+          </div>
+        </div>
+        <div class="d-flex profile-info-sm align-items-center col-lg-4 ps-2"
+             (click)="userClicked(res.user)">
+          <div class="vertical-line"></div>
+          <div class="me-4">
+            <img class="img-profile-sm" src="https://localhost:44377/images/OLASDGREFDDLLWER.jpg">
+          </div>
+          <div>
+            <p class="user-name">{{res.user.name}}</p>
+            <p><i class="fa fa-star me-2"></i>as advertiser: {{res.user.evaluationAsAdvertiser}} ({{res.user.evaluationAsAdvertiserCount}} vote)</p>
+            <p><i class="fa fa-star me-2"></i>as lender: {{res.user.evaluationAsLender}} ({{res.user.evaluationAsLenderCount}} vote)</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-1 actions text-center">
+        <div *ngIf="res.reservationState === 'Created'">
+          <button class="btn btn-success btn-sm m-1 w-100" (click)="accept(res.id)">Accept</button>
+          <button class="btn btn-info btn-sm m-1 w-100" (click)="decline(res.id)">Decline</button>
+        </div>
+        <div *ngIf="res.reservationState === 'Accepted'">
+          <button class="btn btn-success btn-sm m-1 w-100" (click)="close(res.id)">Close</button>
+        </div>
+        <div *ngIf="res.reservationState === 'Declined'">
+          <p>Declined</p>
+        </div>
+        <div *ngIf="res.reservationState === 'Resigned'">
+          <p>Resigned</p>
+        </div>
+        <div *ngIf="res.reservationState === 'Closed'">
+          <p>Closed</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn btn-success-long d-flex mt-2 mb-2" (click)="showUsers = !showUsers">
+    <p class="m-1">My reservations</p>
+    <i [hidden]="showUsers" class="fa fa-angle-right m-1 fa-lg"></i>
+    <i [hidden]="!showUsers" class="fa fa-angle-down m-1 fa-lg"></i>
+  </button>
+  <div *ngIf="showUsers" class="card-container d-flex flex-wrap justify-content-between" >
+    <div *ngFor="let res of usersReservations" class="w-100 d-flex justify-content-between align-items-center m-2"
+         [ngClass]="{closed: res.reservationState === 'Closed', declined: res.reservationState === 'Declined'}">
+      <div class="date-text col-1">2201.02.01 <br>-<br> 0201.02.13</div>
+      <div class="conversation-ad-section d-flex justify-content-between align-items-center w-100 pe-2"
+           (click)="reservationClicked(res)">
+        <img src="https://localhost:44377/images{{res.advertisement.imageLocation}}" class="img-ad m-1" alt="...">
+        <div class="w-100 ps-4 pe-4">
+          <h5 class="title pt-2 mb-2">{{res.advertisement?.title}}</h5>
+          <div class="d-flex justify-content-between">
+            <p class="ad-details">{{res.advertisement?.location}}</p>
+            <p class="ad-details">{{res.advertisement?.price}} Ft</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-1 actions text-center">
+        <div *ngIf="res.reservationState === 'Created'">
+          <button class="btn btn-info btn-sm m-1 w-100" (click)="resign(res.id)">Resign</button>
+        </div>
+        <div *ngIf="res.reservationState === 'Accepted'">
+          <button class="btn btn-success btn-sm m-1 w-100" (click)="close(res.id)">Close</button>
+        </div>
+        <div *ngIf="res.reservationState === 'Declined'">
+          <p>Declined</p>
+        </div>
+        <div *ngIf="res.reservationState === 'Resigned'">
+          <p>Resigned</p>
+        </div>
+        <div *ngIf="res.reservationState === 'Closed'">
+          <p>Closed</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+</div>

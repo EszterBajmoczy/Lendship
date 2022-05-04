@@ -1,0 +1,44 @@
+@import "src/styles/colors";
+@import "src/styles/buttons";
+@import "src/styles/profile-infos";
+
+.conversation-ad-section {
+  background-color: white;
+  border-radius: 0.5rem;
+  width: 50%;
+}
+
+.img-ad {
+  object-fit: cover;
+  height: 60px;
+  width: 60px;
+  border-radius: 0.5rem;
+}
+
+.ad-details {
+  color: $color-info;
+  margin-bottom: 0;
+}
+
+.profile-info-sm {
+  border-left: 2px solid $color-info;
+}
+
+.date-text {
+  font-size: x-small;
+  color: white;
+  text-align: center;
+}
+
+.actions p{
+  color: $color-info;
+  margin-bottom: 0;
+}
+
+.closed {
+  opacity: 50%;
+}
+
+.declined {
+  opacity: 75%;
+}

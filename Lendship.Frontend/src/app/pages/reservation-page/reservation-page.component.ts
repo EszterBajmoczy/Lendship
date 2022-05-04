@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {IReservation} from "../../models/reservation";
 import {ReservationService} from "../../services/reservation/reservation.service";
+import {IReservationDetail} from "../../models/reservation-detail";
+import {Router} from "@angular/router";
+import {User} from "../../models/user";
 
 @Component({
   selector: 'app-reservation-page',
@@ -8,10 +10,13 @@ import {ReservationService} from "../../services/reservation/reservation.service
   styleUrls: ['./reservation-page.component.scss']
 })
 export class ReservationPageComponent implements OnInit {
-  usersReservations = new Array<IReservation>();
-  reservationsForUsersAdvertisements = new Array<IReservation>();
+  usersReservations = new Array<IReservationDetail>();
+  reservationsForUsersAdvertisements = new Array<IReservationDetail>();
 
-  constructor(private reservationService: ReservationService) {
+  showUsers = true;
+  showReservationsForUser = true;
+
+  constructor(private reservationService: ReservationService, private router: Router) {
     reservationService.getUsersReservations()
       .subscribe(res => {
         console.log(res);
@@ -28,4 +33,63 @@ export class ReservationPageComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  accept(resId: number) {
+    this.reservationService.updateReservationsState(resId, "Accepted")
+      .subscribe(res => {
+        this.usersReservations.forEach(res => {
+          if(res.id == resId){
+            res.reservationState= "Accepted";
+          }
+        });
+      });
+  }
+
+  decline(resId: number) {
+    this.reservationService.updateReservationsState(resId, "Declined")
+      .subscribe(res => {
+        this.usersReservations.forEach(res => {
+          if(res.id == resId){
+            res.reservationState= "Declined";
+          }
+        });
+      });
+  }
+
+  close(resId: number) {
+    this.reservationService.admitReservation(resId)
+      .subscribe(res => {
+        this.usersReservations.forEach(res => {
+          if(res.id == resId){
+            res.reservationState= "Closed";
+            return;
+          }
+        });
+        this.reservationsForUsersAdvertisements.forEach(res => {
+          if(res.id == resId){
+            res.reservationState= "Closed";
+            return;
+          }
+        });
+      });
+  }
+
+  resign(resId: number) {
+    this.reservationService.updateReservationsState(resId, "Resigned")
+      .subscribe(res => {
+        this.usersReservations.forEach(res => {
+          if(res.id == resId){
+            res.reservationState= "Resigned";
+          }
+        });
+      });
+  }
+
+  reservationClicked(res: IReservationDetail) {
+    this.router.navigate(['advertisement', res.advertisement.id]);
+  }
+
+  userClicked(user: User) {
+    //TODO navigate to profil page
+    this.router.navigate(['home']);
+  }
 }

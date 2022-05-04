@@ -35,16 +35,30 @@ export class ReservationService {
   }
 
   getReservationsForUsersAdvertisement(): Observable<IReservationDetail[]>  {
-    return this.http.get<IReservationDetail[]>(this.baseUrl, { headers: this.headers})
+    return this.http.get<IReservationDetail[]>(this.baseUrl + "for", { headers: this.headers})
       .pipe(
         map((response: IReservationDetail[]) => this.convertReservationDateFormats(response)),
         catchError(this.handleError));
   }
 
   getUsersReservations(): Observable<IReservationDetail[]> {
-    return this.http.get<IReservationDetail[]>(this.baseUrl + "for", { headers: this.headers})
+    return this.http.get<IReservationDetail[]>(this.baseUrl, { headers: this.headers})
       .pipe(
         map((response: IReservationDetail[]) => this.convertReservationDateFormats(response)),
+        catchError(this.handleError));
+  }
+
+  updateReservationsState(resId: number, state: string) {
+    let queryString = "?reservationId=" + resId + "&state=" + state;
+
+    return this.http.post(this.baseUrl + "state" + queryString, { headers: this.headers})
+      .pipe(
+        catchError(this.handleError));
+  }
+
+  admitReservation(resId: number){
+    return this.http.post(this.baseUrl + "admit/" + resId, { headers: this.headers})
+      .pipe(
         catchError(this.handleError));
   }
 
