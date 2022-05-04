@@ -8,6 +8,7 @@ import {IAvailability} from "../../models/availability";
 import {environment} from "../../../environments/environment";
 import {IReservationDetail} from "../../models/reservation-detail";
 import {Advertisement} from "../../models/advertisement";
+import {NgbDate} from "@ng-bootstrap/ng-bootstrap";
 
 @Injectable({
   providedIn: 'root'
@@ -66,8 +67,22 @@ export class ReservationService {
     res.forEach(r => {
       r.dateTo = new Date(r.dateTo ?? '');
       r.dateFrom = new Date(r.dateFrom ?? '');
+      r.dateToString = this.dateToString(r.dateTo);
+      r.dateFromString = this.dateToString(r.dateFrom);
+
     })
     return res;
+  }
+
+  private dateToString(date: Date): string {
+    if (date.getUTCMonth() + 1 < 10 && date.getUTCDate() + 1 < 10) {
+      return `${date.getUTCFullYear()}-0${date.getUTCMonth() + 1}-0${date.getUTCDate() + 1}`;
+    } else if (date.getUTCMonth() + 1 < 10) {
+      return `${date?.getUTCFullYear()}-0${date?.getUTCMonth() + 1}-${date?.getUTCDate() + 1}`;
+    } else if (date.getUTCDate() + 1 < 10) {
+      return `${date?.getUTCFullYear()}-${date?.getUTCMonth() + 1}-0${date?.getUTCDate() + 1}`;
+    }
+    return `${date?.getUTCFullYear()}-${date?.getUTCMonth() + 1}-0${date?.getUTCDate() + 1}`;
   }
 
   private convertAvailabilityDateFormats(ads: IAvailability[]){

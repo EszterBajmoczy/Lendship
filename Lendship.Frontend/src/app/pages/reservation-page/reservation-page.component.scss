@@ -35,10 +35,63 @@
   margin-bottom: 0;
 }
 
+.btn-x-sm {
+  margin: 0;
+  font-size: xx-small;
+}
+
+.small-font {
+  font-size: xx-small;
+  color: $color-primary;
+}
+
 .closed {
   opacity: 50%;
 }
 
 .declined {
   opacity: 75%;
+}
+
+.reserved-by-user {
+  background-color: $color-success;
+}
+
+.reserved-to-user {
+  background-color: $color-danger;
+  color: white;
+}
+
+.reserved-both {
+  background: linear-gradient($color-success 50%, $color-danger 50%);;
+}
+
+.not-in-this-month{
+  background-color: lightgrey;
+}
+
+.custom-day {
+  text-align: center;
+  padding: 0.185rem 0.25rem;
+  display: inline-block;
+  height: 2rem;
+  width: 2rem;
+}
+.custom-day.focused {
+  background-color: #e6e6e6;
+}
+
+.day-detail {
+  background-color: $color-info;
+}
+
+.date-tag {
+  background-color: $color-primary;
+  color: white;
+  width: fit-content;
+  opacity: 50%;
+}
+
+.active {
+  opacity: 100%;
 }

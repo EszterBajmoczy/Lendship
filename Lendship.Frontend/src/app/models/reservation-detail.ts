@@ -12,6 +12,10 @@ export interface IReservationDetail {
   user: User;
   dateFrom: Date;
   dateTo: Date;
+  dateFromString: string;
+  dateToString: string;
+  dateFromNgbDate: NgbDate;
+  dateToNgbDate: NgbDate;
 }
 
 export class ReservationDetail {

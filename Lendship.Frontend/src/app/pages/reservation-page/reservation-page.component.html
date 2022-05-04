@@ -1,5 +1,94 @@
 <div class="container col-lg-10" >
 
+  <div class="d-flex justify-content-between mb-4">
+    <ngb-datepicker #dp [(ngModel)]="model" (navigate)="date = $event.next" (dateSelect)="onDateSelection($event)" [dayTemplate]="datepicker" class="bg-white w-auto"></ngb-datepicker>
+    <div *ngIf="selectedReservationsForUsersAdvertisements.length != 0 || selectedUsersReservations.length != 0 " class="day-detail ms-3 col-8">
+      <div class="d-flex justify-content-between">
+        <p class="date-tag p-2 mt-2 mb-2 me-2 col-2"
+           [ngClass]="{active: showMyReservations}"
+           (click)="showMyReservations = !showMyReservations">My reservations</p>
+        <p class="date-tag p-2 mt-2 mb-2 ms-2 col-2"
+           [ngClass]="{active: !showMyReservations}"
+           (click)="showMyReservations = !showMyReservations">Reservations for me</p>
+      </div>
+
+      <div *ngIf="showMyReservations">
+        <div *ngFor="let res of selectedUsersReservations" class="d-flex justify-content-between align-items-center m-2"
+             [ngClass]="{closed: res.reservationState === 'Closed', declined: res.reservationState === 'Declined'}">
+          <div class="date-text col-2">{{res.dateFromString}}<br>-<br>{{res.dateToString}}</div>
+
+          <div class="conversation-ad-section d-flex justify-content-between align-items-center w-100 pe-2 h-100"
+               (click)="reservationClicked(res)">
+            <img src="https://localhost:44377/images{{res.advertisement.imageLocation}}" class="img-ad m-1" alt="...">
+            <div class="w-100 ps-2 pe-2">
+              <div class="actions text-center d-flex justify-content-end">
+                <div *ngIf="res.reservationState === 'Created'">
+                  <button class="btn btn-success btn-x-sm p-1" (click)="accept(res.id)">Accept</button>
+                  <button class="btn btn-info btn-x-sm p-1" (click)="decline(res.id)">Decline</button>
+                </div>
+                <div *ngIf="res.reservationState === 'Accepted'">
+                  <button class="btn btn-success btn-x-sm p-1" (click)="close(res.id)">Close</button>
+                </div>
+                <div *ngIf="res.reservationState === 'Declined'">
+                  <p class="small-font">Declined</p>
+                </div>
+                <div *ngIf="res.reservationState === 'Resigned'">
+                  <p class="small-font">Resigned</p>
+                </div>
+                <div *ngIf="res.reservationState === 'Closed'">
+                  <p class="small-font">Closed</p>
+                </div>
+              </div>
+              <h6 class="title pt-0 mb-1">{{res.advertisement?.title}}</h6>
+              <div class="d-flex justify-content-between">
+                <p class="ad-details">{{res.advertisement?.location}}</p>
+                <p class="ad-details">{{res.advertisement?.price}} Ft</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div *ngIf="!showMyReservations">
+        <div *ngFor="let res of selectedReservationsForUsersAdvertisements" class="d-flex justify-content-between align-items-center m-2"
+             [ngClass]="{closed: res.reservationState === 'Closed', declined: res.reservationState === 'Declined'}">
+          <div class="date-text col-2">{{res.dateFromString}}<br>-<br>{{res.dateToString}}</div>
+
+          <div class="conversation-ad-section d-flex justify-content-between align-items-center w-100 pe-2 h-100"
+               (click)="reservationClicked(res)">
+            <img src="https://localhost:44377/images{{res.advertisement.imageLocation}}" class="img-ad m-1" alt="...">
+            <div class="w-100 ps-2 pe-2">
+              <div class="actions text-center d-flex justify-content-end">
+                <div *ngIf="res.reservationState === 'Created'">
+                  <button class="btn btn-success btn-x-sm p-1" (click)="accept(res.id)">Accept</button>
+                  <button class="btn btn-info btn-x-sm p-1" (click)="decline(res.id)">Decline</button>
+                </div>
+                <div *ngIf="res.reservationState === 'Accepted'">
+                  <button class="btn btn-success btn-x-sm p-1" (click)="close(res.id)">Close</button>
+                </div>
+                <div *ngIf="res.reservationState === 'Declined'">
+                  <p class="small-font">Declined</p>
+                </div>
+                <div *ngIf="res.reservationState === 'Resigned'">
+                  <p class="small-font">Resigned</p>
+                </div>
+                <div *ngIf="res.reservationState === 'Closed'">
+                  <p class="small-font">Closed</p>
+                </div>
+              </div>
+              <h6 class="title pt-0 mb-1">{{res.advertisement?.title}}</h6>
+              <div class="d-flex justify-content-between">
+                <p class="ad-details">{{res.advertisement?.location}}</p>
+                <p class="ad-details">{{res.advertisement?.price}} Ft</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <button class="btn btn-success-long d-flex mt-2 mb-2" (click)="showReservationsForUser = !showReservationsForUser">
     <p class="m-1">Reservations for my advertisements</p>
     <i [hidden]="showReservationsForUser" class="fa fa-angle-right m-1 fa-lg"></i>
@@ -8,9 +97,9 @@
   <div *ngIf="showReservationsForUser" class="card-container d-flex flex-wrap justify-content-between" >
     <div *ngFor="let res of reservationsForUsersAdvertisements" class="w-100 d-flex justify-content-between align-items-center m-2"
          [ngClass]="{closed: res.reservationState === 'Closed', declined: res.reservationState === 'Declined'}">
-      <div class="date-text col-1">2201.02.01 <br>-<br> 0201.02.13</div>
+      <div class="date-text col-1">{{res.dateFromString}}<br>-<br>{{res.dateToString}}</div>
 
-      <div class="conversation-ad-section d-flex justify-content-between align-items-center w-100 pe-2 h-1001"
+      <div class="conversation-ad-section d-flex justify-content-between align-items-center w-100 pe-2 h-100"
            (click)="reservationClicked(res)">
         <img src="https://localhost:44377/images{{res.advertisement.imageLocation}}" class="img-ad m-1" alt="...">
         <div class="w-100 ps-4 pe-4">
@@ -62,7 +151,7 @@
   <div *ngIf="showUsers" class="card-container d-flex flex-wrap justify-content-between" >
     <div *ngFor="let res of usersReservations" class="w-100 d-flex justify-content-between align-items-center m-2"
          [ngClass]="{closed: res.reservationState === 'Closed', declined: res.reservationState === 'Declined'}">
-      <div class="date-text col-1">2201.02.01 <br>-<br> 0201.02.13</div>
+      <div class="date-text col-1">{{res.dateFromString}}<br>-<br>{{res.dateToString}}</div>
       <div class="conversation-ad-section d-flex justify-content-between align-items-center w-100 pe-2"
            (click)="reservationClicked(res)">
         <img src="https://localhost:44377/images{{res.advertisement.imageLocation}}" class="img-ad m-1" alt="...">
@@ -97,3 +186,16 @@
 
 
 </div>
+
+
+<ng-template #datepicker let-date let-focused="focused" let-disabled="disabled">
+
+  <span class="custom-day"
+        [class.focused]="focused"
+        [class.not-in-this-month]="notInThisMonth(date)"
+        [class.reserved-by-user]="reservedByUser(date)"
+        [class.reserved-to-user]="reservedToUser(date)"
+        [class.reserved-both]="reservedToUser(date) && reservedByUser(date)">
+    {{ date.day }}
+  </span>
+</ng-template>
