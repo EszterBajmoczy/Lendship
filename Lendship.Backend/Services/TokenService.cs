@@ -1,5 +1,6 @@
 ﻿using Lendship.Backend.Exceptions;
 using Lendship.Backend.Interfaces.Services;
+using Lendship.Backend.Logger;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
@@ -19,9 +20,7 @@ namespace Lendship.Backend.Services
         private readonly IDistributedCache _redisCache;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IConfiguration _configuration;
-
-        private readonly string _active = "Active";
-        private readonly string _deactiveted = "Deactivated";
+        private readonly ILogger _logger;
 
 
         public TokenService(IDistributedCache cache, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
@@ -29,17 +28,34 @@ namespace Lendship.Backend.Services
             _redisCache = cache;
             _httpContextAccessor = httpContextAccessor;
             _configuration = configuration;
+
+            _logger = new Logger.Logger(_configuration);
         }
 
         public bool IsCurrentTokenValid()
         {
             var currentToken = GetCurrentToken();
-            return _redisCache.GetString(currentToken) == _active;
+            try
+            {
+                return _redisCache.GetString(currentToken) == null;
+            } catch (Exception e)
+            {
+                _logger.Error("Error validating token: " + e.Message);
+                return true;
+            };
         }
 
         public bool IsRefreshTokenValid(string refreshToken)
         {
-            return _redisCache.GetString($"ref_{refreshToken}") == _active;
+            try
+            {
+                return _redisCache.GetString($"ref_{refreshToken}") == null;
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Error validating refresh token: " + e.Message);
+                return true;
+            };
         }
 
         public async Task DeactivateCurrentTokenAndRefreshTokenAsync(string refreshToken)
@@ -47,18 +63,25 @@ namespace Lendship.Backend.Services
             var currentToken = GetCurrentToken();
             var expires = new JwtSecurityToken(currentToken).ValidTo;
             var expiresRefreshToken = new JwtSecurityToken(refreshToken).ValidTo;
-
-            await _redisCache.SetStringAsync(
+            try
+            {
+                await _redisCache.SetStringAsync(
                         currentToken,
-                        _deactiveted, 
-                        new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromTicks(expires.Ticks - DateTime.Now.Ticks) }, 
+                        "deactivated",
+                        new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromTicks(expires.Ticks - DateTime.Now.Ticks) },
                         CancellationToken.None);
 
-            await _redisCache.SetStringAsync(
-                        $"ref_{refreshToken}",
-                        _deactiveted,
-                        new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromTicks(expiresRefreshToken.Ticks - DateTime.Now.Ticks) },
-                        CancellationToken.None);
+                await _redisCache.SetStringAsync(
+                            refreshToken,
+                            "deactivated",
+                            new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromTicks(expiresRefreshToken.Ticks - DateTime.Now.Ticks) },
+                            CancellationToken.None);
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Error deactivating tokens: " + e.Message);
+            };
+            
         }
 
         public JwtSecurityToken GenerateNewToken(List<Claim> authClaims, bool isRefresh)
@@ -68,12 +91,6 @@ namespace Lendship.Backend.Services
                 $"ref_{new JwtSecurityTokenHandler().WriteToken(jwtToken)}" :
                 new JwtSecurityTokenHandler().WriteToken(jwtToken);
             var expires = jwtToken.ValidTo;
-
-            _redisCache.SetStringAsync(
-                        token,
-                        _active,
-                        new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromTicks(expires.Ticks - DateTime.Now.Ticks) },
-                        CancellationToken.None);
 
             return jwtToken;
         }
