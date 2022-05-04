@@ -10,10 +10,12 @@ namespace Lendship.Backend.Converters
     public class ReservationConverter : IReservationConverter
     {
         private readonly IAdvertisementConverter _adConverter;
+        private readonly IUserConverter _userConverter;
 
-        public ReservationConverter(IAdvertisementConverter adConverter)
+        public ReservationConverter(IAdvertisementConverter adConverter, IUserConverter userConverter)
         {
             _adConverter = adConverter;
+            _userConverter = userConverter;
         }
 
         public ReservationDetailDto ConvertToDetailDto(Reservation reservation)
@@ -27,6 +29,7 @@ namespace Lendship.Backend.Converters
                 Comment = reservation.Comment,
                 AdmittedByAdvertiser = reservation.admittedByAdvertiser,
                 AdmittedByLender = reservation.admittedByAdvertiser,
+                User = reservation.User != null ? _userConverter.ConvertToDto(reservation.User) : null,
                 DateFrom = reservation.DateFrom,
                 DateTo = reservation.DateTo,
             };
