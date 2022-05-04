@@ -149,5 +149,29 @@ namespace Lendship.Backend.Controllers
             var reservations = _reservationService.GetReservationsForAdvertisement(advertisementId);
             return new ObjectResult(JsonConvert.SerializeObject(reservations));
         }
+
+        /// <summary>
+        /// admit reservation (set close state)
+        /// </summary>
+        /// <remarks>Gets the reservations for the advertisements</remarks>
+        /// <param name="advertisementId">property or service</param>
+        /// <response code="200">reservations for the advertisements</response>
+        /// <response code="400">bad request</response>
+        /// <response code="401"></response>
+        [HttpPost]
+        [Route("admit/{advertisementId}")]
+        public virtual IActionResult AdmitReservation([FromRoute][Required] int advertisementId)
+        {
+            try
+            {
+                _reservationService.AdmitReservation(advertisementId);
+                return StatusCode(200);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception at updating reservation: " + e.Message);
+                return this.BadRequest(e.Message);
+            }
+        }
     }
 }

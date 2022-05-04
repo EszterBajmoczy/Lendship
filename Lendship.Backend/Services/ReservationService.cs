@@ -51,9 +51,12 @@ namespace Lendship.Backend.Services
         {
             var resultList = new List<ReservationDetailDto>();
 
+            var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var reservations = _dbContext.Reservations
                         .Include(r => r.Advertisement)
                         .Include(a => a.Advertisement.ImageLocations)
+                        .Include(r => r.User)
+                        .Where(r => r.User.Id == signedInUserId)
                         .ToList();
 
             foreach (var res in reservations)
@@ -72,6 +75,7 @@ namespace Lendship.Backend.Services
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var reservations = _dbContext.Reservations
                                     .Include(r => r.Advertisement)
+                                    .Include(a => a.Advertisement.ImageLocations)
                                     .Include(r => r.Advertisement.User)
                                     .Include(r => r.User)
                                     .Where(r => r.Advertisement.User.Id == signedInUserId)
@@ -125,6 +129,7 @@ namespace Lendship.Backend.Services
                                 .AsNoTracking()
                                 .Include(r => r.User)
                                 .Include(r => r.Advertisement)
+                                .Include(r => r.Advertisement.User)
                                 .Where(r => r.Id == reservationId)
                                 .FirstOrDefault();
 
