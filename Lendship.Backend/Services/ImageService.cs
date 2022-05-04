@@ -171,7 +171,9 @@ namespace Lendship.Backend.Services
                 .Where(a => a.Id == advertisementId)
                 .FirstOrDefault();
 
-            if(ad.User.Id != signedInUserId)
+            var imgLocation = _configuration.GetSection("Image").GetValue("LocationFolder", "wwwroot\\images");
+
+            if (ad.User.Id != signedInUserId)
             {
                 throw new UpdateNotAllowedException("The advertisement does not belong to this user.");
             }
@@ -180,9 +182,10 @@ namespace Lendship.Backend.Services
             {
                 CheckFileFormat(file.ContentType);
 
+                var fullPath = Path.Combine(imgLocation, signedInUserId, advertisementId.ToString());
                 var path = Path.Combine("/", signedInUserId, advertisementId.ToString());
 
-                UploadImg(file, path, advertisementId);
+                UploadImg(file, fullPath, path, advertisementId);
             }
             _dbContext.SaveChanges();
         }
@@ -206,25 +209,26 @@ namespace Lendship.Backend.Services
             return fullPath;
         }
 
-        private void UploadImg(IFormFile file, string path, int advertisementId)
+        private void UploadImg(IFormFile file, string fullPath, string path, int advertisementId)
         {
-            if (!Directory.Exists(path))
+
+            if (!Directory.Exists(fullPath))
             {
-                Directory.CreateDirectory(path);
+                Directory.CreateDirectory(fullPath);
             }
 
-            var fileName = GetUniqueFileName(path, file.ContentType);
+            var fileName = GetUniqueFileName(fullPath, file.ContentType);
 
-            var fullPath = Path.Combine(path, fileName);
+            var fullPathWidthName = Path.Combine(fullPath, fileName);
 
-            using (var stream = new FileStream(fullPath, FileMode.Create))
+            using (var stream = new FileStream(fullPathWidthName, FileMode.Create))
             {
                 file.CopyTo(stream);
 
                 _dbContext.ImageLocations.Add(new ImageLocation()
                 {
                     AdvertisementId = advertisementId,
-                    Location = fullPath
+                    Location = Path.Combine(path, fileName)
                 });
             }
         }

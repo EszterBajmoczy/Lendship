@@ -102,6 +102,14 @@ namespace Lendship.Backend.DTO
         public decimal Longitude { get; set; }
 
         /// <summary>
+        /// Gets or Sets Location
+        /// </summary>
+        [Required]
+
+        [DataMember(Name = "location")]
+        public string Location { get; set; }
+
+        /// <summary>
         /// Gets or Sets IsPublic
         /// </summary>
         [Required]
@@ -156,6 +164,7 @@ namespace Lendship.Backend.DTO
             sb.Append("  Deposit: ").Append(Deposit).Append("\n");
             sb.Append("  Latitude: ").Append(Latitude).Append("\n");
             sb.Append("  Longitude: ").Append(Longitude).Append("\n");
+            sb.Append("  Location: ").Append(Location).Append("\n");
             sb.Append("  IsPublic: ").Append(IsPublic).Append("\n");
             sb.Append("  Category: ").Append(Category).Append("\n");
             sb.Append("  Availabilities: ").Append(Availabilities).Append("\n");
@@ -246,7 +255,12 @@ namespace Lendship.Backend.DTO
                     Longitude == other.Longitude ||
                     Longitude != null &&
                     Longitude.Equals(other.Longitude)
-                ) && 
+                ) &&
+                (
+                    Location == other.Location ||
+                    Location != null &&
+                    Location.Equals(other.Location)
+                ) &&
                 (
                     IsPublic == other.IsPublic ||
                     IsPublic != null &&
@@ -305,6 +319,8 @@ namespace Lendship.Backend.DTO
                     hashCode = hashCode * 59 + Latitude.GetHashCode();
                     if (Longitude != null)
                     hashCode = hashCode * 59 + Longitude.GetHashCode();
+                    if (Location != null)
+                    hashCode = hashCode * 59 + Location.GetHashCode();
                     if (IsPublic != null)
                     hashCode = hashCode * 59 + IsPublic.GetHashCode();
                     if (Category != null)

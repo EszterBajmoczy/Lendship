@@ -35,6 +35,9 @@ namespace Lendship.Backend.Models
         public decimal Longitude { get; set; }
 
         [Required]
+        public string Location { get; set; }
+
+        [Required]
         public bool IsPublic { get; set; }
 
         [Required]

@@ -62,8 +62,8 @@ export class RegistrationPageComponent implements OnInit {
     }
     this.geoCodingService.getLatLong(this.registrationForm.get("location")?.value)
       .subscribe(data => {
-        this.latitude = data['latt'];
-        this.longitude = data['longt'];
+        this.latitude = data.results[0].geometry.location.lat;
+        this.longitude = data.results[0].geometry.location.lng;
 
         this.authService.register(this.registrationForm.value);
       })

@@ -45,8 +45,8 @@ export class AdvertisementCreateComponent implements OnInit {
     description: ['', [Validators.required]],
     instructionManual: [],
     location: ['', [Validators.required], [this.locationValidator.exists.bind(this.locationValidator)]],
-    latitude: [],
-    longitude: [],
+    latitude: [0],
+    longitude: [0],
     isPublic: [true],
     category: ['', [Validators.required]],
     availabilities: []
@@ -106,20 +106,15 @@ export class AdvertisementCreateComponent implements OnInit {
     }
     this.geoCodingService.getLatLong(this.advertisementForm.get("location")?.value)
       .subscribe(data => {
-        this.latitude = data['latt'];
-        this.longitude = data['longt'];
+        this.latitude = data.results[0].geometry.location.lat;
+        this.longitude = data.results[0].geometry.location.lng;
+
         this.availability = this.availabilities;
         this.category = "Kert";
-        //TODO call create
-        console.log("!!!!!!!!!!");
-        console.log(this.availabilities);
-        console.log(this.advertisementForm.value);
+
         this.advertisementService.createAdvertisement(this.advertisementForm.value)
           .subscribe(response => {
-            //TODO handle success
             this.id = response;
-            console.log(response);
-            //this.router.navigateByUrl('home');
           });
       })
   }

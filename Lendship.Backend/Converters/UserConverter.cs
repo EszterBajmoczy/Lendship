@@ -31,6 +31,7 @@ namespace Lendship.Backend.Converters
                 Credit = user.Credit,
                 Latitude = user.Latitude,
                 Longitude = user.Longitude,
+                Location = user.Location,
                 EvaluationAsAdvertiser = user.EvaluationAsAdvertiser,
                 EvaluationAsAdvertiserCount = user.EvaluationAsAdvertiserCount,
                 EvaluationAsLender = user.EvaluationAsLender,

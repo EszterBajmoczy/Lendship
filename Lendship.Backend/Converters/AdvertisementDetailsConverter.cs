@@ -51,6 +51,7 @@ namespace Lendship.Backend.Converters
                 Deposit = ad.Deposit,
                 Latitude = ad.Latitude,
                 Longitude = ad.Longitude,
+                Location = ad.Location,
                 IsPublic = ad.IsPublic,
                 Category = ad.Category.Name,
                 Availabilities = availabilityDtos,
@@ -73,6 +74,7 @@ namespace Lendship.Backend.Converters
                 Deposit = ad.Deposit,
                 Latitude = ad.Latitude,
                 Longitude = ad.Longitude,
+                Location = ad.Location,
                 IsPublic = ad.IsPublic ?? true,
                 Category = category,
                 Creation = ad.Creation ?? DateTime.Now

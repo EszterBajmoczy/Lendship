@@ -17,6 +17,7 @@ namespace Lendship.Backend.Converters
                 Credit = ad.Credit,
                 Latitude = ad.Latitude,
                 Longitude = ad.Longitude,
+                Location = ad.Location,
                 ImageLocation = ad.ImageLocations?.FirstOrDefault().Location
         };
         }

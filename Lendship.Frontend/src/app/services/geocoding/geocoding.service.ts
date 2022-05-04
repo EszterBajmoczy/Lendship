@@ -7,7 +7,6 @@ import {environment} from "../../../environments/environment";
   providedIn: 'root'
 })
 export class GeocodingService {
-  //geocode.xyz
   private readonly baseUrl: string;
   private readonly apiKey: string;
 
@@ -23,7 +22,8 @@ export class GeocodingService {
       json: '1'
     }
 
-    return this.http.get(this.baseUrl, {params});
+    let url = this.baseUrl + "?address=" + address + "&key=" + this.apiKey;
+    return this.http.get(url);
   }
 
   getAddress(lat: number, long: number) : Observable<any>{
@@ -32,7 +32,9 @@ export class GeocodingService {
       locate: lat + ',' + long,
       json: '1'
     }
-    return this.http.get(this.baseUrl, {params});
+
+    let url = this.baseUrl + "?latlng=" + lat + "," + long + "&key=" + this.apiKey;
+    return this.http.get(url);
   }
 
   private handleError(error: HttpErrorResponse) {

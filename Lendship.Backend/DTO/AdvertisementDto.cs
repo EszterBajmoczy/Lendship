@@ -73,6 +73,14 @@ namespace Lendship.Backend.DTO
         public decimal Longitude { get; set; }
 
         /// <summary>
+        /// Gets or Sets Location
+        /// </summary>
+        [Required]
+
+        [DataMember(Name = "location")]
+        public string Location { get; set; }
+
+        /// <summary>
         /// Gets or Sets ImageLocation
         /// </summary>
         [Required]
@@ -94,6 +102,7 @@ namespace Lendship.Backend.DTO
             sb.Append("  Credit: ").Append(Credit).Append("\n");
             sb.Append("  Latitude: ").Append(Latitude).Append("\n");
             sb.Append("  Longitude: ").Append(Longitude).Append("\n");
+            sb.Append("  Location: ").Append(Location).Append("\n");
             sb.Append("  ImageLocation: ").Append(ImageLocation).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
@@ -162,6 +171,11 @@ namespace Lendship.Backend.DTO
                     Longitude.Equals(other.Longitude)
                 ) &&
                 (
+                    Location == other.Location ||
+                    Location != null &&
+                    Location.Equals(other.Location)
+                ) &&
+                (
                     ImageLocation == other.ImageLocation ||
                     ImageLocation != null &&
                     ImageLocation.Equals(other.ImageLocation)
@@ -190,6 +204,8 @@ namespace Lendship.Backend.DTO
                     hashCode = hashCode * 59 + Latitude.GetHashCode();
                     if (Longitude != null)
                     hashCode = hashCode * 59 + Longitude.GetHashCode();
+                    if (Location != null)
+                    hashCode = hashCode * 59 + Location.GetHashCode();
                     if (ImageLocation != null)
                     hashCode = hashCode * 59 + ImageLocation.GetHashCode();
                 return hashCode;
