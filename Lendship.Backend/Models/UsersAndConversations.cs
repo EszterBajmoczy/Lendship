@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Lendship.Backend.Authentication;
+using System.ComponentModel.DataAnnotations;
 
 namespace Lendship.Backend.Models
 {
@@ -13,5 +14,9 @@ namespace Lendship.Backend.Models
 
         [Required]
         public int ConversationId { get; set; }
+
+        public virtual ApplicationUser User { get; set; }
+
+        public virtual Conversation Conversation { get; set; }
     }
 }

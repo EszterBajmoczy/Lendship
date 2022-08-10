@@ -35,6 +35,9 @@ namespace Lendship.Backend.Models
         public decimal Longitude { get; set; }
 
         [Required]
+        public string Location { get; set; }
+
+        [Required]
         public bool IsPublic { get; set; }
 
         [Required]
@@ -44,5 +47,8 @@ namespace Lendship.Backend.Models
         public DateTime Creation { get; set; }
 
         public ICollection<ImageLocation> ImageLocations { get; set; }
+
+        public virtual ICollection<Availability> Availabilities { get; set; }
+
     }
 }

@@ -21,6 +21,9 @@ namespace Lendship.Backend.Authentication
         [Column(TypeName = "decimal(9,6)")]
         public decimal Longitude { get; set; }
 
+        [Required]
+        public string Location { get; set; }
+
         [Column(TypeName = "decimal(9,6)")]
         public decimal EvaluationAsAdvertiser { get; set; }
 

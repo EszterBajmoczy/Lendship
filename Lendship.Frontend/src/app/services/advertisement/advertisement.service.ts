@@ -23,28 +23,25 @@ export class AdvertisementService {
   getAdvertisements(): Observable<Advertisement[]>{
     return this.http.get<Advertisement[]>(this.baseUrl, { headers: this.headers})
       .pipe(
-        map((response: Advertisement[]) => this.setLocations(response)),
         catchError(this.handleError));
   }
 
   getOwnAdvertisements(): Observable<Advertisement[]>{
     return this.http.get<Advertisement[]>(this.baseUrl + "own", { headers: this.headers})
       .pipe(
-        map((response: Advertisement[]) => this.setLocations(response)),
         catchError(this.handleError));
   }
 
   getSavedAdvertisements(): Observable<Advertisement[]>{
     return this.http.get<Advertisement[]>(this.baseUrl + "saved", { headers: this.headers})
       .pipe(
-        map((response: Advertisement[]) => this.setLocations(response)),
         catchError(this.handleError));
   }
 
   getAdvertisementDetailById(id: number): Observable<AdvertisementDetail>{
     return this.http.get<AdvertisementDetail>(this.baseUrl + id, { headers: this.headers})
       .pipe(
-        map((response: AdvertisementDetail) => this.setLocation(response)),
+        map((response: AdvertisementDetail) => this.setDates(response)),
         catchError(this.handleError));
   }
 
@@ -54,23 +51,11 @@ export class AdvertisementService {
         catchError(this.handleError));
   }
 
-  setLocations(ads: Advertisement[]){
-    ads.forEach((ad) => {
-      ad.location = "MockLocation";
-      /*this.geocodingService.getAddress(ad.latitude, ad.longitude)
-        .subscribe(location => ad.location = location["city"]);*/
-    });
-    console.log(ads);
-    return ads;
-  }
-
-  setLocation(ad: AdvertisementDetail): AdvertisementDetail{
+  setDates(ad: AdvertisementDetail): AdvertisementDetail{
     ad.availabilities.forEach(av => {
       av.dateTo = new Date(av.dateTo);
       av.dateFrom = new Date(av.dateFrom);
     })
-    this.geocodingService.getAddress(ad.latitude, ad.longitude)
-      .subscribe(location => ad.location = location["city"]);
     return ad;
   }
 

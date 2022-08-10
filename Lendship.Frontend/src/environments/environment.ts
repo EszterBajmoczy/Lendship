@@ -2,13 +2,11 @@
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
-import {HttpHeaders} from "@angular/common/http";
-
 export const environment = {
   production: false,
   baseUrl: "https://localhost:44377/",
-  geocodingBaseUrl: "https://geocode.xyz/",
-  geocodingApiKey: "318774527394438479612x29999"
+  geocodingBaseUrl: "https://maps.googleapis.com/maps/api/geocode/json",
+  geocodingApiKey: "AIzaSyA6IWSb32vNokzBHBMHnl-LanAa9fU56Yc"
 };
 
 /*

@@ -1,7 +1,6 @@
 ﻿using Lendship.Backend.DTO.Authentication;
 using Lendship.Backend.Interfaces.Services;
 using MailKit.Net.Smtp;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using System;
