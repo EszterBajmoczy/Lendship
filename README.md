@@ -9,6 +9,26 @@ SwaggerHub: https://app.swaggerhub.com/apis/EszterBajmoczy/Lendship.Backend/1.0.
 
 
 # Haladási napló:
+2022.05.04:
+- Reservation page
+- Token kezelés módosítása
+  - Redis nélküli működés - logolás
+  - Blacklist
+- Geocoding api frissítése google-ra
+
+
+2022.04.28:
+- GitHub Actions
+
+2022.04.21:
+- Frontend implementations
+  - Login, Registration, Token handling
+  - Advertisements pages
+  - Messages page
+  - Reservation for an advertisement
+  - Profil page with evaluations
+- Statikus képkiszolgálás
+- Adatbázis feltöltő script
 
 2022.03.23:
 - Notification / History implementation/modification

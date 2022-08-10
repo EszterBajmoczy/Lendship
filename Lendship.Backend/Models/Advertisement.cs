@@ -47,5 +47,8 @@ namespace Lendship.Backend.Models
         public DateTime Creation { get; set; }
 
         public ICollection<ImageLocation> ImageLocations { get; set; }
+
+        public virtual ICollection<Availability> Availabilities { get; set; }
+
     }
 }

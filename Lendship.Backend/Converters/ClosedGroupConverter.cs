@@ -1,12 +1,8 @@
-﻿using Lendship.Backend.Authentication;
-using Lendship.Backend.DTO;
+﻿using Lendship.Backend.DTO;
 using Lendship.Backend.Interfaces.Converters;
 using Lendship.Backend.Models;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Lendship.Backend.Converters
 {
@@ -18,20 +14,12 @@ namespace Lendship.Backend.Converters
             _userConverter = userConverter;
         }
 
-        public ClosedGroupDto ConvertToDto(ClosedGroup closedGroup, List<ApplicationUser> users)
+        public ClosedGroupDto ConvertToDto(int advertisementId, IEnumerable<UsersAndClosedGroups> usersAndClosedGroups)
         {
-            var userDtos = new List<string>();
-
-            foreach (var user in users)
-            {
-                userDtos.Add(user.Email);
-            }
-
             return new ClosedGroupDto()
             {
-                Id = closedGroup.Id,
-                AdvertisementId = closedGroup.AdvertismentId,
-                UserEmails = userDtos
+                AdvertisementId = advertisementId,
+                UserEmails = usersAndClosedGroups.Select(u => u.User.Email).ToList()
             };
         }
 
@@ -39,7 +27,6 @@ namespace Lendship.Backend.Converters
         {
             return new ClosedGroup()
             {
-                Id = closedGroupDto.Id,
                 AdvertismentId = closedGroupDto.AdvertisementId
             };
         }

@@ -1,14 +1,12 @@
-﻿using Lendship.Backend.Authentication;
-using Lendship.Backend.DTO;
+﻿using Lendship.Backend.DTO;
 using Lendship.Backend.Models;
-using System;
 using System.Collections.Generic;
 
 namespace Lendship.Backend.Interfaces.Converters
 {
     public interface IClosedGroupConverter
     {
-        ClosedGroupDto ConvertToDto(ClosedGroup closedGroup, List<ApplicationUser> users);
+        ClosedGroupDto ConvertToDto(int advertisementId, IEnumerable<UsersAndClosedGroups> usersAndClosedGroups);
 
         ClosedGroup ConvertToEntity(ClosedGroupDto closedGroupDto);
     }

@@ -25,13 +25,6 @@ namespace Lendship.Backend.DTO
     public partial class ClosedGroupDto : IEquatable<ClosedGroupDto>
     { 
         /// <summary>
-        /// Gets or Sets Id
-        /// </summary>
-
-        [DataMember(Name="id")]
-        public int Id { get; set; }
-
-        /// <summary>
         /// Gets or Sets AdvertisementId
         /// </summary>
         [Required]
@@ -55,7 +48,6 @@ namespace Lendship.Backend.DTO
         {
             var sb = new StringBuilder();
             sb.Append("class ClosedGroup {\n");
-            sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  AdvertisementId: ").Append(AdvertisementId).Append("\n");
             sb.Append("  UserEmails: ").Append(UserEmails).Append("\n");
             sb.Append("}\n");
@@ -93,12 +85,7 @@ namespace Lendship.Backend.DTO
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
 
-            return 
-                (
-                    Id == other.Id ||
-                    Id != null &&
-                    Id.Equals(other.Id)
-                ) && 
+            return  
                 (
                     AdvertisementId == other.AdvertisementId ||
                     AdvertisementId != null &&
@@ -121,8 +108,6 @@ namespace Lendship.Backend.DTO
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                    if (Id != null)
-                    hashCode = hashCode * 59 + Id.GetHashCode();
                     if (AdvertisementId != null)
                     hashCode = hashCode * 59 + AdvertisementId.GetHashCode();
                     if (UserEmails != null)
