@@ -1,5 +1,4 @@
-﻿using Lendship.Backend.Authentication;
-using Lendship.Backend.Converters;
+﻿using Lendship.Backend.Converters;
 using Lendship.Backend.DTO;
 using Lendship.Backend.Exceptions;
 using Lendship.Backend.Interfaces.Services;
@@ -10,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace Lendship.Backend.Services
 {
@@ -37,11 +35,11 @@ namespace Lendship.Backend.Services
                 .Include(a => a.User)
                 .Include(a => a.Category)
                 .Include(a => a.ImageLocations)
+                .Include(a => a.Availabilities)
                 .Where(a => a.Id == advertisementId)
                 .FirstOrDefault();
-            var availabilities = _dbContext.Availabilites.Where(a => a.Advertisement.Id == advertisementId).ToList();
 
-            var advertisementDto = _adDetailsConverter.ConvertToDto(advertisement, availabilities);
+            var advertisementDto = _adDetailsConverter.ConvertToDto(advertisement);
             return advertisementDto;
         }
 

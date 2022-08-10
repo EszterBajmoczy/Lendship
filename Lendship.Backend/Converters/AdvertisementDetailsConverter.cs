@@ -21,23 +21,16 @@ namespace Lendship.Backend.Converters
             _availabillityConverter = availabillityConverter;
         }
 
-        public AdvertisementDetailsDto ConvertToDto(Advertisement ad, IEnumerable<Availability> availabilities)
+        public AdvertisementDetailsDto ConvertToDto(Advertisement ad)
         {
             if(ad == null)
             {
                 return null;
             }
 
-            //TODO evaluations !!!
             var userDTO = _userConverter.ConvertToDto(ad.User);
 
-            List<AvailabilityDto> availabilityDtos = new List<AvailabilityDto>();
-
-            foreach (var availability in availabilities)
-            {
-                var a = _availabillityConverter.ConvertToDto(availability);
-                availabilityDtos.Add(a);
-            }
+            var availabilitiesDto = ad.Availabilities.Select(a => _availabillityConverter.ConvertToDto(a));
 
             return new AdvertisementDetailsDto
             {
@@ -54,7 +47,7 @@ namespace Lendship.Backend.Converters
                 Location = ad.Location,
                 IsPublic = ad.IsPublic,
                 Category = ad.Category.Name,
-                Availabilities = availabilityDtos,
+                Availabilities = availabilitiesDto.ToList(),
                 ImageLocations = ad.ImageLocations.Select(i => i.Location).ToList(),
                 Creation = ad.Creation
             };

@@ -96,24 +96,21 @@ namespace Lendship.Backend.Services
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
 
-            var conIds = _dbContext.UsersAndConversations
+            var conversations = _dbContext.UsersAndConversations
+                            .Include(u => u.Conversation)
+                            .Include(u => u.Conversation.Advertisement)
                             .Where(x => x.UserId == signedInUserId)
-                            .Select(x => x.ConversationId)
+                            .Select(x => x.Conversation)
                             .ToList();
-
-            var conversations = _dbContext.Conversation
-                        .Where(c => conIds.Contains(c.Id))
-                        .Include(c => c.Advertisement)
-                        .ToList();
             
             foreach (var con in conversations)
             {
-                var userIds = _dbContext.UsersAndConversations
+                var users = _dbContext.UsersAndConversations
+                            .Include(u => u.User)
                             .Where(x => x.ConversationId == con.Id && x.UserId != signedInUserId)
-                            .Select(x => x.UserId)
+                            .Select(x => x.User)
                             .ToList();
 
-                var users = _dbContext.Users.Where(u => userIds.Contains(u.Id)).ToList();
                 var hasNewMessage = _dbContext.Messages
                                         .Where(m => m.ConversationId == con.Id && m.New)
                                         .ToList();
@@ -149,16 +146,12 @@ namespace Lendship.Backend.Services
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var conIds = _dbContext.UsersAndConversations
-                            .Where(x => x.UserId == signedInUserId)
-                            .Select(x => x.ConversationId)
-                            .ToList();
-
-            return _dbContext.Conversation
-                        .Include(c => c.Messages)
-                        .Include(c => c.Advertisement)
-                        .Where(c => conIds.Contains(c.Id) && c.Messages.Any(m => m.New))
-                        .Count();
+            return _dbContext.UsersAndConversations
+                            .Include(u => u.Conversation)
+                            .Include(u => u.Conversation.Messages)
+                            .Include(u => u.Conversation.Advertisement)
+                            .Where(u => u.UserId == signedInUserId && u.Conversation.Messages.Any(m => m.New))
+                            .Count();
         }
     }
 }

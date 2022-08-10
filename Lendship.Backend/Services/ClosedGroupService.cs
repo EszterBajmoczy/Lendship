@@ -5,6 +5,7 @@ using Lendship.Backend.Interfaces.Converters;
 using Lendship.Backend.Interfaces.Services;
 using Lendship.Backend.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Security.Claims;
@@ -30,18 +31,12 @@ namespace Lendship.Backend.Services
 
         public ClosedGroupDto GetClosedGroupOfAdvertisement(int advertisementId)
         {
-            var cGroup = _dbContext.ClosedGroups
-                .Where(c => c.AdvertismentId == advertisementId)
-                .FirstOrDefault();
-
-            var userIds = _dbContext.UsersAndClosedGroups
-                                .Where(x => x.ClosedGroupId == cGroup.Id)
-                                .Select(x => x.UserId)
+            var usersAndCloseGroups = _dbContext.UsersAndClosedGroups
+                                .Include(u => u.User)
+                                .Where(x => x.ClosedGroup.AdvertismentId == advertisementId)
                                 .ToList();
 
-            var users = _dbContext.Users.Where(u => userIds.Contains(u.Id)).ToList();
-
-            var closedGroupDto = _cgConverter.ConvertToDto(cGroup, users);
+            var closedGroupDto = _cgConverter.ConvertToDto(advertisementId, usersAndCloseGroups);
             return closedGroupDto;
         }
 
