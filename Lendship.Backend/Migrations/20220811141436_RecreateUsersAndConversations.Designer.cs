@@ -4,14 +4,16 @@ using Lendship.Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Lendship.Backend.Migrations
 {
     [DbContext(typeof(LendshipDbContext))]
-    partial class LendshipDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220811141436_RecreateUsersAndConversations")]
+    partial class RecreateUsersAndConversations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -680,11 +682,13 @@ namespace Lendship.Backend.Migrations
 
             modelBuilder.Entity("Lendship.Backend.Models.Availability", b =>
                 {
-                    b.HasOne("Lendship.Backend.Models.Advertisement", null)
+                    b.HasOne("Lendship.Backend.Models.Advertisement", "Advertisement")
                         .WithMany("Availabilities")
                         .HasForeignKey("AdvertisementId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Advertisement");
                 });
 
             modelBuilder.Entity("Lendship.Backend.Models.Conversation", b =>
