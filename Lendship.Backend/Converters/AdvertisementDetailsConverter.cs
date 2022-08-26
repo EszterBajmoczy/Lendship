@@ -3,10 +3,8 @@ using Lendship.Backend.DTO;
 using Lendship.Backend.Interfaces.Converters;
 using Lendship.Backend.Models;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Lendship.Backend.Converters
 {
@@ -30,7 +28,7 @@ namespace Lendship.Backend.Converters
 
             var userDTO = _userConverter.ConvertToDto(ad.User);
 
-            var availabilitiesDto = ad.Availabilities.Select(a => _availabillityConverter.ConvertToDto(a));
+            IEnumerable<AvailabilityDto> availabilityDtos = ad.Availabilities.Select(a => _availabillityConverter.ConvertToDto(a));
 
             return new AdvertisementDetailsDto
             {
@@ -47,7 +45,7 @@ namespace Lendship.Backend.Converters
                 Location = ad.Location,
                 IsPublic = ad.IsPublic,
                 Category = ad.Category.Name,
-                Availabilities = availabilitiesDto.ToList(),
+                Availabilities = availabilityDtos.ToList(),
                 ImageLocations = ad.ImageLocations.Select(i => i.Location).ToList(),
                 Creation = ad.Creation
             };
@@ -55,6 +53,8 @@ namespace Lendship.Backend.Converters
 
         public Advertisement ConvertToEntity(AdvertisementDetailsDto ad, ApplicationUser user, Category category)
         {
+            //var availabilities = ad.Availabilities.Select(a => _availabillityConverter.ConvertToEntity(a, ad));
+
             var newAd = new Advertisement
             {
                 Id = ad.Id ?? 0,
