@@ -18,6 +18,7 @@ namespace Lendship.Backend.Services
         private readonly LendshipDbContext _dbContext;
         private readonly AdvertisementDetailsConverter _adDetailsConverter;
         private readonly AdvertisementConverter _adConverter;
+        private readonly AvailabilityConverter _availabilityConverter;
 
         public AdvertisementService(IHttpContextAccessor httpContextAccessor, LendshipDbContext dbContext)
         {
@@ -27,6 +28,7 @@ namespace Lendship.Backend.Services
             //TODO inject converters!!
             _adDetailsConverter = new AdvertisementDetailsConverter(new UserConverter(), new AvailabilityConverter());
             _adConverter = new AdvertisementConverter();
+            _availabilityConverter = new AvailabilityConverter();
         }
 
         public AdvertisementDetailsDto GetAdvertisement(int advertisementId)
@@ -60,6 +62,8 @@ namespace Lendship.Backend.Services
             _dbContext.Advertisements.Add(ad);
             _dbContext.SaveChanges();
 
+            UpdateAvailabilities(ad, advertisement.Availabilities);
+
             return ad.Id;
         }
 
@@ -67,15 +71,11 @@ namespace Lendship.Backend.Services
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (new Guid(signedInUserId) != advertisement.User.Id)
-            {
-                throw new UpdateNotAllowedException("Update is not allowed.");
-            }
             var oldAd = _dbContext.Advertisements
                             .AsNoTracking()
                             .Include(a => a.User)
                             .Where(a => a.Id == advertisement.Id)
-                            .FirstOrDefault();
+                            .FirstOrDefault();            
 
             if(oldAd == null)
             {
@@ -99,6 +99,9 @@ namespace Lendship.Backend.Services
             var ad = _adDetailsConverter.ConvertToEntity(advertisement, user, category);
 
             _dbContext.Update(ad);
+
+            UpdateAvailabilities(ad, advertisement.Availabilities);
+
             _dbContext.SaveChanges();
         }
 
@@ -263,6 +266,24 @@ namespace Lendship.Backend.Services
             }
 
             return result;
+        }
+
+        private void UpdateAvailabilities(Advertisement ad, List<AvailabilityDto> availabilities)
+        {
+            var savedAv = _dbContext.Availabilites
+                        .Where(a => a.AdvertisementId == ad.Id);
+
+            var avIds = availabilities
+                            .Where(a => a.Id != 0)
+                            .Select(a => a.Id);
+
+            var toAdd = availabilities.Where(a => a.Id == 0).Select(a => _availabilityConverter.ConvertToEntity(a, ad));
+            var toDelete = savedAv.Where(a => !avIds.Contains(a.Id));
+
+            _dbContext.Availabilites.RemoveRange(toDelete);
+            _dbContext.Availabilites.AddRange(toAdd);
+
+            _dbContext.SaveChanges();
         }
     }
 }
