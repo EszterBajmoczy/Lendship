@@ -50,6 +50,10 @@ const routes: Routes = [
     component: AdvertisementCreateComponent
   },
   {
+    path: 'advertisements/edit/:advertisementId',
+    component: AdvertisementCreateComponent
+  },
+  {
     path: 'conversations',
     component: ConversationsPageComponent
   },
