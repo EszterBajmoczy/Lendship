@@ -4,6 +4,7 @@ import {IReservationDetail} from "../../models/reservation-detail";
 import {Router} from "@angular/router";
 import {User} from "../../models/user";
 import {NgbCalendar, NgbDate, NgbDateStruct} from "@ng-bootstrap/ng-bootstrap";
+import {NgbDateHandlerService} from "../../services/date-handler/date-handler.service";
 
 @Component({
   selector: 'app-reservation-page',
@@ -24,7 +25,7 @@ export class ReservationPageComponent implements OnInit {
   model: NgbDate;
   date: { year: number; month: number; } | undefined;
 
-  constructor(private reservationService: ReservationService, private calendar: NgbCalendar, private router: Router) {
+  constructor(private reservationService: ReservationService, private ngbDateHandler: NgbDateHandlerService, private calendar: NgbCalendar, private router: Router) {
     this.model = calendar.getToday();
     reservationService.getUsersReservations()
       .subscribe(res => {
@@ -39,8 +40,8 @@ export class ReservationPageComponent implements OnInit {
 
   initializeNgbDateFields(res: IReservationDetail[]){
     res.forEach(r => {
-      r.dateFromNgbDate = new NgbDate(r.dateFrom.getUTCFullYear(), r.dateFrom.getUTCMonth() + 1, r.dateFrom.getUTCDate());
-      r.dateToNgbDate = new NgbDate(r.dateTo.getUTCFullYear(), r.dateTo.getUTCMonth() + 1, r.dateTo.getUTCDate()+2);
+      r.dateFromNgbDate = this.ngbDateHandler.convertDateToNgbDate(r.dateFrom, true);
+      r.dateToNgbDate = this.ngbDateHandler.convertDateToNgbDate(r.dateTo, false)
     });
 
     return res;

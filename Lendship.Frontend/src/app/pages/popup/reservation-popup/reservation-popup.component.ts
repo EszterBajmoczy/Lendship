@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { NgbCalendar, NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import { ReservationService} from "../../../services/reservation/reservation.service";
 import {IAvailability} from "../../../models/availability";
+import {NgbDateHandlerService} from "../../../services/date-handler/date-handler.service";
 
 @Component({
   selector: 'app-reservation-popup',
@@ -21,7 +22,7 @@ export class ReservationPopupComponent implements OnInit {
   @Output() reserveFrom = new EventEmitter<NgbDate>();
   @Output() reserveTo = new EventEmitter<NgbDate>();
 
-  constructor(private calendar: NgbCalendar, private reservationService: ReservationService) {
+  constructor(private calendar: NgbCalendar, private reservationService: ReservationService, private ngbDateHandlerService: NgbDateHandlerService) {
   }
 
   ngOnInit(): void {
@@ -42,8 +43,8 @@ export class ReservationPopupComponent implements OnInit {
   notAvailable(date: NgbDate){
     let result = true;
     this.availabilities?.forEach( av => {
-      let from = new NgbDate(av.dateFrom.getUTCFullYear(), av.dateFrom.getUTCMonth() + 1, av.dateFrom.getUTCDate());
-      let to = new NgbDate(av.dateTo.getUTCFullYear(), av.dateTo.getUTCMonth() + 1, av.dateTo.getUTCDate()+2);
+      let from = this.ngbDateHandlerService.convertDateToNgbDate(av.dateFrom, true);
+      let to = this.ngbDateHandlerService.convertDateToNgbDate(av.dateTo, false);
 
       if(date.after(from) && date.before(to)) {
         result = false;
@@ -55,8 +56,8 @@ export class ReservationPopupComponent implements OnInit {
   alreadyReserved = (date: NgbDate, current?: {year: number, month: number}) => {
     let reserved = false;
     this.reserved?.forEach( av => {
-      let from = new NgbDate(av.dateFrom.getUTCFullYear(), av.dateFrom.getUTCMonth() + 1, av.dateFrom.getUTCDate());
-      let to = new NgbDate(av.dateTo.getUTCFullYear(), av.dateTo.getUTCMonth() + 1, av.dateTo.getUTCDate()+2);
+      let from = this.ngbDateHandlerService.convertDateToNgbDate(av.dateFrom, true);
+      let to = this.ngbDateHandlerService.convertDateToNgbDate(av.dateTo, false);
 
       if(date.after(from) && date.before(to)) {
         reserved = true;
@@ -95,8 +96,8 @@ export class ReservationPopupComponent implements OnInit {
   isAllEnabledBetween(date: NgbDate): Boolean{
     let result = false;
     this.availabilities?.forEach( av => {
-      let from = new NgbDate(av.dateFrom.getUTCFullYear(), av.dateFrom.getUTCMonth() + 1, av.dateFrom.getUTCDate());
-      let to = new NgbDate(av.dateTo.getUTCFullYear(), av.dateTo.getUTCMonth() + 1, av.dateTo.getUTCDate()+2);
+      let from = this.ngbDateHandlerService.convertDateToNgbDate(av.dateFrom, true);
+      let to = this.ngbDateHandlerService.convertDateToNgbDate(av.dateTo, false);
 
       if(this.fromDate?.after(from) && date.before(to)) {
         result = true;
@@ -104,8 +105,8 @@ export class ReservationPopupComponent implements OnInit {
     });
 
     this.reserved?.forEach(av => {
-      let from = new NgbDate(av.dateFrom.getUTCFullYear(), av.dateFrom.getUTCMonth() + 1, av.dateFrom.getUTCDate());
-      let to = new NgbDate(av.dateTo.getUTCFullYear(), av.dateTo.getUTCMonth() + 1, av.dateTo.getUTCDate()+2);
+      let from = this.ngbDateHandlerService.convertDateToNgbDate(av.dateFrom, true);
+      let to = this.ngbDateHandlerService.convertDateToNgbDate(av.dateTo, false);
 
       if((from?.after(this.fromDate) && from.before(date)) || (to.after(this.fromDate) && (to.before(date)))) {
         result = false;

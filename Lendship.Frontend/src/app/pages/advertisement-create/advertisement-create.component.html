@@ -1,6 +1,6 @@
-<div class="container-fluid form-container col-lg-6 d-flex justify-content-center">
-  <div *ngIf="id == 0" class="container px-lg-5">
-    <h1 class="text-center mb-5 mt-2">Create new advertisement</h1>
+<div class="container-fluid form-container col-lg-10">
+  <div *ngIf="id == 0" class="px-lg-5">
+    <h1 class="text-center mb-5 mt-2">{{mode}}</h1>
     <form class="align-items-start m-4" [formGroup]="advertisementForm" (ngSubmit)="onSubmit()">
 
       <div class="d-flex justify-content-between mt-4">
@@ -14,7 +14,6 @@
           </div>
         </div>
       </div>
-
 
       <div class="d-flex justify-content-between mt-4">
         <label class="col-lg-4" for="price">Price:</label>
@@ -116,22 +115,27 @@
         </div>
       </div>
 
+      <app-file-upload (files)="addFile($event)" ></app-file-upload>
+      <div *ngFor="let file of newImageNames; let i = index" class="date-section d-flex text-center align-items-center align-items-center justify-content-between">
+        <p class="mb-0">{{file}}</p>
+        <button class="btn btn-primary m-0" (click)="removeNewImage(i)"><i class="fa-solid fa-circle-minus"></i></button>
+      </div>
+      <div *ngFor="let file of advertisement?.imageLocations; let i = index" class="date-section d-flex align-items-center align-items-center justify-content-between">
+        <img src="https://localhost:44377/images{{file}}" class="col-2">
+        <button class="btn btn-primary m-0" (click)="removeImage(i)"><i class="fa-solid fa-circle-minus"></i></button>
+      </div>
+
       <p *ngIf="error" class="form-error m-0">{{error}}</p>
       <p class="d-flex justify-content-center mt-4">
         <button class="btn btn-info" type="submit" [disabled]="!advertisementForm.valid">Send</button>
       </p>
     </form>
   </div>
-
-  <div *ngIf="id != 0" class="container px-lg-5">
-    <h1 class="text-center mb-5 mt-2">Upload images to advertisement</h1>
-    <app-file-upload [advertisementId]="id" ></app-file-upload>
-  </div>
 </div>
 
 <ng-template #reservePopup let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Choose reservation dates</h4>
+    <h4 class="modal-title" id="modal-basic-title">Select availability interval</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body d-flex justify-content-center">

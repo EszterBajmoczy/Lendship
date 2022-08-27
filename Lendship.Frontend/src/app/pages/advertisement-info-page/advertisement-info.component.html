@@ -1,13 +1,16 @@
 <div *ngIf="ad" class="container col-lg-10">
-  <div class="d-flex profile-info align-items-center mt-2 mb-lg-4">
-    <div class="me-4">
-      <img class="img-profile" src="https://localhost:44377/images/OLASDGREFDDLLWER.jpg">
+  <div class="d-flex justify-content-between">
+    <div class="d-flex profile-info align-items-center mt-2 mb-lg-4">
+      <div class="me-4">
+        <img class="img-profile" src="https://localhost:44377/images/OLASDGREFDDLLWER.jpg">
+      </div>
+      <div>
+        <p class="user-name">{{ad.user.name}}</p>
+        <p><i class="fa fa-star me-2"></i>as advertiser: {{ad.user.evaluationAsAdvertiser}} ({{ad.user.evaluationAsAdvertiserCount}} vote)</p>
+        <p><i class="fa fa-star me-2"></i>as lender: {{ad.user.evaluationAsLender}} ({{ad.user.evaluationAsLenderCount}} vote)</p>
+      </div>
     </div>
-    <div>
-      <p class="user-name">{{ad.user.name}}</p>
-      <p><i class="fa fa-star me-2"></i>as advertiser: {{ad.user.evaluationAsAdvertiser}} ({{ad.user.evaluationAsAdvertiserCount}} vote)</p>
-      <p><i class="fa fa-star me-2"></i>as lender: {{ad.user.evaluationAsLender}} ({{ad.user.evaluationAsLenderCount}} vote)</p>
-    </div>
+    <button *ngIf="isOwnAdvertisement" class="btn btn-success align-self-center" (click)="edit()" >Edit</button>
   </div>
 
   <div class="bg-white align-content-center">

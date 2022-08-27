@@ -18,8 +18,8 @@ namespace Lendship.Backend.Converters
                 Latitude = ad.Latitude,
                 Longitude = ad.Longitude,
                 Location = ad.Location,
-                ImageLocation = ad.ImageLocations?.FirstOrDefault().Location
-        };
+                ImageLocation = ad.ImageLocations?.FirstOrDefault()?.Location
+            };
         }
     }
 }

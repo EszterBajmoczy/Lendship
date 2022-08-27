@@ -51,6 +51,12 @@ export class AdvertisementService {
         catchError(this.handleError));
   }
 
+  updateAdvertisement(ad: AdvertisementDetail): Observable<number>{
+    return this.http.put<any>(this.baseUrl, ad, { headers: this.headers})
+      .pipe(
+        catchError(this.handleError));
+  }
+
   setDates(ad: AdvertisementDetail): AdvertisementDetail{
     ad.availabilities.forEach(av => {
       av.dateTo = new Date(av.dateTo);
