@@ -88,8 +88,24 @@
 
       <div class="d-flex justify-content-between mt-4">
         <label class="col-lg-4" for="category">Category:</label>
-        <input id="category" type="text" formControlName="category" placeholder="Category">
+
+        <ng-autocomplete
+          id="category" type="text" formControlName="category" placeholder="Category"
+          [data]="categories"
+          [searchKeyword]="categoryKeyword"
+          [itemTemplate]="itemTemplate"
+          [notFoundTemplate]="notFoundTemplate">
+        </ng-autocomplete>
+
+        <ng-template #itemTemplate let-item>
+          <a [innerHTML]="item.name"></a>
+        </ng-template>
+
+        <ng-template #notFoundTemplate let-notFound>
+          <div [innerHTML]="notFound"></div>
+        </ng-template>
       </div>
+
       <div class="error mb-4">
         <div class="d-flex justify-content-end" *ngIf="!category?.valid && (category?.dirty || category?.touched)">
           <div [hidden]="!category?.errors?.['required']">

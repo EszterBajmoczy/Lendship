@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {LocationValidator} from "../../shared/valid-location";
 import {GeocodingService} from "../../services/geocoding/geocoding.service";
 import {Availability, IAvailability} from "../../models/availability";
@@ -9,6 +9,8 @@ import {AdvertisementDetail} from "../../models/advertisement-detail";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FileUploadService} from "../../services/file-upload/file-upload.service";
 import {NgbDateHandlerService} from "../../services/date-handler/date-handler.service";
+import {Category} from "../../models/category";
+import {map, Observable, startWith} from "rxjs";
 
 
 @Component({
@@ -20,7 +22,10 @@ import {NgbDateHandlerService} from "../../services/date-handler/date-handler.se
 export class AdvertisementCreateComponent implements OnInit {
   advertisement: AdvertisementDetail | undefined;
   availabilities = Array<Availability>();
-  imagesToDelete = new Array<string>();
+
+  categories = Array<Category>();
+  categoryKeyword = 'name';
+
   newImageNames = new Array<string>();
   newImages = new Array<File>();
 
@@ -62,6 +67,11 @@ export class AdvertisementCreateComponent implements OnInit {
       }
     });
 
+    advertisementService.getCategories()
+      .subscribe((categories) => {
+        this.categories = categories;
+      })
+
     this.advertisementForm = this.formBuilder.group({
       id: [0],
       title: ["", [Validators.required]],
@@ -74,7 +84,7 @@ export class AdvertisementCreateComponent implements OnInit {
       latitude: [0],
       longitude: [0],
       isPublic: [true],
-      category: ["", [Validators.required]],
+      category: [null, [Validators.required]],
       availabilities: []
     });
   }
@@ -84,11 +94,6 @@ export class AdvertisementCreateComponent implements OnInit {
     availabilities.forEach(av => {
       let dateFrom = this.ngbDateHandlerService.convertDateToString(av.dateFrom);
       let dateTo = this.ngbDateHandlerService.convertDateToString(av.dateTo);
-      console.log("**");
-      console.log(av.dateFrom);
-      console.log(dateFrom);
-      console.log(av.dateTo);
-      console.log(dateTo);
       result.push(new Availability(av.id, dateFrom, dateTo));
     });
     return result;
@@ -160,6 +165,7 @@ export class AdvertisementCreateComponent implements OnInit {
   }
 
   onSubmit(){
+    console.log(this.advertisementForm.value);
     if(this.advertisementForm.invalid){
       return;
     }
@@ -173,15 +179,11 @@ export class AdvertisementCreateComponent implements OnInit {
       return;
     }
 
-    console.log("this.advertisementForm.value");
-    console.log(this.advertisementForm.value);
     this.geoCodingService.getLatLong(this.advertisementForm.get("location")?.value)
       .subscribe(data => {
         this.latitude = data.results[0].geometry.location.lat;
         this.longitude = data.results[0].geometry.location.lng;
-
         this.availability = this.availabilities;
-        this.category = "Kert";
 
         this.save(this.advertisementForm.value)
       })
@@ -189,30 +191,20 @@ export class AdvertisementCreateComponent implements OnInit {
 
   private save(data: any) {
     if(this.mode === "Create"){
-      console.log("c");
-      this.advertisementService.createAdvertisement(this.advertisementForm.value)
+      this.advertisementService.createAdvertisement(data)
         .subscribe(response => {
           this.uploadFiles(response);
         });
     } else {
-      console.log("u");
-      this.advertisementService.updateAdvertisement(this.advertisementForm.value)
+      this.advertisementService.updateAdvertisement(data)
         .subscribe(response => {
-          //TODO ne töltsön fel mindent újra
           this.updateFiles(this.advertisement!!.id);
         });
     }
   }
 
   updateFiles(id: number){
-    console.log("this.imagesToDelete");
-    console.log(this.imagesToDelete);
-    console.log(this.imagesToDelete);
-    console.log(this.imagesToDelete);
     this.uploadFiles(id);
-    if(this.imagesToDelete.length > 0){
-      this.fileUploadService.delete(id, this.imagesToDelete);
-    }
   }
 
   open(content: any) {
@@ -245,12 +237,14 @@ export class AdvertisementCreateComponent implements OnInit {
 
   uploadFiles(id: number) {
     if(this.newImages != null){
-      this.fileUploadService.upload(id, this.newImages).subscribe(
+      this.fileUploadService.upload(id, this.newImages)
+        .subscribe(
         (event: any) => {
-          //TODO
-          //this.router.navigateByUrl('home');
+          this.router.navigateByUrl('home');
         }
       );
+    } else {
+      this.router.navigateByUrl('home');
     }
   }
 
@@ -260,7 +254,9 @@ export class AdvertisementCreateComponent implements OnInit {
   }
 
   removeImage(i: number) {
-    let element = this.advertisement?.imageLocations.splice(i, 1);
-    this.imagesToDelete.push(element!![0]);
+    if(this.advertisement != null || this.advertisement !== undefined){
+      let element = this.advertisement?.imageLocations.splice(i, 1)[0];
+      this.fileUploadService.deleteFile(this.advertisement?.id, element);
+    }
   }
 }

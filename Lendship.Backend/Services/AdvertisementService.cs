@@ -1,6 +1,7 @@
 ﻿using Lendship.Backend.Converters;
 using Lendship.Backend.DTO;
 using Lendship.Backend.Exceptions;
+using Lendship.Backend.Interfaces.Converters;
 using Lendship.Backend.Interfaces.Services;
 using Lendship.Backend.Models;
 using Microsoft.AspNetCore.Http;
@@ -16,14 +17,16 @@ namespace Lendship.Backend.Services
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly LendshipDbContext _dbContext;
-        private readonly AdvertisementDetailsConverter _adDetailsConverter;
-        private readonly AdvertisementConverter _adConverter;
-        private readonly AvailabilityConverter _availabilityConverter;
+        private readonly ICategoryService _categoryService;
+        private readonly IAdvertisementDetailsConverter _adDetailsConverter;
+        private readonly IAdvertisementConverter _adConverter;
+        private readonly IAvailabilityConverter _availabilityConverter;
 
-        public AdvertisementService(IHttpContextAccessor httpContextAccessor, LendshipDbContext dbContext)
+        public AdvertisementService(IHttpContextAccessor httpContextAccessor, LendshipDbContext dbContext, ICategoryService categoryService)
         {
             _httpContextAccessor = httpContextAccessor;
             _dbContext = dbContext;
+            _categoryService = categoryService;
 
             //TODO inject converters!!
             _adDetailsConverter = new AdvertisementDetailsConverter(new UserConverter(), new AvailabilityConverter());
@@ -54,7 +57,7 @@ namespace Lendship.Backend.Services
 
             if(category == null)
             {
-                throw new CategoryNotExistsException("Category not exists.");
+                category = _categoryService.AddCategory(advertisement.Category);
             }
 
             var ad =_adDetailsConverter.ConvertToEntity(advertisement, user, category);
@@ -91,7 +94,7 @@ namespace Lendship.Backend.Services
 
             if (category == null)
             {
-                throw new CategoryNotExistsException("Category not exists.");
+                category = _categoryService.AddCategory(advertisement.Category);
             }
 
             var user = _dbContext.Users.Where(x => x.Id == signedInUserId).FirstOrDefault();
