@@ -7,16 +7,19 @@ import { AuthService } from "../auth/auth.service";
 import { GeocodingService } from "../geocoding/geocoding.service";
 import { AdvertisementDetail } from "../../models/advertisement-detail";
 import { environment } from "../../../environments/environment";
+import {Category} from "../../models/category";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdvertisementService {
   private baseUrl: string;
+  private baseUrlCategory: string;
   private headers: HttpHeaders
 
   constructor(private http: HttpClient, private authService: AuthService, private geocodingService: GeocodingService) {
     this.baseUrl = environment.baseUrl + "Advertisement/";
+    this.baseUrlCategory = environment.baseUrl + "Category/";
     this.headers = authService.getHeaders();
   }
 
@@ -53,6 +56,12 @@ export class AdvertisementService {
 
   updateAdvertisement(ad: AdvertisementDetail): Observable<number>{
     return this.http.put<any>(this.baseUrl, ad, { headers: this.headers})
+      .pipe(
+        catchError(this.handleError));
+  }
+
+  getCategories(): Observable<Category[]> {
+    return this.http.get<any>(this.baseUrlCategory, { headers: this.headers})
       .pipe(
         catchError(this.handleError));
   }

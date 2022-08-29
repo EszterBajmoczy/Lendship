@@ -30,13 +30,18 @@ export class FileUploadService {
         catchError(this.handleError));
   }
 
-  delete(advertisementId: number, fileNames: string[]){
+  deleteFiles(advertisementId: number, fileNames: string[]){
     fileNames.forEach(fileName => {
       console.log("!!!!!");
       console.log(this.baseUrl + advertisementId + "/" + this.simplifyImageName(fileName));
       return this.http.delete(this.baseUrl + advertisementId + "/" + this.simplifyImageName(fileName), {headers: this.headers})
         .subscribe(s => {console.log("sub");})
     })
+  }
+
+  deleteFile(advertisementId: number, fileName: string){
+    return this.http.delete(this.baseUrl + advertisementId + "/" + this.simplifyImageName(fileName), {headers: this.headers})
+      .subscribe(s => { console.log( fileName + " file is deleted"); })
   }
 
   private handleError(error: HttpErrorResponse) {
