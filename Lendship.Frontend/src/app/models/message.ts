@@ -2,22 +2,19 @@ import {User} from "./user";
 import {NgbDate} from "@ng-bootstrap/ng-bootstrap";
 
 export class Message {
-  id: number;
+  id: number | undefined;
   conversationId: number;
-  UserFrom: User;
+  UserFrom: User | undefined;
   content: string;
   new: boolean;
-  date: Date;
+  date: Date | undefined;
   dateString: string | undefined;
   own: boolean
 
-  constructor(id: number, conversationId: number, userFrom: User, content: string, isNew: boolean, date: Date) {
-    this.id = id;
+  constructor(conversationId: number, content: string, isNew: boolean) {
     this.conversationId = conversationId;
-    this.UserFrom = userFrom;
     this.content = content;
     this.new = isNew;
-    this.date = date;
     this.own = false;
   }
 }

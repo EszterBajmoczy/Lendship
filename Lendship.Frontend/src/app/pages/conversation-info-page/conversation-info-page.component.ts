@@ -66,12 +66,12 @@ export class ConversationInfoPageComponent implements OnInit {
 
   private categorizeMessages(msgs: Message[]): Message[] {
     msgs.forEach((msg) => {
-      let date = this.dateToString(msg.date);
+      let date = this.dateToString(msg.date!);
       if(date){
         msg.dateString = date;
       }
 
-      if(msg.UserFrom.id == this.userId){
+      if(msg.UserFrom!.id == this.userId){
         msg.own = true;
       } else {
         msg.own = false;

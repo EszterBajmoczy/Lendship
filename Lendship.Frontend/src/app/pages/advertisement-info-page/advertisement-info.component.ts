@@ -6,6 +6,9 @@ import { NgbCalendar, NgbDate, NgbDateParserFormatter, NgbModal } from "@ng-boot
 import { ReservationService } from "../../services/reservation/reservation.service";
 import { Reservation } from "../../models/reservation";
 import {AuthService} from "../../services/auth/auth.service";
+import {Conversation} from "../../models/conversation";
+import {ConversationService} from "../../services/conversation/conversation.service";
+import {Message} from "../../models/message";
 
 @Component({
   selector: 'app-advertisement-info-page',
@@ -17,6 +20,9 @@ export class AdvertisementInfoComponent implements OnInit {
   ad: AdvertisementDetail | undefined;
   isOwnAdvertisement: boolean = false;
 
+  message = "";
+  conversationId = -1;
+
   closeResult = '';
   hoveredDate: NgbDate | null = null;
   reserveFrom: NgbDate | undefined;
@@ -26,6 +32,7 @@ export class AdvertisementInfoComponent implements OnInit {
     private adService: AdvertisementService,
     private reservationService: ReservationService,
     private authService: AuthService,
+    private conService: ConversationService,
     private modalService: NgbModal,
     private calendar: NgbCalendar,
     public formatter: NgbDateParserFormatter,
@@ -68,8 +75,11 @@ export class AdvertisementInfoComponent implements OnInit {
             });
         }
         //TODO error msg
+      } else if (result == "Send"){
+        console.log("ss!!");
+        this.sendMessage();
       }
-    });
+    }).catch((res) => {});
   }
 
   isHovered(date: NgbDate) {
@@ -88,5 +98,35 @@ export class AdvertisementInfoComponent implements OnInit {
 
   edit() {
     this.router.navigateByUrl('advertisements/edit/'+ this.id);
+  }
+
+  msg(msg: string) {
+    this.message = msg;
+  }
+
+  getConversationId(conId: number) {
+    this.conversationId = conId;
+  }
+
+  sendMessage() {
+    if(this.conversationId == -1){
+      let conversation = new Conversation(0, this.id, this.ad?.title ?? "", true);
+      console.log("con:");
+      console.log(conversation);
+      this.conService.createConversation(conversation)
+        .subscribe((conId) => {
+          this.send(conId);
+        });
+    } else {
+      this.send(this.conversationId);
+    }
+  }
+
+  send(conId: number){
+    let msg = new Message(conId, this.message, true)
+    this.conService.sendMessage(msg)
+      .subscribe((response) => {
+        this.router.navigateByUrl('conversations/' + this.id + '/' + conId);
+      });
   }
 }
