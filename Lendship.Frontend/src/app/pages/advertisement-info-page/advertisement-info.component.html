@@ -77,9 +77,13 @@
         <div class="modal-body d-flex justify-content-center">
           <app-message-popup class="w-100"
             [advertisementId] = id
-            [advertisementName] = ad?.title>
+            [advertisementName] = ad?.title
+            (msg)="msg($event)"
+            (conversationId)="getConversationId($event)">
           </app-message-popup>
         </div>
+
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Send')">Send</button>
       </ng-template>
     </div>
 

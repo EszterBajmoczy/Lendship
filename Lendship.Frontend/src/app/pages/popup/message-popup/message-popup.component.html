@@ -1,5 +1,4 @@
-<form class="d-flex align-items-center" [formGroup]="sendMsgForm" (ngSubmit)="onSubmit()">
-  <input class="w-100" type="text" formControlName="content" placeholder="Send new message">
-  <button class="btn btn-info ms-1" type="submit">Send</button>
+<form class="d-flex align-items-center" [formGroup]="sendMsgForm">
+  <input class="w-100" type="text" formControlName="msgContent" placeholder="Send new message" (change)="editMsg()">
 </form>
 
