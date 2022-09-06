@@ -14,6 +14,8 @@ namespace Lendship.Backend.Converters
                 UserId = notification.UserId,
                 AdvertisementId = notification.AdvertisementId,
                 AdvertisementTitle = notification.AdvertisementTitle,
+                ReservationDateFrom = notification.ReservationDateFrom,
+                ReservationDateTo = notification.ReservationDateTo,
                 ReservationId = notification.ReservationId,
                 UpdateInformation = notification.UpdateInformation,
                 New = notification.New
