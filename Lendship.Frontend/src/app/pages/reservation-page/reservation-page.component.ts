@@ -4,7 +4,7 @@ import {IReservationDetail} from "../../models/reservation-detail";
 import {Router} from "@angular/router";
 import {User} from "../../models/user";
 import {NgbCalendar, NgbDate, NgbDateStruct} from "@ng-bootstrap/ng-bootstrap";
-import {NgbDateHandlerService} from "../../services/date-handler/date-handler.service";
+import {NgbDateHandlerService} from "../../services/date-handler/ngb-date-handler.service";
 
 @Component({
   selector: 'app-reservation-page',

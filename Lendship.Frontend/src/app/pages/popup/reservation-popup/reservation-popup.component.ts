@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { NgbCalendar, NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import { ReservationService} from "../../../services/reservation/reservation.service";
 import {IAvailability} from "../../../models/availability";
-import {NgbDateHandlerService} from "../../../services/date-handler/date-handler.service";
+import {NgbDateHandlerService} from "../../../services/date-handler/ngb-date-handler.service";
 
 @Component({
   selector: 'app-reservation-popup',
