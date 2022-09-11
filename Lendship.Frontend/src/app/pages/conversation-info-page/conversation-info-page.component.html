@@ -1,5 +1,5 @@
 <div class="container">
-  <div class="d-flex justify-content-center" (click)="advertisementClicked()">
+  <div *ngIf="advertisement !== undefined" class="d-flex justify-content-center" (click)="advertisementClicked()">
     <div class="conversation-ad-section d-flex m-3 me-0">
       <img src="{{adImgLocation}}" class="img-ad" alt="...">
       <div class="w-100 ps-2 pe-2">
@@ -13,7 +13,11 @@
   </div>
 
   <div class="conversation-section p-2">
-
+    <div *ngIf="loadingMessages" class="d-flex justify-content-center">
+      <div class="spinner-border m-2" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
     <div *ngFor="let msg of messages">
       <div *ngIf="msg.own" class="msg-section d-flex me-5">
         <img src="https://localhost:44377/images/8b1b52a5-37df-4ae4-83d1-1f599566b073/11/OLASDGREFDDLLWER.jpg" class="img-msg me-2" alt="...">
