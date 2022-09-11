@@ -67,6 +67,24 @@ export class AdvertisementService {
         catchError(this.handleError));
   }
 
+  isAdvertisementSaved(id: number): Observable<boolean>{
+    return this.http.get<any>(this.baseUrl + "saved/" + id, { headers: this.headers})
+      .pipe(
+        catchError(this.handleError));
+  }
+
+  saveAdvertisementById(id: number): Observable<number>{
+    return this.http.post<any>(this.baseUrl + "saved/" + id, { headers: this.headers})
+      .pipe(
+        catchError(this.handleError));
+  }
+
+  removeSavedAdvertisementById(id: number): Observable<number>{
+    return this.http.delete<any>(this.baseUrl + "saved/" + id, { headers: this.headers})
+      .pipe(
+        catchError(this.handleError));
+  }
+
   getCategories(): Observable<Category[]> {
     return this.http.get<any>(this.baseUrlCategory, { headers: this.headers})
       .pipe(

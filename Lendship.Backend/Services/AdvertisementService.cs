@@ -243,6 +243,17 @@ namespace Lendship.Backend.Services
             }
         }
 
+        public bool IsAdvertisementSaved(int advertisementId)
+        {
+            var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var connection = _dbContext.SavedAdvertisements
+                .Where(s => s.UserId == signedInUserId && s.AdvertisementId == advertisementId)
+                .FirstOrDefault();
+
+            return connection != null;
+        }
+
         private List<Advertisement> FilterAdvertisments(List<Advertisement> ads, string advertisementType, bool creditPayment, bool cashPayment, string category, string city, int distance, string word, string sortBy)
         {
             var result = ads;
