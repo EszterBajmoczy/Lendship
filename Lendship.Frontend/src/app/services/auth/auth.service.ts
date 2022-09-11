@@ -9,6 +9,7 @@ import { LocalStorageService} from "../localstorage/localstorage.service";
 import { JWTTokenService} from "../jwttoken/jwttoken.service";
 import { Router } from '@angular/router';
 import {environment} from "../../../environments/environment";
+import {Advertisement} from "../../models/advertisement";
 
 @Injectable({
   providedIn: 'root'
