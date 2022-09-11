@@ -1,5 +1,4 @@
 <div class="container col-lg-10" >
-
   <div class="d-flex justify-content-between mb-4">
     <ngb-datepicker #dp [(ngModel)]="model" (navigate)="date = $event.next" (dateSelect)="onDateSelection($event)" [dayTemplate]="datepicker" class="bg-white w-auto"></ngb-datepicker>
     <div *ngIf="selectedReservationsForUsersAdvertisements.length != 0 || selectedUsersReservations.length != 0 " class="day-detail ms-3 col-8">
@@ -94,7 +93,12 @@
     <i [hidden]="showReservationsForUser" class="fa fa-angle-right m-1 fa-lg"></i>
     <i [hidden]="!showReservationsForUser" class="fa fa-angle-down m-1 fa-lg"></i>
   </button>
-  <div *ngIf="showReservationsForUser" class="card-container d-flex flex-wrap justify-content-between" >
+  <div *ngIf="loadingReservationsForUser" class="d-flex justify-content-center">
+    <div class="spinner-border m-2" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+  <div *ngIf="!loadingReservationsForUser && showReservationsForUser" class="card-container d-flex flex-wrap justify-content-between" >
     <div *ngFor="let res of reservationsForUsersAdvertisements" class="w-100 d-flex justify-content-between align-items-center m-2"
          [ngClass]="{closed: res.reservationState === 'Closed', declined: res.reservationState === 'Declined'}">
       <div class="date-text col-1">{{res.dateFromString}}<br>-<br>{{res.dateToString}}</div>
@@ -148,7 +152,13 @@
     <i [hidden]="showUsers" class="fa fa-angle-right m-1 fa-lg"></i>
     <i [hidden]="!showUsers" class="fa fa-angle-down m-1 fa-lg"></i>
   </button>
-  <div *ngIf="showUsers" class="card-container d-flex flex-wrap justify-content-between" >
+
+  <div *ngIf="loadingUsersReservations" class="d-flex justify-content-center">
+    <div class="spinner-border m-2" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+  <div *ngIf="!loadingUsersReservations && showUsers" class="card-container d-flex flex-wrap justify-content-between" >
     <div *ngFor="let res of usersReservations" class="w-100 d-flex justify-content-between align-items-center m-2"
          [ngClass]="{closed: res.reservationState === 'Closed', declined: res.reservationState === 'Declined'}">
       <div class="date-text col-1">{{res.dateFromString}}<br>-<br>{{res.dateToString}}</div>
