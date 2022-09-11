@@ -9,6 +9,7 @@ import {Router} from "@angular/router";
   styleUrls: ['./notifications-page.component.scss']
 })
 export class NotificationsPageComponent implements OnInit {
+  loading = true;
   notifications = new Array<INotification>()
 
   constructor(private notificationService: NotificationService, private router: Router) {
@@ -19,6 +20,7 @@ export class NotificationsPageComponent implements OnInit {
           noti.reservationDateToString = this.formatDate(noti.reservationDateTo);
         })
         this.notifications = notifications;
+        this.loading = false;
         console.log(notifications);
 
         this.notificationService.setSeenNotifications(notifications)
