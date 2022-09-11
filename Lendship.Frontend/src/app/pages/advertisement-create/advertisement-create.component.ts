@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {LocationValidator} from "../../shared/valid-location";
 import {GeocodingService} from "../../services/geocoding/geocoding.service";
 import {Availability, IAvailability} from "../../models/availability";
@@ -10,7 +10,6 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {FileUploadService} from "../../services/file-upload/file-upload.service";
 import {NgbDateHandlerService} from "../../services/date-handler/ngb-date-handler.service";
 import {Category} from "../../models/category";
-import {map, Observable, startWith} from "rxjs";
 
 
 @Component({
@@ -37,6 +36,8 @@ export class AdvertisementCreateComponent implements OnInit {
   mode: string = "";
   id: number = 0;
   advertisementForm: FormGroup;
+
+  submitting = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -185,26 +186,29 @@ export class AdvertisementCreateComponent implements OnInit {
         this.longitude = data.results[0].geometry.location.lng;
         this.availability = this.availabilities;
 
+        let categoryName = this.category?.value.name;
+        if(categoryName === undefined){
+          this.category = new Category(0, this.category?.value);
+        }
+
         this.save(this.advertisementForm.value)
       })
   }
 
   private save(data: any) {
     if(this.mode === "Create"){
+      this.submitting = true;
       this.advertisementService.createAdvertisement(data)
         .subscribe(response => {
           this.uploadFiles(response);
         });
     } else {
+      this.submitting = true;
       this.advertisementService.updateAdvertisement(data)
         .subscribe(response => {
-          this.updateFiles(this.advertisement!!.id);
+          this.uploadFiles(this.advertisement!!.id);
         });
     }
-  }
-
-  updateFiles(id: number){
-    this.uploadFiles(id);
   }
 
   open(content: any) {

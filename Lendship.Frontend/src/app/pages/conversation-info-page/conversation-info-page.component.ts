@@ -16,6 +16,7 @@ import {FormBuilder, Validators} from "@angular/forms";
 })
 export class ConversationInfoPageComponent implements OnInit {
   userId: string;
+  loadingMessages = true;
 
   conversationId: number = 0;
   advertisementId: number = 0;
@@ -51,6 +52,12 @@ export class ConversationInfoPageComponent implements OnInit {
       this.conService.getMessagesForConversation(this.conversationId)
         .subscribe((msgs) => {
           this.messages = this.categorizeMessages(msgs);
+          this.loadingMessages = false;
+
+          this.conService.setMessagesSeen(this.conversationId)
+            .subscribe((response) =>{
+              console.log(response)
+            });
         })
 
       this.adService.getAdvertisementDetailById(this.advertisementId)

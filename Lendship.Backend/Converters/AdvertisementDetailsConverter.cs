@@ -44,7 +44,7 @@ namespace Lendship.Backend.Converters
                 Longitude = ad.Longitude,
                 Location = ad.Location,
                 IsPublic = ad.IsPublic,
-                Category = ad.Category.Name,
+                Category = ad.Category,
                 Availabilities = availabilityDtos.ToList(),
                 ImageLocations = ad.ImageLocations.Select(i => i.Location).ToList(),
                 Creation = ad.Creation

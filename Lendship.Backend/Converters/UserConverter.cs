@@ -16,11 +16,12 @@ namespace Lendship.Backend.Converters
                 EvaluationAsAdvertiser = user.EvaluationAsAdvertiser,
                 EvaluationAsAdvertiserCount = user.EvaluationAsAdvertiserCount,
                 EvaluationAsLender = user.EvaluationAsLender,
-                EvaluationAsLenderCount = user.EvaluationAsLenderCount
+                EvaluationAsLenderCount = user.EvaluationAsLenderCount,
+                Image = user.ImageLocation
             };
         }
 
-        public UserDetailsDto ConvertToUserDetaiolsDto(ApplicationUser user)
+        public UserDetailsDto ConvertToUserDetailsDto(ApplicationUser user)
         {
             return new UserDetailsDto()
             {
@@ -36,7 +37,8 @@ namespace Lendship.Backend.Converters
                 EvaluationAsAdvertiserCount = user.EvaluationAsAdvertiserCount,
                 EvaluationAsLender = user.EvaluationAsLender,
                 EvaluationAsLenderCount = user.EvaluationAsLenderCount,
-                Registration = user.Registration
+                Registration = user.Registration,
+                Image = user.ImageLocation
             };
         }
     }

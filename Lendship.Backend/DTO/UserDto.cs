@@ -67,6 +67,13 @@ namespace Lendship.Backend.DTO
         public int? EvaluationAsLenderCount { get; set; }
 
         /// <summary>
+        /// Gets or Sets Image
+        /// </summary>
+
+        [DataMember(Name = "image")]
+        public string Image { get; set; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -78,6 +85,7 @@ namespace Lendship.Backend.DTO
             sb.Append("  Name: ").Append(Name).Append("\n");
             sb.Append("  EvaluationAsAdvertiser: ").Append(EvaluationAsAdvertiser).Append("\n");
             sb.Append("  EvaluationAsLender: ").Append(EvaluationAsLender).Append("\n");
+            sb.Append("  Image: ").Append(Image).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -133,6 +141,11 @@ namespace Lendship.Backend.DTO
                     EvaluationAsLender == other.EvaluationAsLender ||
                     EvaluationAsLender != null &&
                     EvaluationAsLender.Equals(other.EvaluationAsLender)
+                ) &&
+                (
+                    Image == other.Image ||
+                    Image != null &&
+                    Image.Equals(other.Image)
                 );
         }
 
@@ -154,6 +167,8 @@ namespace Lendship.Backend.DTO
                     hashCode = hashCode * 59 + EvaluationAsAdvertiser.GetHashCode();
                     if (EvaluationAsLender != null)
                     hashCode = hashCode * 59 + EvaluationAsLender.GetHashCode();
+                    if (Image != null)
+                    hashCode = hashCode * 59 + Image.GetHashCode();
                 return hashCode;
             }
         }

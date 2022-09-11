@@ -12,6 +12,9 @@ import {NgbDateHandlerService} from "../../services/date-handler/ngb-date-handle
   styleUrls: ['./reservation-page.component.scss']
 })
 export class ReservationPageComponent implements OnInit {
+  loadingUsersReservations = true;
+  loadingReservationsForUser = true;
+
   usersReservations = new Array<IReservationDetail>();
   reservationsForUsersAdvertisements = new Array<IReservationDetail>();
 
@@ -30,11 +33,13 @@ export class ReservationPageComponent implements OnInit {
     reservationService.getUsersReservations()
       .subscribe(res => {
         this.usersReservations = this.initializeNgbDateFields(res);
+        this.loadingUsersReservations = false;
       });
 
     reservationService.getReservationsForUsersAdvertisement()
       .subscribe(res => {
         this.reservationsForUsersAdvertisements = this.initializeNgbDateFields(res);
+        this.loadingReservationsForUser = false;
       });
   }
 

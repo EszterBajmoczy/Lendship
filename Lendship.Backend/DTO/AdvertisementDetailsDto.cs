@@ -123,7 +123,7 @@ namespace Lendship.Backend.DTO
         [Required]
         
         [DataMember(Name="category")]
-        public string Category { get; set; }
+        public Category Category { get; set; }
 
         /// <summary>
         /// Gets or Sets Availabilities

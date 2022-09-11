@@ -13,6 +13,7 @@ export class ReservationPopupComponent implements OnInit {
   @Input() id: number = 0;
   @Input() availabilities: IAvailability[] | undefined;
   reserved: IAvailability[] | undefined;
+  loading = true;
 
   hoveredDate: NgbDate | null = null;
 
@@ -29,6 +30,7 @@ export class ReservationPopupComponent implements OnInit {
     this.reservationService.getReservationForAdvertisement(this.id)
       .subscribe(response => {
         this.reserved = response;
+        this.loading = false;
       })
   }
 

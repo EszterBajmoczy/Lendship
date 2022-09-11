@@ -1,6 +1,7 @@
 import {IAvailability} from "./availability";
 import {User} from "./user";
 import {Advertisement} from "./advertisement";
+import {Category} from "./category";
 
 export interface AdvertisementDetail extends Advertisement {
   user: User,
@@ -8,7 +9,7 @@ export interface AdvertisementDetail extends Advertisement {
   instructionManual: string,
   deposit: number,
   isPublic: boolean,
-  category: string,
+  category: Category,
   availabilities: IAvailability[],
   imageLocations: string[],
   creation: string

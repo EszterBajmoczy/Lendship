@@ -10,12 +10,14 @@ import {Router} from "@angular/router";
 })
 export class ConversationsPageComponent implements OnInit {
   conversations = new Array<IConversation>();
+  loading = true;
 
   constructor(private conversationService: ConversationService, private router: Router) {
     conversationService.getAllConversation()
       .subscribe((cons) => {
         console.log(cons);
         this.conversations = cons;
+        this.loading = false;
       });
   }
 

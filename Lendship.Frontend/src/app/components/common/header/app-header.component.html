@@ -28,7 +28,11 @@
         </li>
         <li class="nav-item" >
           <a class="nav-link login-button" [routerLinkActive]="['active']" [routerLink]="[nameUrl]">
-            <i class="fa fa-user rounded-circle" width="30" height="30"></i>
+            <i *ngIf="image.length == 0; else elseBlock" class="fa fa-user rounded-circle" width="30" height="30"></i>
+            <ng-template #elseBlock>
+              <img class="rounded-circle oversize" width="30" height="30" style="object-fit: cover" src="https://localhost:44377/images/profile{{image}}">
+            </ng-template>
+
             <span [textContent]="name"></span>
           </a>
         </li>

@@ -6,7 +6,6 @@ using Lendship.Backend.Interfaces.Services;
 using Lendship.Backend.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -95,11 +94,12 @@ namespace Lendship.Backend.Services
             var resultList = new List<ConversationDto>();
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-
             var conversations = _dbContext.UsersAndConversations
+                            .Where(x => x.UserId == signedInUserId)
                             .Include(u => u.Conversation)
                             .Include(u => u.Conversation.Advertisement)
-                            .Where(x => x.UserId == signedInUserId)
+                            .Include(u => u.Conversation.Messages)
+                            .OrderByDescending(x => x.Conversation.Messages.OrderByDescending(m => m.Date).FirstOrDefault().Date)
                             .Select(x => x.Conversation)
                             .ToList();
             
@@ -152,6 +152,27 @@ namespace Lendship.Backend.Services
                             .Include(u => u.Conversation.Advertisement)
                             .Where(u => u.UserId == signedInUserId && u.Conversation.Messages.Any(m => m.New))
                             .Count();
+        }
+
+        public void SetMessagesSeen(int conversationId)
+        {
+            var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var connection = _dbContext.UsersAndConversations
+                .Where(u => u.User.Id == signedInUserId && u.ConversationId == conversationId);
+
+            if (connection != null)
+            {
+                var messages = _dbContext.Messages
+                .Where(m => m.ConversationId == conversationId && m.New);
+
+                foreach (var msg in messages)
+                {
+                    msg.New = false;
+                }
+
+                _dbContext.SaveChanges();
+            }
         }
     }
 }

@@ -15,5 +15,7 @@ namespace Lendship.Backend.Interfaces.Services
         IEnumerable<MessageDto> GetAllMessage(int conversationId);
 
         int GetNewMessageCount();
+
+        void SetMessagesSeen(int conversationId);
     }
 }

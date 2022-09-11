@@ -109,7 +109,8 @@ namespace Lendship.Backend.Controllers
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpDelete]
-        public virtual IActionResult DeleteAdvertisement([FromQuery]int advertisementId)
+        [Route("{advertisementId}")]
+        public virtual IActionResult DeleteAdvertisement([FromRoute][Required] int advertisementId)
         {
             try
             {

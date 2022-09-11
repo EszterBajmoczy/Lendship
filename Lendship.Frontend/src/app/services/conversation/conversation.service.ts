@@ -57,6 +57,12 @@ export class ConversationService {
         catchError(this.handleError));
   }
 
+  setMessagesSeen(conversationId: number): Observable<any> {
+    return this.http.post<number>(this.baseUrl + "msg/" + conversationId, { headers: this.headers })
+      .pipe(
+        catchError(this.handleError));
+  }
+
   private handleError(error: HttpErrorResponse) {
     if (error.status === 0) {
       // A client-side or network error occurred. Handle it accordingly.

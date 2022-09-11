@@ -12,6 +12,7 @@ import { GeocodingService} from "../../services/geocoding/geocoding.service";
   providers: [AuthService, LocationValidator]
 })
 export class RegistrationPageComponent implements OnInit {
+  submitting = false;
 
   constructor(private formBuilder: FormBuilder, private authService: AuthService, private locationValidator: LocationValidator, private geoCodingService: GeocodingService) { }
 
@@ -66,6 +67,7 @@ export class RegistrationPageComponent implements OnInit {
         this.longitude = data.results[0].geometry.location.lng;
 
         this.authService.register(this.registrationForm.value);
+        this.submitting = true;
       })
   }
 }
