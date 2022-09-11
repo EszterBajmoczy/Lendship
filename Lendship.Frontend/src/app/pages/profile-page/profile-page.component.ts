@@ -3,6 +3,7 @@ import { EvaluationAdvertiser, EvaluationLender} from "../../models/evaluations"
 import {ActivatedRoute} from "@angular/router";
 import {UserService} from "../../services/user/user.service";
 import {UserDetail} from "../../models/user-detail";
+import {AuthService} from "../../services/auth/auth.service";
 
 @Component({
   selector: 'app-profile-page',
@@ -10,6 +11,7 @@ import {UserDetail} from "../../models/user-detail";
   styleUrls: ['./profile-page.component.scss']
 })
 export class ProfilePageComponent implements OnInit {
+  image
   user: UserDetail | undefined;
 
   evaluationsAdvertiser: EvaluationAdvertiser[] | undefined;
@@ -18,7 +20,8 @@ export class ProfilePageComponent implements OnInit {
   showAdvertiserEvaluations: boolean = false;
   showLenderEvaluations: boolean = false;
 
-  constructor(private userService: UserService, activatedRoute: ActivatedRoute) {
+  constructor(private userService: UserService, authService: AuthService, activatedRoute: ActivatedRoute) {
+    this.image = authService.getProfileImage();
     activatedRoute.params.subscribe( params => {
       let id = params['id'];
       if(id != null){

@@ -13,16 +13,19 @@ import {INotification} from "../../../models/notification";
 export class AppHeaderComponent {
   name: string = "Login";
   nameUrl: string = "login";
+  image: string = "";
   isLoggedIn: boolean = false;
   notificationCount: number = 0;
   notifications = new Array<INotification>();
 
   constructor(private authService: AuthService, private notificationService: NotificationService, private router: Router) {
     let user = this.authService.getUserName();
-    console.log(user);
+    let img = this.authService.getProfileImage();
+
     if(user) {
       this.name = user;
       this.nameUrl = "profile";
+      this.image = img;
       this.isLoggedIn = true;
     }
 

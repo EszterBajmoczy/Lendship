@@ -49,9 +49,6 @@ export class AdvertisementInfoComponent implements OnInit {
           this.ad = ad;
 
           this.isOwnAdvertisement = authService.getUserId() === ad.user.id;
-          console.log("!!");
-          console.log(ad.user.id);
-          console.log(authService.getUserId());
         });
     });
   }
@@ -98,6 +95,13 @@ export class AdvertisementInfoComponent implements OnInit {
 
   edit() {
     this.router.navigateByUrl('advertisements/edit/'+ this.id);
+  }
+
+  delete() {
+    this.adService.deleteAdvertisementById(this.id)
+      .subscribe((result) => {
+        this.router.navigateByUrl('advertisements');
+      })
   }
 
   msg(msg: string) {

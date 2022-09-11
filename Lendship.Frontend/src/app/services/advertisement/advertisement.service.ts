@@ -60,6 +60,13 @@ export class AdvertisementService {
         catchError(this.handleError));
   }
 
+  deleteAdvertisementById(id: number): Observable<number>{
+    console.log(this.baseUrl + id);
+    return this.http.delete<any>(this.baseUrl + id, { headers: this.headers})
+      .pipe(
+        catchError(this.handleError));
+  }
+
   getCategories(): Observable<Category[]> {
     return this.http.get<any>(this.baseUrlCategory, { headers: this.headers})
       .pipe(
