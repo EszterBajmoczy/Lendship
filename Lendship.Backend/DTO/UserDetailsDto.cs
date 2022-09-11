@@ -121,6 +121,14 @@ namespace Lendship.Backend.DTO
         public DateTime? Registration { get; set; }
 
         /// <summary>
+        /// Gets or Sets Image
+        /// </summary>
+        [Required]
+
+        [DataMember(Name = "image")]
+        public string Image { get; set; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -137,6 +145,7 @@ namespace Lendship.Backend.DTO
             sb.Append("  Longitude: ").Append(Longitude).Append("\n");
             sb.Append("  Location: ").Append(Location).Append("\n");
             sb.Append("  Registration: ").Append(Registration).Append("\n");
+            sb.Append("  Image: ").Append(Image).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -217,6 +226,11 @@ namespace Lendship.Backend.DTO
                     Registration == other.Registration ||
                     Registration != null &&
                     Registration.Equals(other.Registration)
+                ) &&
+                (
+                    Image == other.Image ||
+                    Image != null &&
+                    Image.Equals(other.Image)
                 );
         }
 
@@ -248,6 +262,8 @@ namespace Lendship.Backend.DTO
                     hashCode = hashCode * 59 + Location.GetHashCode();
                     if (Registration != null)
                     hashCode = hashCode * 59 + Registration.GetHashCode();
+                    if (Image != null)
+                    hashCode = hashCode * 59 + Image.GetHashCode();
                 return hashCode;
             }
         }

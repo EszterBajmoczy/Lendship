@@ -11,6 +11,6 @@ namespace Lendship.Backend.Interfaces.Converters
     {
         UserDto ConvertToDto(ApplicationUser user);
 
-        UserDetailsDto ConvertToUserDetaiolsDto(ApplicationUser user);
+        UserDetailsDto ConvertToUserDetailsDto(ApplicationUser user);
     }
 }

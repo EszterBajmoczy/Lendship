@@ -18,15 +18,20 @@ namespace Lendship.Backend.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly LendshipDbContext _dbContext;
         private readonly ICategoryService _categoryService;
+        private readonly INotificationService _notificationService;
+        private readonly IImageService _imageService;
+
         private readonly IAdvertisementDetailsConverter _adDetailsConverter;
         private readonly IAdvertisementConverter _adConverter;
         private readonly IAvailabilityConverter _availabilityConverter;
 
-        public AdvertisementService(IHttpContextAccessor httpContextAccessor, LendshipDbContext dbContext, ICategoryService categoryService)
+        public AdvertisementService(IHttpContextAccessor httpContextAccessor, LendshipDbContext dbContext, ICategoryService categoryService, INotificationService notificationService, IImageService imageService)
         {
             _httpContextAccessor = httpContextAccessor;
             _dbContext = dbContext;
             _categoryService = categoryService;
+            _notificationService = notificationService;
+            _imageService = imageService;
 
             //TODO inject converters!!
             _adDetailsConverter = new AdvertisementDetailsConverter(new UserConverter(), new AvailabilityConverter());
@@ -112,14 +117,29 @@ namespace Lendship.Backend.Services
         {
             var advertisement = _dbContext.Advertisements
                 .Where(a => a.Id == advertisementId)
+                .Include(a => a.User)
                 .FirstOrDefault();
-
+            
             if(advertisement == null)
             {
                 throw new AdvertisementNotFoundException("Advertisement not found");
             }
 
+            var reservations = _dbContext.Reservations
+                .Where(r => r.Advertisement == advertisement && r.DateFrom >= DateTime.Now)
+                .Include(r => r.User)
+                .ToList();
+
+            foreach (var res in reservations)
+            {
+                _notificationService.CreateNotification("Advertisement was deleted", res, res.User.Id);
+                _notificationService.CreateNotification("Reservation was deleted, because you deleted the advertisement", res, advertisement.User.Id);
+            }
+
+            _imageService.DeleteImages(advertisementId);
+
             _dbContext.Advertisements.Remove(advertisement);
+            _dbContext.Reservations.RemoveRange(reservations);
             _dbContext.SaveChanges();
         }
 
