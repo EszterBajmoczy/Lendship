@@ -1,11 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Lendship.Backend.DTO
 {
@@ -43,6 +40,21 @@ namespace Lendship.Backend.DTO
         [DataMember(Name = "advertisementTitle")]
         public string AdvertisementTitle { get; set; }
 
+        /// <summary>
+        /// Gets or Sets ReservationDateFrom
+        /// </summary>
+        [Required]
+
+        [DataMember(Name = "reservationDateFrom")]
+        public DateTime? ReservationDateFrom { get; set; }
+
+        /// <summary>
+        /// Gets or Sets ReservationDateTo
+        /// </summary>
+        [Required]
+
+        [DataMember(Name = "reservationDateTo")]
+        public DateTime? ReservationDateTo { get; set; }
 
         /// <summary>
         /// Gets or Sets ReservationId
@@ -78,6 +90,8 @@ namespace Lendship.Backend.DTO
             sb.Append("  UserId: ").Append(UserId).Append("\n");
             sb.Append("  AdvertisementId: ").Append(AdvertisementId).Append("\n");
             sb.Append("  AdvertisementTitle: ").Append(AdvertisementTitle).Append("\n");
+            sb.Append("  ReservationDateFrom: ").Append(ReservationDateFrom).Append("\n");
+            sb.Append("  ReservationDateTo: ").Append(ReservationDateTo).Append("\n");
             sb.Append("  ReservationId: ").Append(ReservationId).Append("\n");
             sb.Append("  UpdateInformation: ").Append(UpdateInformation).Append("\n");
             sb.Append("  New: ").Append(New).Append("\n");
@@ -138,6 +152,16 @@ namespace Lendship.Backend.DTO
                     AdvertisementTitle.Equals(other.AdvertisementTitle)
                 ) &&
                 (
+                    ReservationDateFrom == other.ReservationDateFrom ||
+                    ReservationDateFrom != null &&
+                    ReservationDateFrom.Equals(other.ReservationDateFrom)
+                ) &&
+                (
+                    ReservationDateTo == other.ReservationDateTo ||
+                    ReservationDateTo != null &&
+                    ReservationDateTo.Equals(other.ReservationDateTo)
+                ) &&
+                (
                     ReservationId == other.ReservationId ||
                     ReservationId != null &&
                     ReservationId.Equals(other.ReservationId)
@@ -172,6 +196,10 @@ namespace Lendship.Backend.DTO
                     hashCode = hashCode * 59 + AdvertisementId.GetHashCode();
                 if (AdvertisementTitle != null)
                     hashCode = hashCode * 59 + AdvertisementTitle.GetHashCode();
+                if (ReservationDateFrom != null)
+                    hashCode = hashCode * 59 + ReservationId.GetHashCode();
+                if (ReservationDateTo != null)
+                    hashCode = hashCode * 59 + ReservationId.GetHashCode();
                 if (ReservationId != null)
                     hashCode = hashCode * 59 + ReservationId.GetHashCode();
                 if (UpdateInformation != null)

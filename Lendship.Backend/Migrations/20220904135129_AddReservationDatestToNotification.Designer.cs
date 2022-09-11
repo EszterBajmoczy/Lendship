@@ -4,14 +4,16 @@ using Lendship.Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Lendship.Backend.Migrations
 {
     [DbContext(typeof(LendshipDbContext))]
-    partial class LendshipDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220904135129_AddReservationDatestToNotification")]
+    partial class AddReservationDatestToNotification
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -419,9 +421,6 @@ namespace Lendship.Backend.Migrations
 
                     b.Property<int>("ReservationId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("TimeSpan")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("UpdateInformation")
                         .IsRequired()

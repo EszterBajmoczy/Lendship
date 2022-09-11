@@ -21,6 +21,12 @@
           <a class="nav-link msg-button" [routerLinkActive]="['active']" [routerLink]="['conversations']">Messages</a>
         </li>
         <li class="nav-item" >
+          <a class="nav-link news-button" [routerLinkActive]="['active']" [routerLink]="['notifications']" (click)="removeNewNotifications()">
+            <i class="fa-solid fa-bell" ></i>
+            <span *ngIf="notificationCount > 0" class="badge rounded-pill badge-notification bg-danger" style="margin: -5px; position: absolute">{{notificationCount}}</span>
+          </a>
+        </li>
+        <li class="nav-item" >
           <a class="nav-link login-button" [routerLinkActive]="['active']" [routerLink]="[nameUrl]">
             <i class="fa fa-user rounded-circle" width="30" height="30"></i>
             <span [textContent]="name"></span>

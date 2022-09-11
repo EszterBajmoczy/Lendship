@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { NgbDateHandlerService } from './ngb-date-handler.service';
+import { NotificationService } from './notification.service';
 
-describe('DateHandlerService', () => {
-  let service: NgbDateHandlerService;
+describe('NotificationService', () => {
+  let service: NotificationService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(NgbDateHandlerService);
+    service = TestBed.inject(NotificationService);
   });
 
   it('should be created', () => {

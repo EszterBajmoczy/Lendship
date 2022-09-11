@@ -26,6 +26,7 @@ import { ConversationsPageComponent } from './pages/conversations-page/conversat
 import { ConversationInfoPageComponent } from './pages/conversation-info-page/conversation-info-page.component';
 import { MessagePopupComponent } from './pages/popup/message-popup/message-popup.component';
 import { ReservationPageComponent } from './pages/reservation-page/reservation-page.component';
+import {NotificationsPageComponent} from "./pages/notifications-page/notifications-page.component";
 
 @NgModule({
     declarations: [
@@ -46,6 +47,7 @@ import { ReservationPageComponent } from './pages/reservation-page/reservation-p
         ConversationInfoPageComponent,
         MessagePopupComponent,
         ReservationPageComponent,
+        NotificationsPageComponent,
     ],
   imports: [
     BrowserModule,
