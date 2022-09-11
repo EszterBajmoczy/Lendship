@@ -57,12 +57,12 @@ namespace Lendship.Backend.Services
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var category = _dbContext.Categories.Where(x => x.Name == advertisement.Category).FirstOrDefault();
+            var category = _dbContext.Categories.Where(x => x.Name.ToLower() == advertisement.Category.Name.ToLower()).FirstOrDefault();
             var user = _dbContext.Users.Where(x => x.Id == signedInUserId).FirstOrDefault();
 
             if(category == null)
             {
-                category = _categoryService.AddCategory(advertisement.Category);
+                category = _categoryService.AddCategory(advertisement.Category.Name.ToLower());
             }
 
             var ad =_adDetailsConverter.ConvertToEntity(advertisement, user, category);
@@ -95,11 +95,11 @@ namespace Lendship.Backend.Services
                 throw new UpdateNotAllowedException("Update not allowed.");
             }
 
-            var category = _dbContext.Categories.Where(x => x.Name == advertisement.Category).FirstOrDefault();
+            var category = _dbContext.Categories.Where(x => x.Name.ToLower() == advertisement.Category.Name.ToLower()).FirstOrDefault();
 
             if (category == null)
             {
-                category = _categoryService.AddCategory(advertisement.Category);
+                category = _categoryService.AddCategory(advertisement.Category.Name.ToLower());
             }
 
             var user = _dbContext.Users.Where(x => x.Id == signedInUserId).FirstOrDefault();
@@ -263,7 +263,7 @@ namespace Lendship.Backend.Services
 
             if (category != null && category != "")
             {
-                ads = ads.Where(a => a.Category.Name == category).ToList();
+                ads = ads.Where(a => a.Category.Name.ToLower() == category.ToLower()).ToList();
             }
 
             if (word != null)
