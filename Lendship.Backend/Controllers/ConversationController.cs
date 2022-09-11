@@ -83,6 +83,30 @@ namespace Lendship.Backend.Controllers
         }
 
         /// <summary>
+        /// set messages to seen
+        /// </summary>
+        /// <remarks>Sets messages to seen</remarks>
+        /// <param name="conversationId"></param>
+        /// <response code="200">message is sent</response>
+        /// <response code="400">bad request</response>
+        /// <response code="401"></response>
+        [HttpPost]
+        [Route("msg/{conversationId}")]
+        public virtual IActionResult SetMessagesSeen([FromRoute][Required] int conversationId)
+        {
+            try
+            {
+                _conversationService.SetMessagesSeen(conversationId);
+                return StatusCode(201);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception at setting message to seen: " + e.Message);
+                return this.BadRequest(e.Message);
+            }
+        }
+
+        /// <summary>
         /// get all conversation
         /// </summary>
         /// <remarks>Gets the user&#39;s conversations</remarks>

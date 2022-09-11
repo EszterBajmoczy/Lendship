@@ -53,6 +53,11 @@ export class ConversationInfoPageComponent implements OnInit {
         .subscribe((msgs) => {
           this.messages = this.categorizeMessages(msgs);
           this.loadingMessages = false;
+
+          this.conService.setMessagesSeen(this.conversationId)
+            .subscribe((response) =>{
+              console.log(response)
+            });
         })
 
       this.adService.getAdvertisementDetailById(this.advertisementId)

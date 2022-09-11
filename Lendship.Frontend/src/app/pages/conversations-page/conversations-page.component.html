@@ -8,8 +8,8 @@
     <p>No conversations.</p>
   </div>
   <div *ngFor="let con of conversations" (click)="openConversation(con.advertisementId ,con.id)" class="conversation-section d-flex justify-content-between align-items-center mb-2">
-    <p #square (window:resize)="0" [ngStyle]="{'height.px': square.offsetWidth }" *ngIf="con.hasNewMessage" class="has-new-msg p-1 ms-1" style="position: absolute;">New</p>
     <div class="d-flex align-items-center">
+      <span *ngIf="con.hasNewMessage" class="badge rounded-pill badge-notification bg-danger" style="margin: -5px; position: absolute">New</span>
       <img class="img-conversation ms-4" src="https://localhost:44377/images/profile/8b1b52a5-37df-4ae4-83d1-1f599566b073/AGDSDGGDFERSRQER.jpg" alt="">
       <p class="conversation-name m-3">{{con.userString}}</p>
     </div>
