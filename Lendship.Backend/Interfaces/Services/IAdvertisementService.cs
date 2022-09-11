@@ -20,6 +20,8 @@ namespace Lendship.Backend.Interfaces.Services
 
         void SaveAdvertisementForUser(int advertisementId);
 
+        bool IsAdvertisementSaved(int advertisementId);
+
         IEnumerable<AdvertisementDto> GetAdvertisements(string advertisementType, bool creditPayment, bool cashPayment, string category, string city, int distance, string word, string sortBy);
 
         IEnumerable<AdvertisementDto> GetUsersAdvertisements(string advertisementType, bool creditPayment, bool cashPayment, string category, string city, int distance, string word, string sortBy);

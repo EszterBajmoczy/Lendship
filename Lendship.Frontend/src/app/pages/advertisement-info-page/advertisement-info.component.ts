@@ -19,6 +19,7 @@ export class AdvertisementInfoComponent implements OnInit {
   id: number = -1;
   ad: AdvertisementDetail | undefined;
   isOwnAdvertisement: boolean = false;
+  isSaved = false;
 
   message = "";
   conversationId = -1;
@@ -50,6 +51,11 @@ export class AdvertisementInfoComponent implements OnInit {
 
           this.isOwnAdvertisement = authService.getUserId() === ad.user.id;
         });
+
+      this.adService.isAdvertisementSaved(this.id)
+        .subscribe((response) => {
+          this.isSaved = response;
+        })
     });
   }
 
@@ -101,6 +107,22 @@ export class AdvertisementInfoComponent implements OnInit {
     this.adService.deleteAdvertisementById(this.id)
       .subscribe((result) => {
         this.router.navigateByUrl('advertisements');
+      })
+  }
+
+  save() {
+    this.adService.saveAdvertisementById(this.id)
+      .subscribe((result) => {
+        console.log("save");
+        this.isSaved = true;
+      })
+  }
+
+  remove() {
+    this.adService.removeSavedAdvertisementById(this.id)
+      .subscribe((result) => {
+        console.log("remove");
+        this.isSaved = false;
       })
   }
 

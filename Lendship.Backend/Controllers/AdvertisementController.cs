@@ -216,8 +216,8 @@ namespace Lendship.Backend.Controllers
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpPost]
-        [Route("saved")]
-        public virtual IActionResult SaveAdvertisement([FromQuery]int advertisementId)
+        [Route("saved/{advertisementId}")]
+        public virtual IActionResult SaveAdvertisement([FromRoute][Required] int advertisementId)
         {
             try
             {
@@ -239,11 +239,35 @@ namespace Lendship.Backend.Controllers
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpDelete]
-        [Route("saved")]
-        public virtual IActionResult RemoveAdvertisement([FromQuery] int advertisementId)
+        [Route("saved/{advertisementId}")]
+        public virtual IActionResult RemoveAdvertisement([FromRoute][Required] int advertisementId)
         {
             _adService.RemoveSavedAdvertisement(advertisementId);
             return StatusCode(200);
+        }
+
+        /// <summary>
+        /// get true if an advertisement is saved by the user
+        /// </summary>
+        /// <remarks>Gets true if an advertisement is saved by the user</remarks>
+        /// <param name="advertisementId">Advertisement&#39;s id to remove</param>
+        /// <response code="200">boolean answer</response>
+        /// <response code="400">bad request</response>
+        /// <response code="401"></response>
+        [HttpGet]
+        [Route("saved/{advertisementId}")]
+        public virtual IActionResult IsdAdvertisementSaved([FromRoute][Required] int advertisementId)
+        {
+            try
+            {
+                var isSaved = _adService.IsAdvertisementSaved(advertisementId);
+                return new ObjectResult(JsonConvert.SerializeObject(isSaved));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception at saving advertisement: " + e.Message);
+                return this.BadRequest(e.Message);
+            }
         }
     }
 }

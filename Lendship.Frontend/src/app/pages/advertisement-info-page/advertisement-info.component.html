@@ -21,6 +21,8 @@
     <div class="d-flex align-items-center">
       <button *ngIf="isOwnAdvertisement" class="btn btn-success align-self-center m-1" (click)="edit()" ><i class="fa-solid fa-pen-to-square"></i></button>
       <button *ngIf="isOwnAdvertisement" class="btn btn-success align-self-center m-1" (click)="delete()" ><i class="fa-solid fa-trash"></i></button>
+      <button *ngIf="!isOwnAdvertisement && !isSaved" class="btn btn-success align-self-center m-1" (click)="save()"><i class="fa-regular fa-star"></i></button>
+      <button *ngIf="!isOwnAdvertisement && isSaved" class="btn btn-success align-self-center m-1" (click)="remove()"><i class="fa-solid fa-star"></i></button>
     </div>
  </div>
 
