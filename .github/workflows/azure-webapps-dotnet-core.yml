@@ -56,13 +56,13 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ./Lendship.Backend.sln
+        run: dotnet publish -c Release -o Lendship.Backend/Lendship.Backend.csproj
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: .net-app
-          path: ./Lendship.Backend.sln
+          path: Lendship.Backend/Lendship.Backend.sln
 
   deploy:
     permissions:
