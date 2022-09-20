@@ -1,0 +1,31 @@
+@import "src/styles/buttons.scss";
+@import "src/styles/colors.scss";
+
+.notification-name {
+  color: black;
+  font-size: x-large;
+  margin: 0;
+}
+
+.notification-info {
+  color: black;
+  font-size: x-large;
+  margin: 0;
+}
+
+.old-notification {
+  background-color: $color-info;
+  border-radius: 0.5rem;
+  opacity: 60%;
+}
+
+.new-notification {
+  background-color: $color-info;
+  border-radius: 0.5rem;
+}
+
+.has-new-msg {
+  background-color: $color-danger;
+  border-radius: 100%;
+  font-size: 6pt;
+}

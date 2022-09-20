@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { FileUploadService } from "../../../../services/file-upload/file-upload.service";
 import {Router} from "@angular/router";
 
@@ -9,7 +9,7 @@ import {Router} from "@angular/router";
 })
 export class FileUploadComponent implements OnInit {
   @Input() advertisementId: number = 0;
-  files = new Array<File>();
+  @Output() files = new EventEmitter<File>();
 
   loading: boolean = false;
 
@@ -18,26 +18,18 @@ export class FileUploadComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  addNewItem(file: File) {
+    this.files.emit(file);
+  }
+
   onSelected(event: Event) {
     if(event != null && event.target != null){
       let targetFiles = (<HTMLInputElement>event.target).files
       if(targetFiles != null){
         for (let i = 0; i < targetFiles.length; i++) {
-          this.files.push(targetFiles[i]);
+          this.addNewItem(targetFiles[i]);
         }
       }
-    }
-  }
-
-  onUpload() {
-    this.loading = !this.loading;
-    if(this.files != null){
-      this.fileUploadService.upload(this.advertisementId, this.files).subscribe(
-        (event: any) => {
-          //TODO
-          this.router.navigateByUrl('home');
-        }
-      );
     }
   }
 }

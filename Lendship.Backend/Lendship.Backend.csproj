@@ -5,6 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\images\profile\f163f3c2-ae68-48b9-b4cf-0dd9ce49b36e\**" />
+    <Compile Remove="wwwroot\images\profile\g163f3c2-ae68-42b9-b4cf-0dd9ce49b36e\**" />
+    <Content Remove="wwwroot\images\profile\f163f3c2-ae68-48b9-b4cf-0dd9ce49b36e\**" />
+    <Content Remove="wwwroot\images\profile\g163f3c2-ae68-42b9-b4cf-0dd9ce49b36e\**" />
+    <EmbeddedResource Remove="wwwroot\images\profile\f163f3c2-ae68-48b9-b4cf-0dd9ce49b36e\**" />
+    <EmbeddedResource Remove="wwwroot\images\profile\g163f3c2-ae68-42b9-b4cf-0dd9ce49b36e\**" />
+    <None Remove="wwwroot\images\profile\f163f3c2-ae68-48b9-b4cf-0dd9ce49b36e\**" />
+    <None Remove="wwwroot\images\profile\g163f3c2-ae68-42b9-b4cf-0dd9ce49b36e\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="jose-jwt" Version="3.2.0" />
     <PackageReference Include="MailKit" Version="2.15.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.11" />
@@ -29,8 +40,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\images\profile\8b1b52a5-37df-4ae4-83d1-1f599566b073\" />
-    <Folder Include="wwwroot\images\profile\g163f3c2-ae68-42b9-b4cf-0dd9ce49b36e\" />
-    <Folder Include="wwwroot\images\profile\f163f3c2-ae68-48b9-b4cf-0dd9ce49b36e\" />
   </ItemGroup>
 
 </Project>

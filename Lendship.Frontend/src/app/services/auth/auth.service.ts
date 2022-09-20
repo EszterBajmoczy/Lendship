@@ -9,6 +9,7 @@ import { LocalStorageService} from "../localstorage/localstorage.service";
 import { JWTTokenService} from "../jwttoken/jwttoken.service";
 import { Router } from '@angular/router';
 import {environment} from "../../../environments/environment";
+import {Advertisement} from "../../models/advertisement";
 
 @Injectable({
   providedIn: 'root'
@@ -59,6 +60,8 @@ export class AuthService {
       this.localstorageService.set("REFRESH_TOKEN", resp.refreshToken);
     }
     this.tokenService.setToken(resp.token);
+    this.localstorageService.set("PROFILE_IMG", resp.image);
+
   }
 
   public isLoggedIn() {
@@ -79,6 +82,10 @@ export class AuthService {
 
   public getRefreshToken() : string {
     return this.localstorageService.get("REFRESH_TOKEN") ?? "";
+  }
+
+  public getProfileImage() : string {
+    return this.localstorageService.get("PROFILE_IMG") ?? "";
   }
 
   public logout() {

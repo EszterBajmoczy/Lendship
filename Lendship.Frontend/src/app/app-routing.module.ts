@@ -10,6 +10,7 @@ import { ProfilePageComponent } from "./pages/profile-page/profile-page.componen
 import { ConversationsPageComponent } from "./pages/conversations-page/conversations-page.component";
 import {ConversationInfoPageComponent} from "./pages/conversation-info-page/conversation-info-page.component";
 import {ReservationPageComponent} from "./pages/reservation-page/reservation-page.component";
+import {NotificationsPageComponent} from "./pages/notifications-page/notifications-page.component";
 
 const routes: Routes = [
   {
@@ -42,11 +43,19 @@ const routes: Routes = [
     component: ProfilePageComponent
   },
   {
+    path: 'notifications',
+    component: NotificationsPageComponent
+  },
+  {
     path: 'reservations',
     component: ReservationPageComponent
   },
   {
     path: 'advertisements/new',
+    component: AdvertisementCreateComponent
+  },
+  {
+    path: 'advertisements/edit/:advertisementId',
     component: AdvertisementCreateComponent
   },
   {

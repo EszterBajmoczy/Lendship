@@ -16,6 +16,7 @@ import {FormBuilder, Validators} from "@angular/forms";
 })
 export class ConversationInfoPageComponent implements OnInit {
   userId: string;
+  loadingMessages = true;
 
   conversationId: number = 0;
   advertisementId: number = 0;
@@ -51,6 +52,12 @@ export class ConversationInfoPageComponent implements OnInit {
       this.conService.getMessagesForConversation(this.conversationId)
         .subscribe((msgs) => {
           this.messages = this.categorizeMessages(msgs);
+          this.loadingMessages = false;
+
+          this.conService.setMessagesSeen(this.conversationId)
+            .subscribe((response) =>{
+              console.log(response)
+            });
         })
 
       this.adService.getAdvertisementDetailById(this.advertisementId)
@@ -66,12 +73,12 @@ export class ConversationInfoPageComponent implements OnInit {
 
   private categorizeMessages(msgs: Message[]): Message[] {
     msgs.forEach((msg) => {
-      let date = this.dateToString(msg.date);
+      let date = this.dateToString(msg.date!);
       if(date){
         msg.dateString = date;
       }
 
-      if(msg.UserFrom.id == this.userId){
+      if(msg.UserFrom!.id == this.userId){
         msg.own = true;
       } else {
         msg.own = false;

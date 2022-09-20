@@ -1,8 +1,6 @@
 ﻿using Lendship.Backend.Authentication;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 
 namespace Lendship.Backend.Models
 {

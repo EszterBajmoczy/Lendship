@@ -1,6 +1,7 @@
 ﻿using Lendship.Backend.Converters;
 using Lendship.Backend.DTO;
 using Lendship.Backend.Exceptions;
+using Lendship.Backend.Interfaces.Converters;
 using Lendship.Backend.Interfaces.Services;
 using Lendship.Backend.Models;
 using Microsoft.AspNetCore.Http;
@@ -16,17 +17,26 @@ namespace Lendship.Backend.Services
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly LendshipDbContext _dbContext;
-        private readonly AdvertisementDetailsConverter _adDetailsConverter;
-        private readonly AdvertisementConverter _adConverter;
+        private readonly ICategoryService _categoryService;
+        private readonly INotificationService _notificationService;
+        private readonly IImageService _imageService;
 
-        public AdvertisementService(IHttpContextAccessor httpContextAccessor, LendshipDbContext dbContext)
+        private readonly IAdvertisementDetailsConverter _adDetailsConverter;
+        private readonly IAdvertisementConverter _adConverter;
+        private readonly IAvailabilityConverter _availabilityConverter;
+
+        public AdvertisementService(IHttpContextAccessor httpContextAccessor, LendshipDbContext dbContext, ICategoryService categoryService, INotificationService notificationService, IImageService imageService)
         {
             _httpContextAccessor = httpContextAccessor;
             _dbContext = dbContext;
+            _categoryService = categoryService;
+            _notificationService = notificationService;
+            _imageService = imageService;
 
             //TODO inject converters!!
             _adDetailsConverter = new AdvertisementDetailsConverter(new UserConverter(), new AvailabilityConverter());
             _adConverter = new AdvertisementConverter();
+            _availabilityConverter = new AvailabilityConverter();
         }
 
         public AdvertisementDetailsDto GetAdvertisement(int advertisementId)
@@ -47,18 +57,20 @@ namespace Lendship.Backend.Services
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var category = _dbContext.Categories.Where(x => x.Name == advertisement.Category).FirstOrDefault();
+            var category = _dbContext.Categories.Where(x => x.Name.ToLower() == advertisement.Category.Name.ToLower()).FirstOrDefault();
             var user = _dbContext.Users.Where(x => x.Id == signedInUserId).FirstOrDefault();
 
             if(category == null)
             {
-                throw new CategoryNotExistsException("Category not exists.");
+                category = _categoryService.AddCategory(advertisement.Category.Name.ToLower());
             }
 
             var ad =_adDetailsConverter.ConvertToEntity(advertisement, user, category);
 
             _dbContext.Advertisements.Add(ad);
             _dbContext.SaveChanges();
+
+            UpdateAvailabilities(ad, advertisement.Availabilities);
 
             return ad.Id;
         }
@@ -67,15 +79,11 @@ namespace Lendship.Backend.Services
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (new Guid(signedInUserId) != advertisement.User.Id)
-            {
-                throw new UpdateNotAllowedException("Update is not allowed.");
-            }
             var oldAd = _dbContext.Advertisements
                             .AsNoTracking()
                             .Include(a => a.User)
                             .Where(a => a.Id == advertisement.Id)
-                            .FirstOrDefault();
+                            .FirstOrDefault();            
 
             if(oldAd == null)
             {
@@ -87,11 +95,11 @@ namespace Lendship.Backend.Services
                 throw new UpdateNotAllowedException("Update not allowed.");
             }
 
-            var category = _dbContext.Categories.Where(x => x.Name == advertisement.Category).FirstOrDefault();
+            var category = _dbContext.Categories.Where(x => x.Name.ToLower() == advertisement.Category.Name.ToLower()).FirstOrDefault();
 
             if (category == null)
             {
-                throw new CategoryNotExistsException("Category not exists.");
+                category = _categoryService.AddCategory(advertisement.Category.Name.ToLower());
             }
 
             var user = _dbContext.Users.Where(x => x.Id == signedInUserId).FirstOrDefault();
@@ -99,6 +107,9 @@ namespace Lendship.Backend.Services
             var ad = _adDetailsConverter.ConvertToEntity(advertisement, user, category);
 
             _dbContext.Update(ad);
+
+            UpdateAvailabilities(ad, advertisement.Availabilities);
+
             _dbContext.SaveChanges();
         }
 
@@ -106,14 +117,29 @@ namespace Lendship.Backend.Services
         {
             var advertisement = _dbContext.Advertisements
                 .Where(a => a.Id == advertisementId)
+                .Include(a => a.User)
                 .FirstOrDefault();
-
+            
             if(advertisement == null)
             {
                 throw new AdvertisementNotFoundException("Advertisement not found");
             }
 
+            var reservations = _dbContext.Reservations
+                .Where(r => r.Advertisement == advertisement && r.DateFrom >= DateTime.Now)
+                .Include(r => r.User)
+                .ToList();
+
+            foreach (var res in reservations)
+            {
+                _notificationService.CreateNotification("Advertisement was deleted", res, res.User.Id);
+                _notificationService.CreateNotification("Reservation was deleted, because you deleted the advertisement", res, advertisement.User.Id);
+            }
+
+            _imageService.DeleteImages(advertisementId);
+
             _dbContext.Advertisements.Remove(advertisement);
+            _dbContext.Reservations.RemoveRange(reservations);
             _dbContext.SaveChanges();
         }
 
@@ -217,6 +243,17 @@ namespace Lendship.Backend.Services
             }
         }
 
+        public bool IsAdvertisementSaved(int advertisementId)
+        {
+            var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var connection = _dbContext.SavedAdvertisements
+                .Where(s => s.UserId == signedInUserId && s.AdvertisementId == advertisementId)
+                .FirstOrDefault();
+
+            return connection != null;
+        }
+
         private List<Advertisement> FilterAdvertisments(List<Advertisement> ads, string advertisementType, bool creditPayment, bool cashPayment, string category, string city, int distance, string word, string sortBy)
         {
             var result = ads;
@@ -237,7 +274,7 @@ namespace Lendship.Backend.Services
 
             if (category != null && category != "")
             {
-                ads = ads.Where(a => a.Category.Name == category).ToList();
+                ads = ads.Where(a => a.Category.Name.ToLower() == category.ToLower()).ToList();
             }
 
             if (word != null)
@@ -263,6 +300,24 @@ namespace Lendship.Backend.Services
             }
 
             return result;
+        }
+
+        private void UpdateAvailabilities(Advertisement ad, List<AvailabilityDto> availabilities)
+        {
+            var savedAv = _dbContext.Availabilites
+                        .Where(a => a.AdvertisementId == ad.Id);
+
+            var avIds = availabilities
+                            .Where(a => a.Id != 0)
+                            .Select(a => a.Id);
+
+            var toAdd = availabilities.Where(a => a.Id == 0).Select(a => _availabilityConverter.ConvertToEntity(a, ad));
+            var toDelete = savedAv.Where(a => !avIds.Contains(a.Id));
+
+            _dbContext.Availabilites.RemoveRange(toDelete);
+            _dbContext.Availabilites.AddRange(toAdd);
+
+            _dbContext.SaveChanges();
         }
     }
 }

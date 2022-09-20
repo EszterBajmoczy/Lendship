@@ -17,7 +17,13 @@ export class AdvertisementsPageComponent implements OnInit {
 
   constructor(private adService: AdvertisementService, private router: Router) {
     this.adService.getOwnAdvertisements()
-      .subscribe(ads => this.ownAds = ads)
+      .subscribe(ads => {
+        if(ads !== undefined){
+          this.ownAds = ads;
+        } else {
+          this.ownAds = new Array<Advertisement>()
+        }
+      })
   }
 
   ngOnInit(): void {
@@ -27,8 +33,13 @@ export class AdvertisementsPageComponent implements OnInit {
     this.showSaved = ! this.showSaved;
     if(this.savedAds === undefined){
       this.adService.getSavedAdvertisements()
-        .subscribe(
-          data => this.savedAds = data);
+        .subscribe( data => {
+          if(data !== undefined){
+            this.savedAds = data
+          } else {
+            this.savedAds = new Array<Advertisement>()
+          }
+        });
     }
   }
 

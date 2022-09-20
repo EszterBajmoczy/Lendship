@@ -183,7 +183,7 @@ namespace Lendship.Backend.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("AdvertisementId")
+                    b.Property<int>("AdvertisementId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DateFrom")
@@ -411,8 +411,17 @@ namespace Lendship.Backend.Migrations
                     b.Property<bool>("New")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime>("ReservationDateFrom")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ReservationDateTo")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("ReservationId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("TimeSpan")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("UpdateInformation")
                         .IsRequired()
@@ -498,9 +507,13 @@ namespace Lendship.Backend.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ClosedGroupId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("UsersAndClosedGroups");
                 });
@@ -517,9 +530,13 @@ namespace Lendship.Backend.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ConversationId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("UsersAndConversations");
                 });
@@ -672,11 +689,11 @@ namespace Lendship.Backend.Migrations
 
             modelBuilder.Entity("Lendship.Backend.Models.Availability", b =>
                 {
-                    b.HasOne("Lendship.Backend.Models.Advertisement", "Advertisement")
-                        .WithMany()
-                        .HasForeignKey("AdvertisementId");
-
-                    b.Navigation("Advertisement");
+                    b.HasOne("Lendship.Backend.Models.Advertisement", null)
+                        .WithMany("Availabilities")
+                        .HasForeignKey("AdvertisementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Lendship.Backend.Models.Conversation", b =>
@@ -769,6 +786,44 @@ namespace Lendship.Backend.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Lendship.Backend.Models.UsersAndClosedGroups", b =>
+                {
+                    b.HasOne("Lendship.Backend.Models.ClosedGroup", "ClosedGroup")
+                        .WithMany()
+                        .HasForeignKey("ClosedGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Lendship.Backend.Authentication.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ClosedGroup");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Lendship.Backend.Models.UsersAndConversations", b =>
+                {
+                    b.HasOne("Lendship.Backend.Models.Conversation", "Conversation")
+                        .WithMany()
+                        .HasForeignKey("ConversationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Lendship.Backend.Authentication.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Conversation");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -822,6 +877,8 @@ namespace Lendship.Backend.Migrations
 
             modelBuilder.Entity("Lendship.Backend.Models.Advertisement", b =>
                 {
+                    b.Navigation("Availabilities");
+
                     b.Navigation("ImageLocations");
                 });
 

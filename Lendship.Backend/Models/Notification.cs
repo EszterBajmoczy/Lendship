@@ -21,6 +21,12 @@ namespace Lendship.Backend.Models
         public string AdvertisementTitle { get; set; }
 
         [Required]
+        public DateTime ReservationDateFrom { get; set; }
+
+        [Required]
+        public DateTime ReservationDateTo { get; set; }
+
+        [Required]
         public int ReservationId { get; set; }
 
         [Required]
@@ -28,5 +34,8 @@ namespace Lendship.Backend.Models
 
         [Required]
         public bool New { get; set; }
+
+        [Required]
+        public DateTime TimeSpan { get; set; }
     }
 }

@@ -7,4 +7,5 @@ export interface UserDetail extends User{
   longitude: number,
   location: string,
   registration: string,
+  image: string,
 }

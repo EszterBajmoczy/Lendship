@@ -12,6 +12,8 @@ import { AuthService} from "../../services/auth/auth.service";
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
+  submitting = false;
+
   constructor(private formBuilder: FormBuilder, private authService: AuthService, private router: Router ) {
   }
 
@@ -36,6 +38,7 @@ export class LoginComponent implements OnInit {
       return;
     }
     this.authService.login(this.loginForm.value);
+    this.submitting = true;
   }
 
   registrationClicked(){

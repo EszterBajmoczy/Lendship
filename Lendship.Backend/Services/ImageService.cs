@@ -57,7 +57,7 @@ namespace Lendship.Backend.Services
 
             File.Delete(directory);
 
-            var images =_dbContext.ImageLocations.Where(i => i.AdvertisementId == advertisementId);
+            var images =_dbContext.ImageLocations.Where(i => i.AdvertisementId == advertisementId && i.Location.Contains(fileName));
             _dbContext.RemoveRange(images);
             _dbContext.SaveChanges();
         }
@@ -183,7 +183,7 @@ namespace Lendship.Backend.Services
                 CheckFileFormat(file.ContentType);
 
                 var fullPath = Path.Combine(imgLocation, signedInUserId, advertisementId.ToString());
-                var path = Path.Combine("/", signedInUserId, advertisementId.ToString());
+                var path = Path.Combine("\\", signedInUserId, advertisementId.ToString());
 
                 UploadImg(file, fullPath, path, advertisementId);
             }

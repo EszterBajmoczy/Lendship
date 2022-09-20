@@ -24,9 +24,24 @@ export class FileUploadService {
     files.forEach((file) => {
       formData.append(file.name, file);
     })
+    console.log(this.baseUrl + advertisementId);
     return this.http.post(this.baseUrl + advertisementId, formData, {headers: this.headers})
       .pipe(
         catchError(this.handleError));
+  }
+
+  deleteFiles(advertisementId: number, fileNames: string[]){
+    fileNames.forEach(fileName => {
+      console.log("!!!!!");
+      console.log(this.baseUrl + advertisementId + "/" + this.simplifyImageName(fileName));
+      return this.http.delete(this.baseUrl + advertisementId + "/" + this.simplifyImageName(fileName), {headers: this.headers})
+        .subscribe(s => {console.log("sub");})
+    })
+  }
+
+  deleteFile(advertisementId: number, fileName: string){
+    return this.http.delete(this.baseUrl + advertisementId + "/" + this.simplifyImageName(fileName), {headers: this.headers})
+      .subscribe(s => { console.log( fileName + " file is deleted"); })
   }
 
   private handleError(error: HttpErrorResponse) {
@@ -42,5 +57,11 @@ export class FileUploadService {
     }
     // Return an observable with a user-facing error message.
     return throwError(() => new Error('Something bad happened; please try again later.'));
+  }
+
+  private simplifyImageName(name: string): string {
+    let i = name.lastIndexOf("\\");
+    console.log(name.substring(i+1));
+    return name.substring(i + 1);
   }
 }

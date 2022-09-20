@@ -90,7 +90,8 @@ namespace Lendship.Backend.Controllers
                 {
                     token = new JwtSecurityTokenHandler().WriteToken(token),
                     expiration = token.ValidTo,
-                    refreshToken = new JwtSecurityTokenHandler().WriteToken(refreshToken)
+                    refreshToken = new JwtSecurityTokenHandler().WriteToken(refreshToken),
+                    image = user.ImageLocation
                 });
             }
             return Unauthorized();

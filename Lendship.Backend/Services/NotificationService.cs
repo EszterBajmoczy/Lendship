@@ -1,11 +1,10 @@
 ﻿using Lendship.Backend.Converters;
 using Lendship.Backend.DTO;
-using Lendship.Backend.Exceptions;
 using Lendship.Backend.Interfaces.Converters;
 using Lendship.Backend.Interfaces.Services;
 using Lendship.Backend.Models;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -20,7 +19,6 @@ namespace Lendship.Backend.Services
 
         public NotificationService(IHttpContextAccessor httpContextAccessor, LendshipDbContext dbContext)
         {
-            //check at the end if the converters are needed!!!!!!!!!!!!!!!!!!!!!!!
             _httpContextAccessor = httpContextAccessor;
             _dbContext = dbContext;
 
@@ -33,6 +31,7 @@ namespace Lendship.Backend.Services
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             return _dbContext.Notifications
                         .Where(n => n.UserId == signedInUserId && (searchInAdvertisementTitle == null || n.AdvertisementTitle.Contains(searchInAdvertisementTitle)))
+                        .OrderByDescending(n => n.TimeSpan)
                         .Select(n => _notificationConverter.ConvertToDto(n))
                         .ToList();
         }
@@ -42,6 +41,7 @@ namespace Lendship.Backend.Services
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             return _dbContext.Notifications
                         .Where(n => n.UserId == signedInUserId && n.New)
+                        .OrderByDescending(n => n.TimeSpan)
                         .Select(n => _notificationConverter.ConvertToDto(n))
                         .ToList();
         }
@@ -50,9 +50,7 @@ namespace Lendship.Backend.Services
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var notifications = _dbContext.Notifications
-                                    .Where(n => n.UserId == signedInUserId && n.New && ids.Contains(n.Id))
-                                    .Select(n => _notificationConverter.ConvertToDto(n))
-                                    .ToList();
+                                    .Where(n => n.UserId == signedInUserId && n.New && ids.Contains(n.Id));
             foreach (var noti in notifications)
             {
                 noti.New = false;
@@ -69,9 +67,12 @@ namespace Lendship.Backend.Services
                 UserId = userId,
                 AdvertisementId = reservation.Advertisement.Id,
                 AdvertisementTitle = reservation.Advertisement.Title,
+                ReservationDateFrom = reservation.DateFrom,
+                ReservationDateTo = reservation.DateTo,
                 ReservationId = reservation.Id,
                 UpdateInformation = msg,
-                New = true
+                New = true,
+                TimeSpan = DateTime.Now
             };
 
             _dbContext.Notifications.Add(notification);

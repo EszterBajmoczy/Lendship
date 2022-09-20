@@ -48,7 +48,7 @@ namespace Lendship.Backend.Models
 
         public ICollection<ImageLocation> ImageLocations { get; set; }
 
-        public virtual ICollection<Availability> Availabilities { get; set; }
+        public ICollection<Availability> Availabilities { get; set; }
 
     }
 }

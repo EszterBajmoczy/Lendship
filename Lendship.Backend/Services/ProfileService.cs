@@ -39,7 +39,7 @@ namespace Lendship.Backend.Services
             var user = _dbContext.Users.Where(x => x.Id == userId).FirstOrDefault();
 
             //TODO evaluation
-            return _userConverter.ConvertToUserDetaiolsDto(user);
+            return _userConverter.ConvertToUserDetailsDto(user);
         }
 
         public UserDetailsDto GetUserInformation()
@@ -48,7 +48,7 @@ namespace Lendship.Backend.Services
             var user = _dbContext.Users.Where(x => x.Id == signedInUserId).FirstOrDefault();
 
             //TODO evaluation
-            return _userConverter.ConvertToUserDetaiolsDto(user);
+            return _userConverter.ConvertToUserDetailsDto(user);
         }
 
         public void UpdateUserInformation(UserDetailsDto user)

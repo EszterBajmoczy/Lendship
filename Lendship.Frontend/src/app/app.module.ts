@@ -5,6 +5,7 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
+import {AutocompleteLibModule} from 'angular-ng-autocomplete';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -25,6 +26,7 @@ import { ConversationsPageComponent } from './pages/conversations-page/conversat
 import { ConversationInfoPageComponent } from './pages/conversation-info-page/conversation-info-page.component';
 import { MessagePopupComponent } from './pages/popup/message-popup/message-popup.component';
 import { ReservationPageComponent } from './pages/reservation-page/reservation-page.component';
+import {NotificationsPageComponent} from "./pages/notifications-page/notifications-page.component";
 
 @NgModule({
     declarations: [
@@ -45,6 +47,7 @@ import { ReservationPageComponent } from './pages/reservation-page/reservation-p
         ConversationInfoPageComponent,
         MessagePopupComponent,
         ReservationPageComponent,
+        NotificationsPageComponent,
     ],
   imports: [
     BrowserModule,
@@ -53,6 +56,7 @@ import { ReservationPageComponent } from './pages/reservation-page/reservation-p
     HttpClientModule,
     FormsModule,
     NgbModule,
+    AutocompleteLibModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }

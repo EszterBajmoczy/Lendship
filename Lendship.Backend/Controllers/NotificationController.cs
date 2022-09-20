@@ -68,12 +68,11 @@ namespace Lendship.Backend.Controllers
         /// update notification new status
         /// </summary>
         /// <remarks>Updates notification new status</remarks>
-        /// <param name="reservation">reservation to update</param>
         /// <response code="201">item updated</response>
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
-        [HttpPut]
-        public virtual IActionResult UpdateReservation([FromBody]List<int> ids)
+        [HttpPost]
+        public virtual IActionResult UpdateNotification([FromBody]List<int> ids)
         {
             try
             {

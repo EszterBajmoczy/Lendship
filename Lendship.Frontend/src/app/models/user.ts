@@ -5,4 +5,5 @@ export interface User {
   evaluationAsAdvertiserCount: number;
   evaluationAsLender: number;
   evaluationAsLenderCount: number;
+  image: string;
 }
