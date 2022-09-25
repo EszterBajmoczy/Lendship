@@ -24,34 +24,25 @@ namespace Lendship.Backend.Authentication
         [Required]
         public string Location { get; set; }
 
-        [Column(TypeName = "decimal(9,6)")]
-        public decimal EvaluationAsAdvertiser { get; set; }
+        public double EvaluationAsAdvertiser { get; set; }
 
         public int EvaluationAsAdvertiserCount { get; set; }
 
-        [Column(TypeName = "decimal(9,6)")]
-        public decimal AdvertiserFlexibility { get; set; }
+        public double AdvertiserFlexibility { get; set; }
 
-        [Column(TypeName = "decimal(9,6)")]
-        public decimal AdvertiserReliability { get; set; }
+        public double AdvertiserReliability { get; set; }
 
-        [Column(TypeName = "decimal(9,6)")]
-        public decimal AdvertiserQualityOfProduct { get; set; }
+        public double AdvertiserQualityOfProduct { get; set; }
 
-
-        [Column(TypeName = "decimal(9,6)")]
-        public decimal EvaluationAsLender { get; set; }
+        public double EvaluationAsLender { get; set; }
 
         public int EvaluationAsLenderCount { get; set; }
 
-        [Column(TypeName = "decimal(9,6)")]
-        public decimal LenderFlexibility { get; set; }
+        public double LenderFlexibility { get; set; }
 
-        [Column(TypeName = "decimal(9,6)")]
-        public decimal LenderReliability { get; set; }
+        public double LenderReliability { get; set; }
 
-        [Column(TypeName = "decimal(9,6)")]
-        public decimal LenderQualityQualityAtReturn { get; set; }
+        public double LenderQualityAtReturn { get; set; }
 
         public string ImageLocation { get; set; }
 

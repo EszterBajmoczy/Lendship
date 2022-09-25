@@ -68,8 +68,6 @@ namespace Lendship.Backend
 
             services.AddHttpContextAccessor();
 
-
-
             services.AddScoped<IAdvertisementService, AdvertisementService>();
             services.AddScoped<IReservationService, ReservationService>();
             services.AddScoped<IEvaluationService, EvaluationService>();
@@ -82,8 +80,8 @@ namespace Lendship.Backend
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<ICategoryService, CategoryService>();
 
-            services.AddScoped<IEvaluationCalcuting, WeightedAverage>();
-
+            services.AddScoped<IEvaluationCalculator, WeightedAverage>();
+            services.AddScoped<IReputationCalculatorService, ReputationCalculatorService>();
             services.AddScoped<TokenValidator>();
             var serviceProvider = services.BuildServiceProvider();
 
