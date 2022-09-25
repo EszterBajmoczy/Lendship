@@ -20,14 +20,12 @@
 	- Tranzakciók lezárásának implementálása frontenden
 	- Dokumentálás
 	
-	- Kép galéria + ha nincs kép kezelése!
+	- Kép galéria
 
 7. hét		okt 12 - 18
 	- Tranzakciók lezárásának implementálása folytatása
 	- Profil hiányzó műveletek implementálása (regisztrációnál kép feltöltés, módosítás)
-		-jelszó módosítás, email!!
-		-ha nincs profilkép
-		
+
 	- Closed group funkció megvalósítása - frontend
 	
 8. hét		okt 19 - 25
