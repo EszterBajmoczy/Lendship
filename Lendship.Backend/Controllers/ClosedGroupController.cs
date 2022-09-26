@@ -74,7 +74,7 @@ namespace Lendship.Backend.Controllers
             catch (Exception e)
             {
                 Console.WriteLine("Exception at creating closed group: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at creating closed group: " + e.Message);
             }
         }
 
@@ -99,7 +99,7 @@ namespace Lendship.Backend.Controllers
             catch (Exception e)
             {
                 Console.WriteLine("Exception at updating closed group: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at updating closed group: " + e.Message);
             }
         }
 
@@ -123,8 +123,8 @@ namespace Lendship.Backend.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exception at updating closed group: " + e.Message);
-                return this.BadRequest(e.Message);
+                Console.WriteLine("Exception at removing closed group: " + e.Message);
+                return this.BadRequest("Exception at removing closed group: " + e.Message);
             }
         }
     }

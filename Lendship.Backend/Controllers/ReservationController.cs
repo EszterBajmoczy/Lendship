@@ -53,7 +53,7 @@ namespace Lendship.Backend.Controllers
             catch (Exception e)
             {
                 Console.WriteLine("Exception at creating reservation: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at creating reservation: " + e.Message);
             }
         }
 
@@ -105,7 +105,7 @@ namespace Lendship.Backend.Controllers
             catch (Exception e)
             {
                 Console.WriteLine("Exception at updating reservation: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at updating reservation: " + e.Message);
             }
         }
 
@@ -130,7 +130,7 @@ namespace Lendship.Backend.Controllers
             catch (Exception e)
             {
                 Console.WriteLine("Exception at updating reservation: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at updating reservation: " + e.Message);
             }
         }
 
@@ -170,7 +170,7 @@ namespace Lendship.Backend.Controllers
             catch (Exception e)
             {
                 Console.WriteLine("Exception at updating reservation: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at updating reservation: " + e.Message);
             }
         }
     }

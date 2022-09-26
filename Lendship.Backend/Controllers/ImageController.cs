@@ -52,7 +52,7 @@ namespace Lendship.Backend.Controllers
             catch (Exception e)
             {
                 Console.WriteLine("Exception at uploading profile image: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at uploading profile image: " + e.Message);
             }
         }
 
@@ -77,7 +77,7 @@ namespace Lendship.Backend.Controllers
             catch (Exception e)
             {
                 Console.WriteLine("Exception at uploading profile image: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at uploading profile image: " + e.Message);
             }
 
             throw new NotImplementedException();
@@ -148,7 +148,7 @@ namespace Lendship.Backend.Controllers
             catch (Exception e)
             {
                 Console.WriteLine("Exception at fetching profile image: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at fetching profile image: " + e.Message);
             }
         }
 
@@ -172,7 +172,7 @@ namespace Lendship.Backend.Controllers
             catch (Exception e)
             {
                 Console.WriteLine("Exception at fetching images: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at fetching images: " + e.Message);
             }
         }
     }

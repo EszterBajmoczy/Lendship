@@ -45,14 +45,16 @@ namespace Lendship.Backend.Controllers
         [Route("{advertisementId}")]
         public virtual IActionResult GetAdvertisement([FromRoute][Required] int advertisementId)
         {
-            var advertisement = _adService.GetAdvertisement(advertisementId);
-
-            if (advertisement != null)
+            try
             {
+                var advertisement = _adService.GetAdvertisement(advertisementId);
                 return new ObjectResult(advertisement.ToJson());
             }
-
-            return this.BadRequest("Advertisement not found.");
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception at creating advertisement: " + e.Message);
+                return this.BadRequest("Exception at getting advertisement: " + e.Message);
+            }
         }
 
         /// <summary>
@@ -73,7 +75,7 @@ namespace Lendship.Backend.Controllers
             } catch (Exception e)
             {
                 Console.WriteLine("Exception at creating advertisement: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at creating advertisement: " + e.Message);
             }
         }
 
@@ -96,7 +98,7 @@ namespace Lendship.Backend.Controllers
             catch (Exception e)
             {
                 Console.WriteLine("Exception at updating advertisement: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at updating advertisement: " + e.Message);
             }
         }
 
@@ -119,7 +121,7 @@ namespace Lendship.Backend.Controllers
             } catch(Exception e)
             {
                 Console.WriteLine("Exception at deleting advertisement: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at deleting advertisement: " + e.Message);
             }
         }
 
@@ -171,8 +173,8 @@ namespace Lendship.Backend.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exception at getting saving advertisements: " + e.Message);
-                return this.BadRequest(e.Message);
+                Console.WriteLine("Exception at getting own advertisements: " + e.Message);
+                return this.BadRequest("Exception at getting own advertisements: " + e.Message);
             }
         }
 
@@ -202,8 +204,8 @@ namespace Lendship.Backend.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exception at getting saving advertisements: " + e.Message);
-                return this.BadRequest(e.Message);
+                Console.WriteLine("Exception at getting saved advertisements: " + e.Message);
+                return this.BadRequest("Exception at getting saved advertisements: " + e.Message);
             }
         }
 
@@ -226,7 +228,7 @@ namespace Lendship.Backend.Controllers
             } catch (Exception e)
             {
                 Console.WriteLine("Exception at saving advertisement: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at saving advertisement: " + e.Message);
             }
         }
 
@@ -265,8 +267,8 @@ namespace Lendship.Backend.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exception at saving advertisement: " + e.Message);
-                return this.BadRequest(e.Message);
+                Console.WriteLine("Exception at getting advertisement: " + e.Message);
+                return this.BadRequest("Exception at getting advertisement: " + e.Message);
             }
         }
     }
