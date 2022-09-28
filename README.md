@@ -9,6 +9,11 @@ SwaggerHub: https://app.swaggerhub.com/apis/EszterBajmoczy/Lendship.Backend/1.0.
 
 
 # Haladási napló:
+2022.09.28:
+- Bayesian ranking systems doksi, backend
+- Error handling félúton
+- Deploy - cors elakadás
+
 2022.05.04:
 - Reservation page
 - Token kezelés módosítása
