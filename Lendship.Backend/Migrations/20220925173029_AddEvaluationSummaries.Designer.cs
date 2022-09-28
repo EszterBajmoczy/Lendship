@@ -4,14 +4,16 @@ using Lendship.Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Lendship.Backend.Migrations
 {
     [DbContext(typeof(LendshipDbContext))]
-    partial class LendshipDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220925173029_AddEvaluationSummaries")]
+    partial class AddEvaluationSummaries
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,14 +29,14 @@ namespace Lendship.Backend.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<double>("AdvertiserFlexibility")
-                        .HasColumnType("float");
+                    b.Property<decimal>("AdvertiserFlexibility")
+                        .HasColumnType("decimal(9,6)");
 
-                    b.Property<double>("AdvertiserQualityOfProduct")
-                        .HasColumnType("float");
+                    b.Property<decimal>("AdvertiserQualityOfProduct")
+                        .HasColumnType("decimal(9,6)");
 
-                    b.Property<double>("AdvertiserReliability")
-                        .HasColumnType("float");
+                    b.Property<decimal>("AdvertiserReliability")
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -53,14 +55,14 @@ namespace Lendship.Backend.Migrations
                     b.Property<bool>("EmailNotificationsEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<double>("EvaluationAsAdvertiser")
-                        .HasColumnType("float");
+                    b.Property<decimal>("EvaluationAsAdvertiser")
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<int>("EvaluationAsAdvertiserCount")
                         .HasColumnType("int");
 
-                    b.Property<double>("EvaluationAsLender")
-                        .HasColumnType("float");
+                    b.Property<decimal>("EvaluationAsLender")
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<int>("EvaluationAsLenderCount")
                         .HasColumnType("int");
@@ -72,14 +74,14 @@ namespace Lendship.Backend.Migrations
                         .HasPrecision(8)
                         .HasColumnType("decimal(8,6)");
 
-                    b.Property<double>("LenderFlexibility")
-                        .HasColumnType("float");
+                    b.Property<decimal>("LenderFlexibility")
+                        .HasColumnType("decimal(9,6)");
 
-                    b.Property<double>("LenderQualityAtReturn")
-                        .HasColumnType("float");
+                    b.Property<decimal>("LenderQualityQualityAtReturn")
+                        .HasColumnType("decimal(9,6)");
 
-                    b.Property<double>("LenderReliability")
-                        .HasColumnType("float");
+                    b.Property<decimal>("LenderReliability")
+                        .HasColumnType("decimal(9,6)");
 
                     b.Property<string>("Location")
                         .IsRequired()

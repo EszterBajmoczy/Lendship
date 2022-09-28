@@ -2,22 +2,16 @@
 
 namespace Lendship.Backend.EvaluationCalcuting
 {
-    public class WeightedAverage : IEvaluationCalcuting
+    public class WeightedAverage : IEvaluationCalculator
     {
-        public decimal calculateAdviser(int flexibility, int reliability, int qualityOfProduct)
+        public double calculateAdviser(double flexibility, double reliability, double qualityOfProduct)
         {
             return (flexibility + reliability * 3 + qualityOfProduct * 3) / 7;
         }
 
-        public decimal calculateLender(int flexibility, int reliability, int qualityAtReturn)
+        public double calculateLender(double flexibility, double reliability, double qualityAtReturn)
         {
             return (flexibility + reliability * 3 + qualityAtReturn * 3) / 7;
-        }
-
-        public decimal recalculate(decimal currentEvaluation, int currentCount, decimal evaluation)
-        {
-            var s = currentEvaluation * currentCount;
-            return (s + evaluation) / (currentCount + 1);
         }
     }
 }

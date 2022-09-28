@@ -89,7 +89,7 @@ namespace Lendship.Backend.DTO
         /// </summary>
 
         [DataMember(Name = "evaluationAsAdvertiser")]
-        public decimal? EvaluationAsAdvertiser { get; set; }
+        public double? EvaluationAsAdvertiser { get; set; }
 
         /// <summary>
         /// Gets or Sets EvaluationAsAdvertiserCount
@@ -103,7 +103,7 @@ namespace Lendship.Backend.DTO
         /// </summary>
 
         [DataMember(Name = "evaluationAsLender")]
-        public decimal? EvaluationAsLender { get; set; }
+        public double? EvaluationAsLender { get; set; }
 
         /// <summary>
         /// Gets or Sets EvaluationAsLenderCount
