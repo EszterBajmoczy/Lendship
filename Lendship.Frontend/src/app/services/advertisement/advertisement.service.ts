@@ -12,9 +12,9 @@ import {ErrorService} from "../error/error.service";
   providedIn: 'root'
 })
 export class AdvertisementService {
-  private baseUrl: string;
-  private baseUrlCategory: string;
-  private headers: HttpHeaders
+  private readonly baseUrl: string;
+  private readonly baseUrlCategory: string;
+  private readonly headers: HttpHeaders
 
   constructor(private http: HttpClient, private authService: AuthService, private errorService: ErrorService) {
     this.baseUrl = environment.baseUrl + "Advertisement/";
