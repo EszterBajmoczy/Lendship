@@ -91,6 +91,7 @@ export class AuthService {
   public logout() {
     localStorage.removeItem('ACCESS_TOKEN');
     localStorage.removeItem('REFRESH_TOKEN');
+    localStorage.removeItem('PROFILE_IMG');
     this.tokenService.removeToken();
     this.router.navigateByUrl('home');
   }

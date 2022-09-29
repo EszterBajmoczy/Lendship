@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  baseUrl: "https://lendshipbackend20220920202311.azurewebsites.net/",
+  baseUrl: "https://localhost:44377/",
   geocodingBaseUrl: "https://maps.googleapis.com/maps/api/geocode/json",
   geocodingApiKey: "AIzaSyA6IWSb32vNokzBHBMHnl-LanAa9fU56Yc"
 };
