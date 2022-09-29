@@ -52,7 +52,7 @@ namespace Lendship.Backend.Controllers
             catch (Exception e)
             {
                 Console.WriteLine("Exception at creating conversation: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at creating conversation: " + e.Message);
             }
         }
 
@@ -78,7 +78,7 @@ namespace Lendship.Backend.Controllers
             catch (Exception e)
             {
                 Console.WriteLine("Exception at creating message: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at creating message: " + e.Message);
             }
         }
 
@@ -102,7 +102,7 @@ namespace Lendship.Backend.Controllers
             catch (Exception e)
             {
                 Console.WriteLine("Exception at setting message to seen: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at setting message to seen: " + e.Message);
             }
         }
 

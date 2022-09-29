@@ -55,7 +55,7 @@ namespace Lendship.Backend.Controllers
             catch (Exception e)
             {
                 Console.WriteLine("Exception at advertiser's evaluation: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at advertiser's evaluation: " + e.Message);
             }
         }
 
@@ -79,7 +79,7 @@ namespace Lendship.Backend.Controllers
             catch (Exception e)
             {
                 Console.WriteLine("Exception at getting advertiser's evaluations: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at getting advertiser's evaluations: " + e.Message);
             }
         }
     }

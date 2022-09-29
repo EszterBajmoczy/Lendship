@@ -49,6 +49,11 @@ namespace Lendship.Backend.Services
                 .Where(a => a.Id == advertisementId)
                 .FirstOrDefault();
 
+            if (advertisement == null)
+            {
+                throw new AdvertisementNotFoundException("Advertisement not found.");
+            }
+
             var advertisementDto = _adDetailsConverter.ConvertToDto(advertisement);
             return advertisementDto;
         }

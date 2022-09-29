@@ -1,94 +1,72 @@
 import { Injectable } from '@angular/core';
-import { catchError } from "rxjs/operators";
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { map, Observable, throwError } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { map, Observable } from 'rxjs';
 import { Advertisement } from "../../models/advertisement";
 import { AuthService } from "../auth/auth.service";
-import { GeocodingService } from "../geocoding/geocoding.service";
 import { AdvertisementDetail } from "../../models/advertisement-detail";
 import { environment } from "../../../environments/environment";
 import {Category} from "../../models/category";
+import {ErrorService} from "../error/error.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdvertisementService {
-  private baseUrl: string;
-  private baseUrlCategory: string;
-  private headers: HttpHeaders
+  private readonly baseUrl: string;
+  private readonly baseUrlCategory: string;
+  private readonly headers: HttpHeaders
 
-  constructor(private http: HttpClient, private authService: AuthService, private geocodingService: GeocodingService) {
+  constructor(private http: HttpClient, private authService: AuthService, private errorService: ErrorService) {
     this.baseUrl = environment.baseUrl + "Advertisement/";
     this.baseUrlCategory = environment.baseUrl + "Category/";
     this.headers = authService.getHeaders();
   }
 
   getAdvertisements(): Observable<Advertisement[]>{
-    return this.http.get<Advertisement[]>(this.baseUrl, { headers: this.headers})
-      .pipe(
-        catchError(this.handleError));
+    return this.http.get<Advertisement[]>(this.baseUrl, { headers: this.headers});
   }
 
   getOwnAdvertisements(): Observable<Advertisement[]>{
-    return this.http.get<Advertisement[]>(this.baseUrl + "own", { headers: this.headers})
-      .pipe(
-        catchError(this.handleError));
+    return this.http.get<Advertisement[]>(this.baseUrl + "own", { headers: this.headers});
   }
 
   getSavedAdvertisements(): Observable<Advertisement[]>{
-    return this.http.get<Advertisement[]>(this.baseUrl + "saved", { headers: this.headers})
-      .pipe(
-        catchError(this.handleError));
+    return this.http.get<Advertisement[]>(this.baseUrl + "saved", { headers: this.headers});
   }
 
   getAdvertisementDetailById(id: number): Observable<AdvertisementDetail>{
     return this.http.get<AdvertisementDetail>(this.baseUrl + id, { headers: this.headers})
       .pipe(
-        map((response: AdvertisementDetail) => this.setDates(response)),
-        catchError(this.handleError));
+        map((response: AdvertisementDetail) => this.setDates(response)));
   }
 
   createAdvertisement(ad: AdvertisementDetail): Observable<number>{
-    return this.http.post<any>(this.baseUrl, ad, { headers: this.headers})
-      .pipe(
-        catchError(this.handleError));
+    return this.http.post<any>(this.baseUrl, ad, { headers: this.headers});
   }
 
   updateAdvertisement(ad: AdvertisementDetail): Observable<number>{
-    return this.http.put<any>(this.baseUrl, ad, { headers: this.headers})
-      .pipe(
-        catchError(this.handleError));
+    return this.http.put<any>(this.baseUrl, ad, { headers: this.headers});
   }
 
   deleteAdvertisementById(id: number): Observable<number>{
     console.log(this.baseUrl + id);
-    return this.http.delete<any>(this.baseUrl + id, { headers: this.headers})
-      .pipe(
-        catchError(this.handleError));
+    return this.http.delete<any>(this.baseUrl + id, { headers: this.headers});
   }
 
   isAdvertisementSaved(id: number): Observable<boolean>{
-    return this.http.get<any>(this.baseUrl + "saved/" + id, { headers: this.headers})
-      .pipe(
-        catchError(this.handleError));
+    return this.http.get<any>(this.baseUrl + "saved/" + id, { headers: this.headers});
   }
 
   saveAdvertisementById(id: number): Observable<number>{
-    return this.http.post<any>(this.baseUrl + "saved/" + id, { headers: this.headers})
-      .pipe(
-        catchError(this.handleError));
+    return this.http.post<any>(this.baseUrl + "saved/" + id, { headers: this.headers});
   }
 
   removeSavedAdvertisementById(id: number): Observable<number>{
-    return this.http.delete<any>(this.baseUrl + "saved/" + id, { headers: this.headers})
-      .pipe(
-        catchError(this.handleError));
+    return this.http.delete<any>(this.baseUrl + "saved/" + id, { headers: this.headers});
   }
 
   getCategories(): Observable<Category[]> {
-    return this.http.get<any>(this.baseUrlCategory, { headers: this.headers})
-      .pipe(
-        catchError(this.handleError));
+    return this.http.get<any>(this.baseUrlCategory, { headers: this.headers});
   }
 
   setDates(ad: AdvertisementDetail): AdvertisementDetail{
@@ -97,19 +75,5 @@ export class AdvertisementService {
       av.dateFrom = new Date(av.dateFrom);
     })
     return ad;
-  }
-
-  private handleError(error: HttpErrorResponse) {
-    if (error.status === 0) {
-      // A client-side or network error occurred. Handle it accordingly.
-      console.error('An error occurred:', error.error);
-    } else {
-      // The backend returned an unsuccessful response code.
-      // The response body may contain clues as to what went wrong.
-      console.error(
-        `Backend returned code ${error.status}, body was: `, error.error);
-    }
-    // Return an observable with a user-facing error message.
-    return throwError(() => new Error('Something bad happened; please try again later.'));
   }
 }

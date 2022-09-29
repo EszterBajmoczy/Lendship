@@ -82,7 +82,7 @@ namespace Lendship.Backend.Controllers
             catch (Exception e)
             {
                 Console.WriteLine("Exception at updating notifications: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at updating notifications: " + e.Message);
             }
         }
     }
