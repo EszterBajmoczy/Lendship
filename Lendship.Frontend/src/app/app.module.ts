@@ -28,6 +28,7 @@ import { ReservationPageComponent } from './pages/reservation-page/reservation-p
 import { NotificationsPageComponent} from "./pages/notifications-page/notifications-page.component";
 import { ErrorPageComponent} from "./pages/error-page/error-page.component";
 import {TokenInterceptor} from "./interceptors/token.interceptor";
+import {EvaluationPopupComponent} from "./pages/popup/evaluation-popup/evaluation-popup.component";
 
 @NgModule({
     declarations: [
@@ -50,6 +51,7 @@ import {TokenInterceptor} from "./interceptors/token.interceptor";
         ReservationPageComponent,
         NotificationsPageComponent,
         ErrorPageComponent,
+        EvaluationPopupComponent,
     ],
   imports: [
     BrowserModule,

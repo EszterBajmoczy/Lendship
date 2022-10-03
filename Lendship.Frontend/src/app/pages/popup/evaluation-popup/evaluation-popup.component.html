@@ -1,0 +1,59 @@
+<form [formGroup]="evaluationForm">
+
+  <div id="flexibility" class="d-flex justify-content-between">
+    <p>Flexibility</p>
+    <div class="d-flex">
+      <i class="fa-star me-2" (click)="addFlexibilityStars(1)" [ngClass]="{'fa-regular': flexibility < 1, 'fa-solid' : flexibility >= 1 }" ></i>
+      <i class="fa-star me-2" (click)="addFlexibilityStars(2)" [ngClass]="{'fa-regular': flexibility < 2, 'fa-solid' : flexibility >= 2 }" ></i>
+      <i class="fa-star me-2" (click)="addFlexibilityStars(3)" [ngClass]="{'fa-regular': flexibility < 3, 'fa-solid' : flexibility >= 3 }" ></i>
+      <i class="fa-star me-2" (click)="addFlexibilityStars(4)" [ngClass]="{'fa-regular': flexibility < 4, 'fa-solid' : flexibility >= 4 }" ></i>
+      <i class="fa-star me-2" (click)="addFlexibilityStars(5)" [ngClass]="{'fa-regular': flexibility < 5, 'fa-solid' : flexibility >= 5 }" ></i>
+    </div>
+  </div>
+
+  <div id="reliability" class="d-flex justify-content-between">
+    <p>Reliability</p>
+    <div class="d-flex">
+      <i class="fa-star me-2" (click)="addReliabilityStars(1)" [ngClass]="{'fa-regular': reliability < 1, 'fa-solid' : reliability >= 1 }" ></i>
+      <i class="fa-star me-2" (click)="addReliabilityStars(2)" [ngClass]="{'fa-regular': reliability < 2, 'fa-solid' : reliability >= 2 }" ></i>
+      <i class="fa-star me-2" (click)="addReliabilityStars(3)" [ngClass]="{'fa-regular': reliability < 3, 'fa-solid' : reliability >= 3 }" ></i>
+      <i class="fa-star me-2" (click)="addReliabilityStars(4)" [ngClass]="{'fa-regular': reliability < 4, 'fa-solid' : reliability >= 4 }" ></i>
+      <i class="fa-star me-2" (click)="addReliabilityStars(5)" [ngClass]="{'fa-regular': reliability < 5, 'fa-solid' : reliability >= 5 }" ></i>
+    </div>
+  </div>
+
+  <div *ngIf="!isLender" id="qualityOfProduct" class="d-flex justify-content-between">
+    <p>Quality of product</p>
+    <div class="d-flex">
+      <i class="fa-star me-2" (click)="addQualityOfProductStars(1)" [ngClass]="{'fa-regular': qualityOfProduct < 1, 'fa-solid' : qualityOfProduct >= 1 }" ></i>
+      <i class="fa-star me-2" (click)="addQualityOfProductStars(2)" [ngClass]="{'fa-regular': qualityOfProduct < 2, 'fa-solid' : qualityOfProduct >= 2 }" ></i>
+      <i class="fa-star me-2" (click)="addQualityOfProductStars(3)" [ngClass]="{'fa-regular': qualityOfProduct < 3, 'fa-solid' : qualityOfProduct >= 3 }" ></i>
+      <i class="fa-star me-2" (click)="addQualityOfProductStars(4)" [ngClass]="{'fa-regular': qualityOfProduct < 4, 'fa-solid' : qualityOfProduct >= 4 }" ></i>
+      <i class="fa-star me-2" (click)="addQualityOfProductStars(5)" [ngClass]="{'fa-regular': qualityOfProduct < 5, 'fa-solid' : qualityOfProduct >= 5 }" ></i>
+    </div>
+  </div>
+
+  <div *ngIf="isLender" id="qualityAtReturn" class="d-flex justify-content-between">
+    <p>Quality of product at return</p>
+    <div class="d-flex">
+      <i class="fa-star me-2" (click)="addQualityAtReturnStars(1)" [ngClass]="{'fa-regular': qualityAtReturn < 1, 'fa-solid' : qualityAtReturn >= 1 }" ></i>
+      <i class="fa-star me-2" (click)="addQualityAtReturnStars(2)" [ngClass]="{'fa-regular': qualityAtReturn < 2, 'fa-solid' : qualityAtReturn >= 2 }" ></i>
+      <i class="fa-star me-2" (click)="addQualityAtReturnStars(3)" [ngClass]="{'fa-regular': qualityAtReturn < 3, 'fa-solid' : qualityAtReturn >= 3 }" ></i>
+      <i class="fa-star me-2" (click)="addQualityAtReturnStars(4)" [ngClass]="{'fa-regular': qualityAtReturn < 4, 'fa-solid' : qualityAtReturn >= 4 }" ></i>
+      <i class="fa-star me-2" (click)="addQualityAtReturnStars(5)" [ngClass]="{'fa-regular': qualityAtReturn < 5, 'fa-solid' : qualityAtReturn >= 5 }" ></i>
+    </div>
+  </div>
+
+  <input formControlName="comment" type="text" placeholder="Send a comment" class="me-2 ms-0 w-auto filled-in">
+  <div class="d-flex align-items-center">
+    <input formControlName="isAnonymous" id="isAnonymous" type="checkbox" class="me-2 ms-0 w-auto filled-in">
+    <label for="isAnonymous">Anonymous</label>
+  </div>
+
+  <p class="d-flex justify-content-center mt-4">
+    <button class="btn btn-info" type="submit" (click)="onSubmit()" [disabled]="!(flexibility != 0 && reliability != 0 && (qualityOfProduct != 0 || qualityAtReturn != 0))">
+      Send evaluation and close transaction.
+    </button>
+  </p>
+</form>
+

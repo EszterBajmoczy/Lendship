@@ -3,8 +3,10 @@ import {ReservationService} from "../../services/reservation/reservation.service
 import {IReservationDetail} from "../../models/reservation-detail";
 import {Router} from "@angular/router";
 import {User} from "../../models/user";
-import {NgbCalendar, NgbDate, NgbDateStruct} from "@ng-bootstrap/ng-bootstrap";
+import {NgbCalendar, NgbDate, NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {NgbDateHandlerService} from "../../services/date-handler/ngb-date-handler.service";
+import {EvaluationAdvertiser, EvaluationLender} from "../../models/evaluation";
+import {UserService} from "../../services/user/user.service";
 
 @Component({
   selector: 'app-reservation-page',
@@ -28,16 +30,23 @@ export class ReservationPageComponent implements OnInit {
   model: NgbDate;
   date: { year: number; month: number; } | undefined;
 
-  constructor(private reservationService: ReservationService, private ngbDateHandler: NgbDateHandlerService, private calendar: NgbCalendar, private router: Router) {
+  constructor(private reservationService: ReservationService,
+              private userService: UserService,
+              private ngbDateHandler: NgbDateHandlerService,
+              private calendar: NgbCalendar,
+              private modalService: NgbModal,
+              private router: Router) {
     this.model = calendar.getToday();
     reservationService.getUsersReservations()
       .subscribe(res => {
+        console.log(res)
         this.usersReservations = this.initializeNgbDateFields(res);
         this.loadingUsersReservations = false;
       });
 
     reservationService.getReservationsForUsersAdvertisement()
       .subscribe(res => {
+        console.log(res)
         this.reservationsForUsersAdvertisements = this.initializeNgbDateFields(res);
         this.loadingReservationsForUser = false;
       });
@@ -161,5 +170,44 @@ export class ReservationPageComponent implements OnInit {
       return true;
     }
     return result;
+  }
+
+  submitEvaluationAdvertiser(evaluation: EvaluationAdvertiser) {
+    this.modalService.dismissAll()
+    this.userService.createEvaluationAdvertiser(evaluation)
+      .subscribe(result => {
+        this.reservationService.updateReservationsState(evaluation.reservationId, "Closed")
+          .subscribe(res => {
+            this.usersReservations.forEach(res => {
+              if(res.id == evaluation.reservationId){
+                res.reservationState= "Closed";
+                return;
+              }
+            });
+          });
+      });
+  }
+
+  submitEvaluationLender(evaluation: EvaluationLender) {
+    this.modalService.dismissAll()
+    this.userService.createEvaluationLender(evaluation)
+      .subscribe(result => {
+        this.reservationService.updateReservationsState(evaluation.reservationId, "Closed")
+          .subscribe(res => {
+            this.reservationsForUsersAdvertisements.forEach(res => {
+              if(res.id == evaluation.reservationId){
+                res.reservationState= "Closed";
+                return;
+              }
+            });
+          });
+      });
+  }
+
+  open(content: any, res: IReservationDetail) {
+    console.log("open dialog");
+    console.log(res);
+
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.catch((res) => {});
   }
 }

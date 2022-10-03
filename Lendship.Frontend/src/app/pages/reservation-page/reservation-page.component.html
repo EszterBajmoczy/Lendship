@@ -26,7 +26,24 @@
                   <button class="btn btn-info btn-x-sm p-1" (click)="decline(res.id)">Decline</button>
                 </div>
                 <div *ngIf="res.reservationState === 'Accepted'">
-                  <button class="btn btn-success btn-x-sm p-1" (click)="close(res.id)">Close</button>
+                  <button class="btn btn-success btn-x-sm p-1" (click)="open(evaluationPopUp, res)">Close</button>
+                  <div>
+                    <ng-template #evaluationPopUp let-modal>
+                      <div class="modal-header">
+                        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+                      </div>
+                      <div class="modal-body d-flex justify-content-center">
+                        <app-evaluation-popup class="w-100"
+                                              [userTo] = res.advertisement.user
+                                              [advertisementId] = res.advertisement.id
+                                              [reservationId] = res.id
+                                              [isLender] = false
+                                              (evaluationAdvertiser)="submitEvaluationAdvertiser($event)"
+                                              (evaluationLender)="submitEvaluationLender($event)">
+                        </app-evaluation-popup>
+                      </div>
+                    </ng-template>
+                  </div>
                 </div>
                 <div *ngIf="res.reservationState === 'Declined'">
                   <p class="small-font">Declined</p>
@@ -64,7 +81,24 @@
                   <button class="btn btn-info btn-x-sm p-1" (click)="decline(res.id)">Decline</button>
                 </div>
                 <div *ngIf="res.reservationState === 'Accepted'">
-                  <button class="btn btn-success btn-x-sm p-1" (click)="close(res.id)">Close</button>
+                  <button class="btn btn-success btn-x-sm p-1" (click)="open(evaluationPopUp, res)">Close</button>
+                  <div>
+                    <ng-template #evaluationPopUp let-modal>
+                      <div class="modal-header">
+                        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+                      </div>
+                      <div class="modal-body d-flex justify-content-center">
+                        <app-evaluation-popup class="w-100"
+                                              [userTo] = res.advertisement.user
+                                              [advertisementId] = res.id
+                                              [reservationId] = res.id
+                                              [isLender] = false
+                                              (evaluationAdvertiser)="submitEvaluationAdvertiser($event)"
+                                              (evaluationLender)="submitEvaluationLender($event)">
+                        </app-evaluation-popup>
+                      </div>
+                    </ng-template>
+                  </div>
                 </div>
                 <div *ngIf="res.reservationState === 'Declined'">
                   <p class="small-font">Declined</p>
@@ -93,7 +127,7 @@
     <i [hidden]="showReservationsForUser" class="fa fa-angle-right m-1 fa-lg"></i>
     <i [hidden]="!showReservationsForUser" class="fa fa-angle-down m-1 fa-lg"></i>
   </button>
-  <div *ngIf="loadingReservationsForUser" class="d-flex justify-content-center">
+  <div *ngIf="loadingReservationsForUser && showReservationsForUser" class="d-flex justify-content-center">
     <div class="spinner-border m-2" role="status">
       <span class="sr-only">Loading...</span>
     </div>
@@ -132,7 +166,24 @@
           <button class="btn btn-info btn-sm m-1 w-100" (click)="decline(res.id)">Decline</button>
         </div>
         <div *ngIf="res.reservationState === 'Accepted'">
-          <button class="btn btn-success btn-sm m-1 w-100" (click)="close(res.id)">Close</button>
+          <button class="btn btn-success btn-sm m-1 w-100" (click)="open(evaluationPopUp, res)">Close</button>
+          <div>
+            <ng-template #evaluationPopUp let-modal>
+              <div class="modal-header">
+                <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+              </div>
+              <div class="modal-body d-flex justify-content-center">
+                <app-evaluation-popup class="w-100"
+                                      [userTo] = res.user
+                                      [advertisementId] = res.advertisement.id
+                                      [reservationId] = res.id
+                                      [isLender] = false
+                                      (evaluationAdvertiser)="submitEvaluationAdvertiser($event)"
+                                      (evaluationLender)="submitEvaluationLender($event)">
+                </app-evaluation-popup>
+              </div>
+            </ng-template>
+          </div>
         </div>
         <div *ngIf="res.reservationState === 'Declined'">
           <p>Declined</p>
@@ -153,7 +204,7 @@
     <i [hidden]="!showUsers" class="fa fa-angle-down m-1 fa-lg"></i>
   </button>
 
-  <div *ngIf="loadingUsersReservations" class="d-flex justify-content-center">
+  <div *ngIf="loadingUsersReservations && showUsers" class="d-flex justify-content-center">
     <div class="spinner-border m-2" role="status">
       <span class="sr-only">Loading...</span>
     </div>
@@ -178,7 +229,24 @@
           <button class="btn btn-info btn-sm m-1 w-100" (click)="resign(res.id)">Resign</button>
         </div>
         <div *ngIf="res.reservationState === 'Accepted'">
-          <button class="btn btn-success btn-sm m-1 w-100" (click)="close(res.id)">Close</button>
+          <button class="btn btn-success btn-sm m-1 w-100" (click)="open(evaluationPopUp, res)">Close</button>
+          <div>
+            <ng-template #evaluationPopUp let-modal>
+              <div class="modal-header">
+                <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+              </div>
+              <div class="modal-body d-flex justify-content-center">
+                <app-evaluation-popup class="w-100"
+                                      [userTo] = res.advertisement.user
+                                      [advertisementId] = res.advertisement.id
+                                      [reservationId] = res.id
+                                      [isLender] = false
+                                      (evaluationAdvertiser)="submitEvaluationAdvertiser($event)"
+                                      (evaluationLender)="submitEvaluationLender($event)">
+                </app-evaluation-popup>
+              </div>
+            </ng-template>
+          </div>
         </div>
         <div *ngIf="res.reservationState === 'Declined'">
           <p>Declined</p>

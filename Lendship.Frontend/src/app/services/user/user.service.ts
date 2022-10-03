@@ -6,6 +6,7 @@ import { UserDetail } from "../../models/user-detail";
 import { GeocodingService} from "../geocoding/geocoding.service";
 import {EvaluationAdvertiser, EvaluationLender} from "../../models/evaluations";
 import {environment} from "../../../environments/environment";
+import {IEvaluationAdvertiser, IEvaluationLender} from "../../models/evaluation";
 
 @Injectable({
   providedIn: 'root'
@@ -35,8 +36,16 @@ export class UserService {
     return this.http.get<EvaluationAdvertiser[]>(this.baseUrl + "EvaluationAdvertiser/" + id, { headers: this.headers});
   }
 
+  createEvaluationAdvertiser(evaluation: IEvaluationAdvertiser): Observable<any>{
+    return this.http.post(this.baseUrl + "EvaluationAdvertiser/" + evaluation.userTo.id, evaluation, { headers: this.headers});
+  }
+
   getEvaluationLenderUser(id: string): Observable<EvaluationLender[]>{
-    return this.http.get<EvaluationLender[]>(this.baseUrl + "/EvaluationLender/" + id, { headers: this.headers});
+    return this.http.get<EvaluationLender[]>(this.baseUrl + "EvaluationLender/" + id, { headers: this.headers});
+  }
+
+  createEvaluationLender(evaluation: IEvaluationLender): Observable<any>{
+    return this.http.post(this.baseUrl + "EvaluationLender/" + evaluation.userTo.id, evaluation, { headers: this.headers});
   }
 
   setLocation(user: UserDetail): UserDetail{

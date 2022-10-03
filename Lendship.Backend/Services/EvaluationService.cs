@@ -2,7 +2,6 @@
 using Lendship.Backend.DTO;
 using Lendship.Backend.Exceptions;
 using Lendship.Backend.Interfaces.Converters;
-using Lendship.Backend.Interfaces.EvaluationCalcuting;
 using Lendship.Backend.Interfaces.Services;
 using Lendship.Backend.Models;
 using Microsoft.AspNetCore.Http;
@@ -17,6 +16,7 @@ namespace Lendship.Backend.Services
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly LendshipDbContext _dbContext;
+
         private readonly IEvaluationAdvertiserConverter _advertiserConverter;
         private readonly IEvaluationLenderConverter _lenderConverter;
         private readonly IReputationCalculatorService _reputationCalculator;

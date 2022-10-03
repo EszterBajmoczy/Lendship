@@ -35,6 +35,12 @@ namespace Lendship.Backend.DTO
         public int? Id { get; set; }
 
         /// <summary>
+        /// Gets or Sets User
+        /// </summary>        
+        [DataMember(Name = "user")]
+        public UserDto User { get; set; }
+
+        /// <summary>
         /// Gets or Sets Title
         /// </summary>
         [Required]
@@ -97,6 +103,7 @@ namespace Lendship.Backend.DTO
             var sb = new StringBuilder();
             sb.Append("class Advertisement {\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
+            sb.Append("  User: ").Append(User).Append("\n");
             sb.Append("  Title: ").Append(Title).Append("\n");
             sb.Append("  Price: ").Append(Price).Append("\n");
             sb.Append("  Credit: ").Append(Credit).Append("\n");
@@ -144,7 +151,12 @@ namespace Lendship.Backend.DTO
                     Id == other.Id ||
                     Id != null &&
                     Id.Equals(other.Id)
-                ) && 
+                ) &&
+                (
+                    User == other.User ||
+                    User != null &&
+                    User.Equals(other.User)
+                ) &&
                 (
                     Title == other.Title ||
                     Title != null &&

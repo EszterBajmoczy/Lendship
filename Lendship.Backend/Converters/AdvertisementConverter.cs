@@ -7,11 +7,19 @@ namespace Lendship.Backend.Converters
 {
     public class AdvertisementConverter : IAdvertisementConverter
     {
+        private IUserConverter _userConverter;
+
+        public AdvertisementConverter(IUserConverter userConverter)
+        {
+            _userConverter = userConverter;
+        }
+
         public AdvertisementDto ConvertToDto(Advertisement ad)
         {
             return new AdvertisementDto
             {
                 Id = ad.Id,
+                User = ad.User != null ? _userConverter.ConvertToDto(ad.User) : null,
                 Title = ad.Title,
                 Price = ad.Price,
                 Credit = ad.Credit,

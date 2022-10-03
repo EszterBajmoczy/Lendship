@@ -35,7 +35,7 @@ namespace Lendship.Backend.Services
 
             //TODO inject converters!!
             _adDetailsConverter = new AdvertisementDetailsConverter(new UserConverter(), new AvailabilityConverter());
-            _adConverter = new AdvertisementConverter();
+            _adConverter = new AdvertisementConverter(new UserConverter());
             _availabilityConverter = new AvailabilityConverter();
         }
 

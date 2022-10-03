@@ -44,7 +44,7 @@ export class ReservationService {
   updateReservationsState(resId: number, state: string) {
     let queryString = "?reservationId=" + resId + "&state=" + state;
 
-    return this.http.post(this.baseUrl + "state" + queryString, { headers: this.headers});
+    return this.http.post(this.baseUrl + "state/" + queryString, { headers: this.headers});
   }
 
   admitReservation(resId: number){
