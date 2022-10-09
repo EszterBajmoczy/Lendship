@@ -4,6 +4,7 @@ import {ActivatedRoute} from "@angular/router";
 import {UserService} from "../../services/user/user.service";
 import {UserDetail} from "../../models/user-detail";
 import {AuthService} from "../../services/auth/auth.service";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-profile-page',
@@ -11,6 +12,7 @@ import {AuthService} from "../../services/auth/auth.service";
   styleUrls: ['./profile-page.component.scss']
 })
 export class ProfilePageComponent implements OnInit {
+  baseUrl = environment.baseUrl;
   image
   user: UserDetail | undefined;
 
@@ -43,8 +45,8 @@ export class ProfilePageComponent implements OnInit {
 
   loadAdvertiserEvaluations(){
     this.showAdvertiserEvaluations = !this.showAdvertiserEvaluations;
-    if(this.evaluationsAdvertiser === undefined){
-      this.userService.getEvaluationAdvertiserUser(this.user?.id ?? "")
+    if(this.evaluationsAdvertiser === undefined && this.user !== undefined){
+      this.userService.getEvaluationAdvertiserUser(this.user.id)
         .subscribe(evaluations => {
           console.log(evaluations);
           this.evaluationsAdvertiser = evaluations;
@@ -54,9 +56,9 @@ export class ProfilePageComponent implements OnInit {
 
   loadLenderEvaluations(){
     this.showLenderEvaluations = !this.showLenderEvaluations;
-    if(this.evaluationsLender === undefined) {
+    if(this.evaluationsLender === undefined && this.user !== undefined) {
       console.log(this.user?.id);
-      this.userService.getEvaluationLenderUser(this.user?.id ?? "")
+      this.userService.getEvaluationLenderUser(this.user.id)
         .subscribe(evaluations => {
           console.log(evaluations);
           this.evaluationsLender = evaluations;

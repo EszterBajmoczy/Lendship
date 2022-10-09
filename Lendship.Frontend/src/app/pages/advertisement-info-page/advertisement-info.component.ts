@@ -9,6 +9,7 @@ import {AuthService} from "../../services/auth/auth.service";
 import {Conversation} from "../../models/conversation";
 import {ConversationService} from "../../services/conversation/conversation.service";
 import {Message} from "../../models/message";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-advertisement-info-page',
@@ -16,6 +17,7 @@ import {Message} from "../../models/message";
   styleUrls: ['./advertisement-info.component.scss']
 })
 export class AdvertisementInfoComponent implements OnInit {
+  baseUrl = environment.baseUrl
   id: number = -1;
   ad: AdvertisementDetail | undefined;
   isOwnAdvertisement: boolean = false;

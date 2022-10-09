@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AdvertisementService} from "../../services/advertisement/advertisement.service";
 import { Advertisement } from "../../models/advertisement";
 import { Router} from "@angular/router";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-advertisements-page',
@@ -9,6 +10,7 @@ import { Router} from "@angular/router";
   styleUrls: ['./advertisements-page.component.scss']
 })
 export class AdvertisementsPageComponent implements OnInit {
+  baseUrl = environment.baseUrl;
   ownAds: Advertisement[] | undefined;
   savedAds: Advertisement[] | undefined;
 

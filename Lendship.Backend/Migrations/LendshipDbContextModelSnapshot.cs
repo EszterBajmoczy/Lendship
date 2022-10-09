@@ -27,6 +27,15 @@ namespace Lendship.Backend.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<double>("AdvertiserFlexibility")
+                        .HasColumnType("float");
+
+                    b.Property<double>("AdvertiserQualityOfProduct")
+                        .HasColumnType("float");
+
+                    b.Property<double>("AdvertiserReliability")
+                        .HasColumnType("float");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -44,14 +53,14 @@ namespace Lendship.Backend.Migrations
                     b.Property<bool>("EmailNotificationsEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<decimal>("EvaluationAsAdvertiser")
-                        .HasColumnType("decimal(9,6)");
+                    b.Property<double>("EvaluationAsAdvertiser")
+                        .HasColumnType("float");
 
                     b.Property<int>("EvaluationAsAdvertiserCount")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("EvaluationAsLender")
-                        .HasColumnType("decimal(9,6)");
+                    b.Property<double>("EvaluationAsLender")
+                        .HasColumnType("float");
 
                     b.Property<int>("EvaluationAsLenderCount")
                         .HasColumnType("int");
@@ -60,7 +69,17 @@ namespace Lendship.Backend.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Latitude")
+                        .HasPrecision(8)
                         .HasColumnType("decimal(8,6)");
+
+                    b.Property<double>("LenderFlexibility")
+                        .HasColumnType("float");
+
+                    b.Property<double>("LenderQualityAtReturn")
+                        .HasColumnType("float");
+
+                    b.Property<double>("LenderReliability")
+                        .HasColumnType("float");
 
                     b.Property<string>("Location")
                         .IsRequired()
@@ -73,6 +92,7 @@ namespace Lendship.Backend.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<decimal>("Longitude")
+                        .HasPrecision(9)
                         .HasColumnType("decimal(9,6)");
 
                     b.Property<string>("NormalizedEmail")

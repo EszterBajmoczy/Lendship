@@ -15,7 +15,7 @@ import {Advertisement} from "../../models/advertisement";
   providedIn: 'root'
 })
 export class AuthService {
-  private baseUrl: string;
+  private readonly baseUrl: string;
   private readonly JWT_TOKEN = "JWT_TOKEN";
   private readonly REFRESH_TOKEN = "REFRESH_TOKEN";
 
@@ -29,9 +29,7 @@ export class AuthService {
   }
 
   public login(userData: LoginUser) {
-    const loginCall = this.http.post<LoginResponse>(this.baseUrl + "/login",userData)
-      .pipe(
-        catchError(this.handleError));
+    const loginCall = this.http.post<LoginResponse>(this.baseUrl + "/login",userData);
 
     loginCall.subscribe(response => {
       this.saveLoginData(response)
@@ -44,9 +42,7 @@ export class AuthService {
   }
 
   public register(userData: RegisterUser) {
-    const registerCall = this.http.post<LoginResponse>(this.baseUrl + "/register",userData)
-      .pipe(
-        catchError(this.handleError));
+    const registerCall = this.http.post<LoginResponse>(this.baseUrl + "/register",userData);
 
     registerCall.subscribe(response => {
       this.saveLoginData(response)
@@ -91,6 +87,7 @@ export class AuthService {
   public logout() {
     localStorage.removeItem('ACCESS_TOKEN');
     localStorage.removeItem('REFRESH_TOKEN');
+    localStorage.removeItem('PROFILE_IMG');
     this.tokenService.removeToken();
     this.router.navigateByUrl('home');
   }
@@ -115,20 +112,5 @@ export class AuthService {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${this.getAccessToken()}`
     });
-  }
-
-  private handleError(error: HttpErrorResponse) {
-    console.log("Error auth");
-    if (error.status === 0) {
-      // A client-side or network error occurred. Handle it accordingly.
-      console.error('An error occurred:', error.error);
-    } else {
-      // The backend returned an unsuccessful response code.
-      // The response body may contain clues as to what went wrong.
-      console.error(
-        `Backend returned code ${error.status}, body was: `, error.error);
-    }
-    // Return an observable with a user-facing error message.
-    return throwError(() => new Error('Something bad happened; please try again later.'));
   }
 }

@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  baseUrl: "https://lendshipbackend20220920202311.azurewebsites.net/",
+  baseUrl: "https://fifty-sheep-judge-176-63-31-156.loca.lt/",
   geocodingBaseUrl: "https://maps.googleapis.com/maps/api/geocode/json",
   geocodingApiKey: "AIzaSyA6IWSb32vNokzBHBMHnl-LanAa9fU56Yc"
 };

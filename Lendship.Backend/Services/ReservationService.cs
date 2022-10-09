@@ -26,7 +26,7 @@ namespace Lendship.Backend.Services
             _dbContext = dbContext;
 
             //TODO inject converters!!
-            _reservationConverter = new ReservationConverter(new AdvertisementConverter(), new UserConverter());
+            _reservationConverter = new ReservationConverter(new AdvertisementConverter(new UserConverter()), new UserConverter());
         }
                 
         public void CreateReservation(ReservationDetailDto reservationDto, int advertisementId)
@@ -54,6 +54,7 @@ namespace Lendship.Backend.Services
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var reservations = _dbContext.Reservations
                         .Include(r => r.Advertisement)
+                        .Include(r => r.Advertisement.User)
                         .Include(a => a.Advertisement.ImageLocations)
                         .Include(r => r.User)
                         .Where(r => r.User.Id == signedInUserId)
@@ -75,8 +76,8 @@ namespace Lendship.Backend.Services
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var reservations = _dbContext.Reservations
                                     .Include(r => r.Advertisement)
-                                    .Include(a => a.Advertisement.ImageLocations)
                                     .Include(r => r.Advertisement.User)
+                                    .Include(a => a.Advertisement.ImageLocations)
                                     .Include(r => r.User)
                                     .Where(r => r.Advertisement.User.Id == signedInUserId)
                                     .ToList();
@@ -172,6 +173,7 @@ namespace Lendship.Backend.Services
                                 .AsNoTracking()
                                 .Include(r => r.User)
                                 .Include(r => r.Advertisement)
+                                .Include(r => r.Advertisement.User)
                                 .Where(r => r.Id == reservationId)
                                 .FirstOrDefault();
 
@@ -191,11 +193,6 @@ namespace Lendship.Backend.Services
             }
 
             var reservationState = GetReservationState(state);
-
-            if (reservationState == ReservationState.Closed)
-            {
-                throw new UpdateNotAllowedException("Can not set Closed state this way.");
-            }
 
             _notificationService.CreateNotification("Reservation state changed: " + reservationState, reservation, signedInUserId == reservation.User.Id ? signedInUserId : reservation.Advertisement.User.Id);
             

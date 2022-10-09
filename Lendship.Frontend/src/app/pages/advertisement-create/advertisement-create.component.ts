@@ -10,6 +10,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {FileUploadService} from "../../services/file-upload/file-upload.service";
 import {NgbDateHandlerService} from "../../services/date-handler/ngb-date-handler.service";
 import {Category} from "../../models/category";
+import {environment} from "../../../environments/environment";
 
 
 @Component({
@@ -19,6 +20,7 @@ import {Category} from "../../models/category";
   providers: [LocationValidator]
 })
 export class AdvertisementCreateComponent implements OnInit {
+  baseUrl = environment.baseUrl;
   advertisement: AdvertisementDetail | undefined;
   availabilities = Array<Availability>();
 

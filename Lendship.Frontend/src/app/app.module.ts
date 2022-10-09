@@ -21,12 +21,14 @@ import { ProfilePageComponent } from './pages/profile-page/profile-page.componen
 import { ReservationPopupComponent } from './pages/popup/reservation-popup/reservation-popup.component';
 import { CreateAdvertisementPopupComponent } from "./pages/popup/create-advertisement-popup/create-advertisement-popup.component";
 import { FileUploadComponent } from './components/common/file-upload/file-upload/file-upload.component';
-import { TokenInterceptor } from "./interceptors/token.interceptor";
 import { ConversationsPageComponent } from './pages/conversations-page/conversations-page.component';
 import { ConversationInfoPageComponent } from './pages/conversation-info-page/conversation-info-page.component';
 import { MessagePopupComponent } from './pages/popup/message-popup/message-popup.component';
 import { ReservationPageComponent } from './pages/reservation-page/reservation-page.component';
-import {NotificationsPageComponent} from "./pages/notifications-page/notifications-page.component";
+import { NotificationsPageComponent} from "./pages/notifications-page/notifications-page.component";
+import { ErrorPageComponent} from "./pages/error-page/error-page.component";
+import {TokenInterceptor} from "./interceptors/token.interceptor";
+import {EvaluationPopupComponent} from "./pages/popup/evaluation-popup/evaluation-popup.component";
 
 @NgModule({
     declarations: [
@@ -48,6 +50,8 @@ import {NotificationsPageComponent} from "./pages/notifications-page/notificatio
         MessagePopupComponent,
         ReservationPageComponent,
         NotificationsPageComponent,
+        ErrorPageComponent,
+        EvaluationPopupComponent,
     ],
   imports: [
     BrowserModule,

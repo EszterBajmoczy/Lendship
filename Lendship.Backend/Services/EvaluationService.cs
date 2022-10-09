@@ -2,7 +2,6 @@
 using Lendship.Backend.DTO;
 using Lendship.Backend.Exceptions;
 using Lendship.Backend.Interfaces.Converters;
-using Lendship.Backend.Interfaces.EvaluationCalcuting;
 using Lendship.Backend.Interfaces.Services;
 using Lendship.Backend.Models;
 using Microsoft.AspNetCore.Http;
@@ -17,15 +16,16 @@ namespace Lendship.Backend.Services
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly LendshipDbContext _dbContext;
+
         private readonly IEvaluationAdvertiserConverter _advertiserConverter;
         private readonly IEvaluationLenderConverter _lenderConverter;
-        private readonly IEvaluationCalcuting _calcuting;
+        private readonly IReputationCalculatorService _reputationCalculator;
 
-        public EvaluationService(IHttpContextAccessor httpContextAccessor, LendshipDbContext dbContext, IEvaluationCalcuting calcuting)
+        public EvaluationService(IHttpContextAccessor httpContextAccessor, LendshipDbContext dbContext, IReputationCalculatorService reputationCalculator)
         {
             _httpContextAccessor = httpContextAccessor;
             _dbContext = dbContext;
-            _calcuting = calcuting;
+            _reputationCalculator = reputationCalculator;
 
             //TODO inject converters!!
             var userConverter = new UserConverter();
@@ -52,14 +52,9 @@ namespace Lendship.Backend.Services
 
             var evaluation = _advertiserConverter.ConvertToEntity(evaluationDto, userFrom, userTo, advertisement);
             _dbContext.EvaluationAdvertisers.Add(evaluation);
-
-            var calculated = _calcuting.calculateAdviser(evaluation.Flexibility, evaluation.Reliability, evaluation.QualityOfProduct);
-            var updatedEvaluation = _calcuting.recalculate(userTo.EvaluationAsAdvertiser, userTo.EvaluationAsAdvertiserCount, calculated);
-
-            userTo.EvaluationAsAdvertiser = updatedEvaluation;
-            userTo.EvaluationAsAdvertiserCount = userTo.EvaluationAsAdvertiserCount + 1;
-            _dbContext.Update(userTo);
             _dbContext.SaveChanges();
+
+            _reputationCalculator.RecalculateAdvertiserReputationForUser(userTo);
         }
 
         public void CreateLenderEvaluation(EvaluationLenderDto evaluationDto, string userToId)
@@ -81,14 +76,9 @@ namespace Lendship.Backend.Services
 
             var evaluation = _lenderConverter.ConvertToEntity(evaluationDto, userFrom, userTo, advertisement);
             _dbContext.EvaluationLenders.Add(evaluation);
-
-            var calculated = _calcuting.calculateLender(evaluation.Flexibility, evaluation.Reliability, evaluation.QualityAtReturn);
-            var updatedEvaluation = _calcuting.recalculate(userTo.EvaluationAsAdvertiser, userTo.EvaluationAsAdvertiserCount, calculated);
-
-            userTo.EvaluationAsAdvertiser = updatedEvaluation;
-            userTo.EvaluationAsAdvertiserCount = userTo.EvaluationAsAdvertiserCount + 1;
-            _dbContext.Update(userTo);
             _dbContext.SaveChanges();
+
+            _reputationCalculator.RecalculateLenderReputationForUser(userTo);
         }
 
         public IEnumerable<EvaluationAdvertiserDto> GetAdvertiserEvaluations(string userId)

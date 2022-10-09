@@ -14,7 +14,7 @@
   </div>
   <div *ngIf="showOwn && ownAds !== undefined" class="card-container d-flex flex-wrap justify-content-between">
     <div *ngFor="let ad of ownAds" class="card m-3" style="width: 18rem; height: 22rem" (click)="cardClicked(ad.id)">
-      <img src="https://localhost:44377/images{{ad.imageLocation}}" class="card-img-top" alt="...">
+      <img src="{{baseUrl}}images{{ad.imageLocation}}" class="card-img-top" alt="...">
       <div class="card-body">
         <h5 class="card-title">{{ad.title}}</h5>
         <div class="d-flex justify-content-between mt-4 mb-0">
@@ -37,7 +37,7 @@
   </div>
   <div *ngIf="showSaved && showSaved !== undefined" class="card-container d-flex flex-wrap justify-content-between">
     <div *ngFor="let ad of savedAds" class="card m-3" style="width: 18rem; height: 22rem" (click)="cardClicked(ad.id)">
-      <img src="https://localhost:44377/images{{ad.imageLocation}}" class="card-img-top" alt="...">
+      <img src="{{baseUrl}}images{{ad.imageLocation}}" class="card-img-top" alt="...">
       <div class="card-body">
         <h5 class="card-title">{{ad.title}}</h5>
         <div class="d-flex justify-content-between mt-4 mb-0">

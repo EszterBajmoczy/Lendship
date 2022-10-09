@@ -35,7 +35,7 @@ namespace Lendship.Backend.Services
 
             //TODO inject converters!!
             _adDetailsConverter = new AdvertisementDetailsConverter(new UserConverter(), new AvailabilityConverter());
-            _adConverter = new AdvertisementConverter();
+            _adConverter = new AdvertisementConverter(new UserConverter());
             _availabilityConverter = new AvailabilityConverter();
         }
 
@@ -48,6 +48,11 @@ namespace Lendship.Backend.Services
                 .Include(a => a.Availabilities)
                 .Where(a => a.Id == advertisementId)
                 .FirstOrDefault();
+
+            if (advertisement == null)
+            {
+                throw new AdvertisementNotFoundException("Advertisement not found.");
+            }
 
             var advertisementDto = _adDetailsConverter.ConvertToDto(advertisement);
             return advertisementDto;

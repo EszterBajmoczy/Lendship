@@ -3,12 +3,14 @@ import { AuthService} from "../../services/auth/auth.service";
 import { AdvertisementService} from "../../services/advertisement/advertisement.service";
 import { Advertisement } from "../../models/advertisement";
 import { Router } from "@angular/router";
+import {environment} from "../../../environments/environment";
 
 @Component({
   templateUrl: './home-page.component.html',
   styleUrls: ['./home-page.component.scss']
 })
 export class HomePageComponent implements OnInit {
+  baseUrl = environment.baseUrl
   isLoggedIn: boolean;
   ads: Advertisement[] | undefined;
 

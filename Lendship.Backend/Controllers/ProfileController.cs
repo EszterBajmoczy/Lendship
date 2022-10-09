@@ -51,7 +51,7 @@ namespace Lendship.Backend.Controllers
             catch (Exception e)
             {
                 Console.WriteLine("Exception at deleting profile: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at deleting profile: " + e.Message);
             }
         }
 
@@ -75,7 +75,7 @@ namespace Lendship.Backend.Controllers
             catch (Exception e)
             {
                 Console.WriteLine("Exception at geting other user's profile: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at geting other user's profile: " + e.Message);
             }
         }
 
@@ -97,7 +97,7 @@ namespace Lendship.Backend.Controllers
             catch (Exception e)
             {
                 Console.WriteLine("Exception at geting user's profile: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at geting user's profile: " + e.Message);
             }
         }
 
@@ -120,7 +120,7 @@ namespace Lendship.Backend.Controllers
             catch (Exception e)
             {
                 Console.WriteLine("Exception at updating profile: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at updating profile: " + e.Message);
             }
         }
     }

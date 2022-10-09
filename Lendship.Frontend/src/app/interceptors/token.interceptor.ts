@@ -9,6 +9,8 @@ import {BehaviorSubject, Observable, throwError, switchMap, take, filter} from '
 import {AuthService} from "../services/auth/auth.service";
 import {catchError} from "rxjs/operators";
 import {environment} from "../../environments/environment";
+import {ErrorService} from "../services/error/error.service";
+import {Router} from "@angular/router";
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
@@ -18,7 +20,9 @@ export class TokenInterceptor implements HttpInterceptor {
     null
   );
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService,
+              private errorService: ErrorService,
+              private router: Router) {}
 
   intercept(
     request: HttpRequest<any>,
@@ -35,6 +39,8 @@ export class TokenInterceptor implements HttpInterceptor {
         if (error instanceof HttpErrorResponse && error.status === 401) {
           return this.handle401Error(request, next);
         } else {
+          this.errorService.setError(error);
+          this.router.navigateByUrl('error');
           return throwError(error);
         }
       })

@@ -41,6 +41,9 @@ namespace Lendship.Backend.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<ApplicationUser>().Property(p => p.Latitude).HasColumnType("decimal(8,6)").HasPrecision(8);
+            modelBuilder.Entity<ApplicationUser>().Property(p => p.Longitude).HasColumnType("decimal(9,6)").HasPrecision(9);
+
         }
     }
 }

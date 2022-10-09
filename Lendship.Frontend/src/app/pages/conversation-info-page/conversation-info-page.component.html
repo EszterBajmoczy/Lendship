@@ -20,7 +20,7 @@
     </div>
     <div *ngFor="let msg of messages">
       <div *ngIf="msg.own" class="msg-section d-flex me-5">
-        <img src="https://localhost:44377/images/8b1b52a5-37df-4ae4-83d1-1f599566b073/11/OLASDGREFDDLLWER.jpg" class="img-msg me-2" alt="...">
+        <img *ngIf="msg.UserFrom" src="{{baseUrl}}images/profile{{msg.UserFrom.image}}" class="img-msg me-2" alt="...">
         <div>
           <p class="date p-1 mb-0">{{msg.dateString}}</p>
           <p class="msg p-3 me-5">{{msg.content}}</p>
@@ -32,7 +32,7 @@
           <p class="date p-1 mb-0 text-end">{{msg.dateString}}</p>
           <p class="msg p-3 ms-5">{{msg.content}}</p>
         </div>
-        <img src="https://localhost:44377/images/8b1b52a5-37df-4ae4-83d1-1f599566b073/11/OLASDGREFDDLLWER.jpg" class="img-msg ms-2" alt="...">
+        <img *ngIf="msg.UserFrom !== undefined" src="{{baseUrl}}/images/profile{{msg.UserFrom.image}}" class="img-msg ms-2" alt="...">
       </div>
     </div>
 
