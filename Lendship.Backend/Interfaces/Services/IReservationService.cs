@@ -19,5 +19,13 @@ namespace Lendship.Backend.Interfaces.Services
 
         IEnumerable<ReservationDto> GetReservationsForAdvertisement(int advertisementId);
 
+        IEnumerable<ReservationForAdvertisementDto> GetRecentReservationsForUser();
+
+        IEnumerable<ReservationForAdvertisementDto> GetUsersRecentReservations();
+
+        string GetReservationToken(int reservationId);
+
+        bool ValidateReservationToken(string reservationToken, bool closing);
+
     }
 }

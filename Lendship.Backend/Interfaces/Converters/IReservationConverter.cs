@@ -1,7 +1,6 @@
 ﻿using Lendship.Backend.Authentication;
 using Lendship.Backend.DTO;
 using Lendship.Backend.Models;
-using System.Collections.Generic;
 
 namespace Lendship.Backend.Interfaces.Converters
 {
@@ -13,6 +12,6 @@ namespace Lendship.Backend.Interfaces.Converters
 
         ReservationDto ConvertToDto(Reservation reservation);
 
-
+        ReservationForAdvertisementDto ConvertToReservationForAdvertisementDto(Reservation reservation);
     }
 }

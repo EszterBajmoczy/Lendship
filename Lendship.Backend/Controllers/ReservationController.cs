@@ -173,5 +173,68 @@ namespace Lendship.Backend.Controllers
                 return this.BadRequest("Exception at updating reservation: " + e.Message);
             }
         }
+
+        /// <summary>
+        /// get recent reservation names for user
+        /// </summary>
+        /// <remarks>Gets recent reservation names for user</remarks>
+        /// <response code="200"> recent reservations' names for the user</response>
+        /// <response code="400">bad request</response>
+        /// <response code="401"></response>
+        [HttpGet]
+        [Route("recentforuser")]
+        public virtual IActionResult GetRecentReservationsForUser()
+        {
+            var reservations = _reservationService.GetRecentReservationsForUser();
+            return new ObjectResult(JsonConvert.SerializeObject(reservations));
+        }
+
+        /// <summary>
+        /// get user's recent reservation names
+        /// </summary>
+        /// <remarks>Gets usere's recent reservation names</remarks>
+        /// <response code="200">user's recent reservations' names</response>
+        /// <response code="400">bad request</response>
+        /// <response code="401"></response>
+        [HttpGet]
+        [Route("usersrecent")]
+        public virtual IActionResult GetUsersRecentReservations()
+        {
+            var reservations = _reservationService.GetUsersRecentReservations();
+            return new ObjectResult(JsonConvert.SerializeObject(reservations));
+        }
+
+        /// <summary>
+        /// get reservation token
+        /// </summary>
+        /// <remarks>Gets reservation token</remarks>
+        /// <param name="reservationId">property or service</param>
+        /// <response code="200">reservation token</response>
+        /// <response code="400">bad request</response>
+        /// <response code="401"></response>
+        [HttpGet]
+        [Route("reservationtoken/{reservationId}")]
+        public virtual IActionResult GetReservationtoken([FromRoute][Required] int reservationId)
+        {
+            var token = _reservationService.GetReservationToken(reservationId);
+            return new ObjectResult(JsonConvert.SerializeObject(token));
+        }
+
+        /// <summary>
+        /// validate reservation token
+        /// </summary>
+        /// <remarks>Validate reservation token</remarks>
+        /// <param name="reservationId">property or service</param>
+        /// <param name="closing">property or service</param>
+        /// <response code="200">Validation succeeded</response>
+        /// <response code="400">bad request</response>
+        /// <response code="401"></response>
+        [HttpPost]
+        [Route("reservationtoken/{reservationId}")]
+        public virtual IActionResult ValidateReservationToken([FromRoute][Required] string reservationToken, [FromBody] bool closing)
+        {
+            var succees = _reservationService.ValidateReservationToken(reservationToken, closing);
+            return new ObjectResult(JsonConvert.SerializeObject(succees));
+        }
     }
 }

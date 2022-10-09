@@ -11,6 +11,7 @@ namespace Lendship.Backend.Models
         Accepted,
         Declined,
         Resigned,
+        Ongoing,
         Closed
     }
 
