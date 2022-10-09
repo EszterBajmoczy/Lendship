@@ -7,6 +7,7 @@ import {NgbCalendar, NgbDate, NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {NgbDateHandlerService} from "../../services/date-handler/ngb-date-handler.service";
 import {EvaluationAdvertiser, EvaluationLender} from "../../models/evaluation";
 import {UserService} from "../../services/user/user.service";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-reservation-page',
@@ -14,6 +15,7 @@ import {UserService} from "../../services/user/user.service";
   styleUrls: ['./reservation-page.component.scss']
 })
 export class ReservationPageComponent implements OnInit {
+  baseUrl = environment.baseUrl;
   loadingUsersReservations = true;
   loadingReservationsForUser = true;
 

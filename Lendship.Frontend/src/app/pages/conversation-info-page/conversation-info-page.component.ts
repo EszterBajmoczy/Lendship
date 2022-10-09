@@ -7,6 +7,7 @@ import {AdvertisementDetail} from "../../models/advertisement-detail";
 import {AuthService} from "../../services/auth/auth.service";
 import { DatePipe } from '@angular/common'
 import {FormBuilder, Validators} from "@angular/forms";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-conversation-info-page',
@@ -15,6 +16,7 @@ import {FormBuilder, Validators} from "@angular/forms";
   providers: [DatePipe]
 })
 export class ConversationInfoPageComponent implements OnInit {
+  baseUrl = environment.baseUrl
   userId: string;
   loadingMessages = true;
 
@@ -63,7 +65,7 @@ export class ConversationInfoPageComponent implements OnInit {
       this.adService.getAdvertisementDetailById(this.advertisementId)
         .subscribe((ad) => {
           this.advertisement = ad;
-          this.adImgLocation = "https://localhost:44377/images" + ad.imageLocations.pop();
+          this.adImgLocation = this.baseUrl + "images" + ad.imageLocations.pop();
         })
     });
   }

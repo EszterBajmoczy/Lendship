@@ -3,6 +3,7 @@ import { AuthService } from "../../../services/auth/auth.service";
 import { Router} from "@angular/router";
 import {NotificationService} from "../../../services/notification/notification.service";
 import {INotification} from "../../../models/notification";
+import {environment} from "../../../../environments/environment";
 
 @Component({
   selector: 'app-header',
@@ -11,6 +12,7 @@ import {INotification} from "../../../models/notification";
 })
 
 export class AppHeaderComponent {
+  baseUrl = environment.baseUrl;
   name: string = "Login";
   nameUrl: string = "login";
   image: string = "";

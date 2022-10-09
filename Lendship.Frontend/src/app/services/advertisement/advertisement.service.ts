@@ -6,7 +6,6 @@ import { AuthService } from "../auth/auth.service";
 import { AdvertisementDetail } from "../../models/advertisement-detail";
 import { environment } from "../../../environments/environment";
 import {Category} from "../../models/category";
-import {ErrorService} from "../error/error.service";
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +15,7 @@ export class AdvertisementService {
   private readonly baseUrlCategory: string;
   private readonly headers: HttpHeaders
 
-  constructor(private http: HttpClient, private authService: AuthService, private errorService: ErrorService) {
+  constructor(private http: HttpClient, private authService: AuthService) {
     this.baseUrl = environment.baseUrl + "Advertisement/";
     this.baseUrlCategory = environment.baseUrl + "Category/";
     this.headers = authService.getHeaders();

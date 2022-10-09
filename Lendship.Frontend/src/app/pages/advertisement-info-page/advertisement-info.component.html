@@ -9,7 +9,7 @@
       <div class="me-4">
         <img *ngIf="ad.user.image === undefined; else elseBlock" class="rounded-circle img-profile" style="object-fit: cover" src="https://localhost:44377/images/blank.jpg">
         <ng-template #elseBlock>
-          <img class="rounded-circle img-profile" style="object-fit: cover" src="https://localhost:44377/images/profile{{ad.user.image}}">
+          <img class="rounded-circle img-profile" style="object-fit: cover" src="{{baseUrl}}images/profile{{ad.user.image}}">
         </ng-template>
       </div>
       <div>
@@ -52,7 +52,7 @@
       </div>
 
       <div class="gallery col-4 m-4">
-        <img *ngFor="let image of ad.imageLocations" src="https://localhost:44377/images{{image}}" class="w-100">
+        <img *ngFor="let image of ad.imageLocations" src="{{baseUrl}}images{{image}}" class="w-100">
 
       </div>
     </div>

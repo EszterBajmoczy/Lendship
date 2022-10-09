@@ -4,6 +4,7 @@ import {ActivatedRoute} from "@angular/router";
 import {UserService} from "../../services/user/user.service";
 import {UserDetail} from "../../models/user-detail";
 import {AuthService} from "../../services/auth/auth.service";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-profile-page',
@@ -11,6 +12,7 @@ import {AuthService} from "../../services/auth/auth.service";
   styleUrls: ['./profile-page.component.scss']
 })
 export class ProfilePageComponent implements OnInit {
+  baseUrl = environment.baseUrl;
   image
   user: UserDetail | undefined;
 
