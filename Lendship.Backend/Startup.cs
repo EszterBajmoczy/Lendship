@@ -5,6 +5,7 @@ using Lendship.Backend.Interfaces.EvaluationCalcuting;
 using Lendship.Backend.Interfaces.Services;
 using Lendship.Backend.Models;
 using Lendship.Backend.Services;
+using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -86,12 +87,9 @@ namespace Lendship.Backend
             var serviceProvider = services.BuildServiceProvider();
 
             // Adding Authentication
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
+
+            services.AddAuthentication(CertificateAuthenticationDefaults.AuthenticationScheme)
+                .AddCertificate()
                 .AddJwtBearer(options =>
                 {
                     options.SecurityTokenValidators.Clear();

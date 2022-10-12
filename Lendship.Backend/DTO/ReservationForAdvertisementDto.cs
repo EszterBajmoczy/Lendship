@@ -111,12 +111,12 @@ namespace Lendship.Backend.DTO
         #region Operators
 #pragma warning disable 1591
 
-        public static bool operator ==(ReservationDto left, ReservationDto right)
+        public static bool operator ==(ReservationForAdvertisementDto left, ReservationForAdvertisementDto right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(ReservationDto left, ReservationDto right)
+        public static bool operator !=(ReservationForAdvertisementDto left, ReservationForAdvertisementDto right)
         {
             return !Equals(left, right);
         }
