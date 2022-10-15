@@ -2,8 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {environment} from "../../../environments/environment";
 import {ReservationService} from "../../services/reservation/reservation.service";
 import {IReservationBasic} from "../../models/reservation-basic";
-import {ZXingScannerComponent} from "@zxing/ngx-scanner";
-import { Result } from '@zxing/library';
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-qrcode',
@@ -13,14 +12,17 @@ import { Result } from '@zxing/library';
 export class QrcodeComponent implements OnInit {
   baseUrl = environment.baseUrl;
   reservations = new Array<IReservationBasic>();
-  token = "";
+  token: string | undefined;
   closing = true;
   loading = true;
 
-  scannerEnabled: boolean = true;
+  scannerEnabled: boolean = false;
   information: string = "No se ha detectado información de";
 
-  constructor(private reservationService: ReservationService)
+  error = false;
+
+  constructor(private reservationService: ReservationService,
+              private router: Router)
   {
     reservationService.getReservationBasics()
       .subscribe(result => {
@@ -34,11 +36,18 @@ export class QrcodeComponent implements OnInit {
     this.scannerEnabled = false;
     this.information = "Siker... ";
 
+    this.reservationService.validateReservationToken($event)
+      .subscribe(result => {
+        if(result){
+          this.router.navigateByUrl('home');
+        } else {
+          this.error = true;
+        }
+      });
   }
 
-  public enableScanner() {
+  public setScanner(value: boolean) {
     this.scannerEnabled = !this.scannerEnabled;
-    this.information = "enable";
   }
 
   ngOnInit(): void {

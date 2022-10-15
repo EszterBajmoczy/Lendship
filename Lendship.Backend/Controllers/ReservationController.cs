@@ -15,6 +15,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Lendship.Backend.DTO;
 using Lendship.Backend.Interfaces.Services;
+using Lendship.Backend.Models;
 
 namespace Lendship.Backend.Controllers
 {
@@ -175,32 +176,17 @@ namespace Lendship.Backend.Controllers
         }
 
         /// <summary>
-        /// get recent reservation names for user
+        /// get recent reservations
         /// </summary>
-        /// <remarks>Gets recent reservation names for user</remarks>
-        /// <response code="200"> recent reservations' names for the user</response>
+        /// <remarks>Gets recent reservations</remarks>
+        /// <response code="200"> recent reservations</response>
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpGet]
-        [Route("recentforuser")]
+        [Route("recent")]
         public virtual IActionResult GetRecentReservationsForUser()
         {
-            var reservations = _reservationService.GetRecentReservationsForUser();
-            return new ObjectResult(JsonConvert.SerializeObject(reservations));
-        }
-
-        /// <summary>
-        /// get user's recent reservation names
-        /// </summary>
-        /// <remarks>Gets usere's recent reservation names</remarks>
-        /// <response code="200">user's recent reservations' names</response>
-        /// <response code="400">bad request</response>
-        /// <response code="401"></response>
-        [HttpGet]
-        [Route("usersrecent")]
-        public virtual IActionResult GetUsersRecentReservations()
-        {
-            var reservations = _reservationService.GetUsersRecentReservations();
+            var reservations = _reservationService.GetRecentReservations();
             return new ObjectResult(JsonConvert.SerializeObject(reservations));
         }
 
@@ -213,10 +199,10 @@ namespace Lendship.Backend.Controllers
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpGet]
-        [Route("reservationtoken/{reservationId}")]
-        public virtual IActionResult GetReservationtoken([FromRoute][Required] int reservationId)
+        [Route("reservationtoken/{reservationId}/{closing}")]
+        public virtual IActionResult GetReservationtoken([FromRoute][Required] int reservationId, [FromRoute][Required] bool closing)
         {
-            var token = _reservationService.GetReservationToken(reservationId);
+            var token = _reservationService.GetReservationToken(reservationId, closing);
             return new ObjectResult(JsonConvert.SerializeObject(token));
         }
 
@@ -230,11 +216,19 @@ namespace Lendship.Backend.Controllers
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpPost]
-        [Route("reservationtoken/{reservationId}")]
-        public virtual IActionResult ValidateReservationToken([FromRoute][Required] string reservationToken, [FromBody] bool closing)
+        [Route("reservationtoken")]
+        public virtual IActionResult ValidateReservationToken([FromBody] ReservationTokenDto reservationToken)
         {
-            var succees = _reservationService.ValidateReservationToken(reservationToken, closing);
-            return new ObjectResult(JsonConvert.SerializeObject(succees));
+            try
+            {
+                var succees = _reservationService.ValidateReservationToken(reservationToken.ReservationToken);
+                return new ObjectResult(JsonConvert.SerializeObject(succees));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception at validating reservation token: " + e.Message);
+                return this.BadRequest("Exception at validating reservation token: " + e.Message);
+            }
         }
     }
 }

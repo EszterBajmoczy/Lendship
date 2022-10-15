@@ -6,7 +6,7 @@ import {Reservation} from "../../models/reservation";
 import {IAvailability} from "../../models/availability";
 import {environment} from "../../../environments/environment";
 import {IReservationDetail} from "../../models/reservation-detail";
-import {IReservationBasic} from "../../models/reservation-basic";
+import {IReservationBasic, ReservationToken} from "../../models/reservation-basic";
 
 @Injectable({
   providedIn: 'root'
@@ -62,7 +62,8 @@ export class ReservationService {
   }
 
   validateReservationToken(token: string): Observable<boolean> {
-    return this.http.post<boolean>(this.baseUrl + "reservationtoken/" + token, { headers: this.headers});
+    var data = new ReservationToken(token);
+    return this.http.post<boolean>(this.baseUrl + "reservationtoken",  data, { headers: this.headers});
   }
 
   private convertReservationDateFormats(res: IReservationDetail[]){

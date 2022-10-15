@@ -12,6 +12,6 @@ namespace Lendship.Backend.Interfaces.Converters
 
         ReservationDto ConvertToDto(Reservation reservation);
 
-        ReservationForAdvertisementDto ConvertToReservationForAdvertisementDto(Reservation reservation);
+        ReservationForAdvertisementDto ConvertToReservationForAdvertisementDto(Reservation reservation, bool isOwn);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Lendship.Backend.DTO;
+using Lendship.Backend.Models;
 using System.Collections.Generic;
 
 namespace Lendship.Backend.Interfaces.Services
@@ -19,13 +20,11 @@ namespace Lendship.Backend.Interfaces.Services
 
         IEnumerable<ReservationDto> GetReservationsForAdvertisement(int advertisementId);
 
-        IEnumerable<ReservationForAdvertisementDto> GetRecentReservationsForUser();
+        IEnumerable<ReservationForAdvertisementDto> GetRecentReservations();
 
-        IEnumerable<ReservationForAdvertisementDto> GetUsersRecentReservations();
+        string GetReservationToken(int reservationId, bool closing);
 
-        string GetReservationToken(int reservationId);
-
-        bool ValidateReservationToken(string reservationToken, bool closing);
+        bool ValidateReservationToken(string reservationToken);
 
     }
 }

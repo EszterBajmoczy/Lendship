@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PasswordMatchingValidator} from "../../shared/password-matching";
-import { FormBuilder, Validators} from "@angular/forms";
+import { UntypedFormBuilder, Validators} from "@angular/forms";
 import { AuthService} from "../../services/auth/auth.service";
 import { LocationValidator} from "../../shared/valid-location";
 import { GeocodingService} from "../../services/geocoding/geocoding.service";
@@ -14,7 +14,7 @@ import { GeocodingService} from "../../services/geocoding/geocoding.service";
 export class RegistrationPageComponent implements OnInit {
   submitting = false;
 
-  constructor(private formBuilder: FormBuilder, private authService: AuthService, private locationValidator: LocationValidator, private geoCodingService: GeocodingService) { }
+  constructor(private formBuilder: UntypedFormBuilder, private authService: AuthService, private locationValidator: LocationValidator, private geoCodingService: GeocodingService) { }
 
   ngOnInit(): void {
   }

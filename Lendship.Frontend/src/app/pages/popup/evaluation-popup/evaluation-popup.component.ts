@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormBuilder } from "@angular/forms";
+import {UntypedFormBuilder } from "@angular/forms";
 import {EvaluationAdvertiser, EvaluationLender} from "../../../models/evaluation";
 import {User} from "../../../models/user";
 
@@ -27,7 +27,7 @@ export class EvaluationPopupComponent implements OnInit {
     isAnonymous: [false]
   });
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: UntypedFormBuilder) {
   }
 
   ngOnInit(): void {

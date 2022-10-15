@@ -46,12 +46,14 @@ namespace Lendship.Backend.Converters
             };
         }
 
-        public ReservationForAdvertisementDto ConvertToReservationForAdvertisementDto(Reservation reservation)
+        public ReservationForAdvertisementDto ConvertToReservationForAdvertisementDto(Reservation reservation, bool isOwn)
         {
             return new ReservationForAdvertisementDto
             {
                 ReservationId = reservation.Id,
-                AdvertisementName = reservation.Advertisement.Title
+                AdvertisementName = reservation.Advertisement.Title,
+                IsOwn = isOwn,
+                Dates = reservation.DateFrom.ToShortDateString() + "-" + reservation.DateTo.ToShortDateString()
             };
         }
 

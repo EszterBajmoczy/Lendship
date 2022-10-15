@@ -1,5 +1,9 @@
 @import "src/styles/forms";
 
+h3 {
+  color: $color-success;
+}
+
 .notOwn {
   opacity: 90%;
 }
@@ -9,7 +13,6 @@
   border-radius: 0.5rem;
   color: white;
 }
-
 
 :host zxing-scanner::ng-deep video {
   max-height: 50vh;

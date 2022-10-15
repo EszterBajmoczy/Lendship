@@ -31,6 +31,7 @@ import { ErrorPageComponent} from "./pages/error-page/error-page.component";
 import {TokenInterceptor} from "./interceptors/token.interceptor";
 import {EvaluationPopupComponent} from "./pages/popup/evaluation-popup/evaluation-popup.component";
 import {QrcodeComponent} from "./pages/grcode-page/qrcode.component";
+import { QRCodeModule } from 'angularx-qrcode';
 
 @NgModule({
     declarations: [
@@ -65,6 +66,7 @@ import {QrcodeComponent} from "./pages/grcode-page/qrcode.component";
     NgbModule,
     AutocompleteLibModule,
     ZXingScannerModule,
+    QRCodeModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }

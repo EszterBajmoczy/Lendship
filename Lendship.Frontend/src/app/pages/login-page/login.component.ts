@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators} from "@angular/forms";
+import { UntypedFormBuilder, Validators} from "@angular/forms";
 import { Router } from '@angular/router';
 import { AuthService} from "../../services/auth/auth.service";
 
@@ -14,7 +14,7 @@ import { AuthService} from "../../services/auth/auth.service";
 export class LoginComponent implements OnInit {
   submitting = false;
 
-  constructor(private formBuilder: FormBuilder, private authService: AuthService, private router: Router ) {
+  constructor(private formBuilder: UntypedFormBuilder, private authService: AuthService, private router: Router ) {
   }
 
   ngOnInit(): void {

@@ -90,7 +90,7 @@
         <div class="modal-body d-flex justify-content-center">
           <app-message-popup class="w-100"
             [advertisementId] = id
-            [advertisementName] = ad?.title
+            [advertisementName] = ad.title
             (msg)="msg($event)"
             (conversationId)="getConversationId($event)">
           </app-message-popup>

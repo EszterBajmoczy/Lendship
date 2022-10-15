@@ -204,6 +204,18 @@ namespace Lendship.Backend.Services
             _dbContext.SaveChanges();
         }
 
+        private void UpdateReservationState(Reservation reservation, string state, string signedInUserId)
+        {
+            var reservationState = GetReservationState(state);
+
+            _notificationService.CreateNotification("Reservation state changed: " + reservationState, reservation, signedInUserId == reservation.User.Id ? signedInUserId : reservation.Advertisement.User.Id);
+
+            reservation.ReservationState = reservationState;
+
+            _dbContext.Update(reservation);
+            _dbContext.SaveChanges();
+        }
+
         public IEnumerable<ReservationDto> GetReservationsForAdvertisement(int advertisementId)
         {
             var resultList = new List<ReservationDto>();
@@ -222,34 +234,25 @@ namespace Lendship.Backend.Services
             return resultList;
         }
 
-        public IEnumerable<ReservationForAdvertisementDto> GetRecentReservationsForUser()
+        public IEnumerable<ReservationForAdvertisementDto> GetRecentReservations()
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var begin = DateTime.UtcNow.AddDays(-5);
+            var end = DateTime.UtcNow.AddDays(5);
 
             var reservations = _dbContext.Reservations
                                 .Include(r => r.Advertisement)
                                 .Include(r => r.Advertisement.User)
-                                .Where(r => r.Advertisement.User.Id == signedInUserId)
-                                .Select(r => _reservationConverter.ConvertToReservationForAdvertisementDto(r))
+                                .Where(r => (r.Advertisement.User.Id == signedInUserId || r.User.Id == signedInUserId) && r.ReservationState != ReservationState.Closed
+                                        && ((r.DateFrom > begin && r.DateFrom < end) || (r.DateTo > begin && r.DateTo < end)))
+                                .Select(r => _reservationConverter.ConvertToReservationForAdvertisementDto(r, true))
                                 .ToList();
+
+
             return reservations;
         }
 
-        public IEnumerable<ReservationForAdvertisementDto> GetUsersRecentReservations()
-        {
-            var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            var reservations = _dbContext.Reservations
-                                .Include(r => r.User)
-                                .Include(r => r.Advertisement)
-                                .Where(r => r.User.Id == signedInUserId && r.ReservationState != ReservationState.Closed)
-                                .OrderBy(r => r.DateFrom)
-                                .Select(r => _reservationConverter.ConvertToReservationForAdvertisementDto(r))
-                                .ToList();
-            return reservations;
-        }
-
-        public string GetReservationToken(int reservationId)
+        public string GetReservationToken(int reservationId, bool closing)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -269,6 +272,13 @@ namespace Lendship.Backend.Services
             }
 
             var builder = new StringBuilder();
+            if (closing)
+            {
+                builder.Append(1);
+            } else
+            {
+                builder.Append(0);
+            }
             builder.Append(reservation.Id);
             builder.Append('-');
             builder.Append(signedInUserId);
@@ -278,7 +288,7 @@ namespace Lendship.Backend.Services
             return builder.ToString();
         }
 
-        public bool ValidateReservationToken(string reservationToken, bool closing)
+        public bool ValidateReservationToken(string reservationToken)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -290,12 +300,14 @@ namespace Lendship.Backend.Services
                 return false;
             }
 
-            var reservationId = int.Parse(reservationToken.Substring(0, indexFirst));
+            var closing = int.Parse(reservationToken.Substring(0, 1));
+            var reservationId = int.Parse(reservationToken.Substring(1, indexFirst-1));
             var userId = reservationToken.Substring(indexFirst + 1, indexLast - indexFirst-1);
-            var time = int.Parse(reservationToken.Substring(indexLast + 1 , reservationToken.Length - indexLast - 1));
+            var time = long.Parse(reservationToken.Substring(indexLast + 1 , reservationToken.Length - indexLast - 1));
             var nowInTicks = DateTime.UtcNow.Ticks;
 
             var reservation = _dbContext.Reservations
+                                .AsNoTracking()
                                 .Include(r => r.User)
                                 .Include(r => r.Advertisement)
                                 .Include(r => r.Advertisement.User)
@@ -309,12 +321,12 @@ namespace Lendship.Backend.Services
                 return false;
             }
 
-            if (closing)
+            if (closing == 1)
             {
-                UpdateReservationState(reservation.Id, "Closed");
+                UpdateReservationState(reservation, "Closed", signedInUserId);
             } else
             {
-                UpdateReservationState(reservation.Id, "Ongoing");
+                UpdateReservationState(reservation, "Ongoing", signedInUserId);
             }
 
             return true;

@@ -21,41 +21,20 @@ namespace Lendship.Backend.DTO
     /// 
     /// </summary>
     [DataContract]
-    public partial class ReservationForAdvertisementDto : IEquatable<ReservationForAdvertisementDto>
+    public partial class ReservationTokenDto : IEquatable<ReservationTokenDto>
     {
         /// <summary>
-        /// Gets or Sets ReservationId
+        /// Gets or Sets ReservationToken
         /// </summary>
 
-        [DataMember(Name="reservationId")]
-        public int? ReservationId { get; set; }
-
-        /// <summary>
-        /// Gets or Sets AdvertisementName
-        /// </summary>        
-        [DataMember(Name="advertisementName")]
-        public string AdvertisementName { get; set; }
-
-        /// <summary>
-        /// Gets or Sets IsOwn
-        /// </summary>        
-        [DataMember(Name = "isOwn")]
-        public bool IsOwn { get; set; }
-
-        /// <summary>
-        /// Gets or Sets Dates
-        /// </summary>        
-        [DataMember(Name = "dates")]
-        public string Dates { get; set; }
+        [DataMember(Name="reservationToken")]
+        public string ReservationToken { get; set; }
 
         public override string ToString()
         {
             var sb = new StringBuilder();
             sb.Append("class Reservation {\n");
-            sb.Append("  ReservationId: ").Append(ReservationId).Append("\n");
-            sb.Append("  AdvertisementName: ").Append(AdvertisementName).Append("\n");
-            sb.Append("  IsOwn: ").Append(IsOwn).Append("\n");
-            sb.Append("  Dates: ").Append(Dates).Append("\n");
+            sb.Append("  ReservationToken: ").Append(ReservationToken).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -86,31 +65,16 @@ namespace Lendship.Backend.DTO
         /// </summary>
         /// <param name="other">Instance of Reservation to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(ReservationForAdvertisementDto other)
+        public bool Equals(ReservationTokenDto other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
 
             return 
                 (
-                    ReservationId == other.ReservationId ||
-                    ReservationId != null &&
-                    ReservationId.Equals(other.ReservationId)
-                ) && 
-                (
-                    AdvertisementName == other.AdvertisementName ||
-                    AdvertisementName != null &&
-                    AdvertisementName.Equals(other.AdvertisementName)
-                ) &&
-                (
-                    IsOwn == other.IsOwn ||
-                    IsOwn != null &&
-                    IsOwn.Equals(other.IsOwn)
-                ) &&
-                (
-                    Dates == other.Dates ||
-                    Dates != null &&
-                    Dates.Equals(other.Dates)
+                    ReservationToken == other.ReservationToken ||
+                    ReservationToken != null &&
+                    ReservationToken.Equals(other.ReservationToken)
                 );
         }
 
@@ -124,14 +88,8 @@ namespace Lendship.Backend.DTO
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                    if (ReservationId != null)
-                    hashCode = hashCode * 59 + ReservationId.GetHashCode();
-                    if (AdvertisementName != null)
-                    hashCode = hashCode * 59 + AdvertisementName.GetHashCode();
-                    if (IsOwn != null)
-                    hashCode = hashCode * 59 + IsOwn.GetHashCode();
-                    if (Dates != null)
-                    hashCode = hashCode * 59 + Dates.GetHashCode();
+                    if (ReservationToken != null)
+                    hashCode = hashCode * 59 + ReservationToken.GetHashCode();
                 return hashCode;
             }
         }
@@ -139,12 +97,12 @@ namespace Lendship.Backend.DTO
         #region Operators
 #pragma warning disable 1591
 
-        public static bool operator ==(ReservationForAdvertisementDto left, ReservationForAdvertisementDto right)
+        public static bool operator ==(ReservationTokenDto left, ReservationTokenDto right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(ReservationForAdvertisementDto left, ReservationForAdvertisementDto right)
+        public static bool operator !=(ReservationTokenDto left, ReservationTokenDto right)
         {
             return !Equals(left, right);
         }
