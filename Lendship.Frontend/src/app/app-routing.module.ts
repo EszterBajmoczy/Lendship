@@ -12,6 +12,7 @@ import {ConversationInfoPageComponent} from "./pages/conversation-info-page/conv
 import {ReservationPageComponent} from "./pages/reservation-page/reservation-page.component";
 import {NotificationsPageComponent} from "./pages/notifications-page/notifications-page.component";
 import {ErrorPageComponent} from "./pages/error-page/error-page.component";
+import {QrcodeComponent} from "./pages/grcode-page/qrcode.component";
 
 const routes: Routes = [
   {
@@ -70,6 +71,10 @@ const routes: Routes = [
   {
     path: 'error',
     component: ErrorPageComponent
+  },
+  {
+    path: 'qrcode',
+    component: QrcodeComponent
   }
 ];
 

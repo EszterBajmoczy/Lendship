@@ -6,6 +6,7 @@ import {Reservation} from "../../models/reservation";
 import {IAvailability} from "../../models/availability";
 import {environment} from "../../../environments/environment";
 import {IReservationDetail} from "../../models/reservation-detail";
+import {IReservationBasic} from "../../models/reservation-basic";
 
 @Injectable({
   providedIn: 'root'
@@ -49,6 +50,19 @@ export class ReservationService {
 
   admitReservation(resId: number){
     return this.http.post(this.baseUrl + "admit/" + resId, { headers: this.headers});
+  }
+
+  getReservationBasics(): Observable<IReservationBasic[]> {
+    console.log(this.baseUrl + "recent")
+    return this.http.get<IReservationBasic[]>(this.baseUrl + "recent", { headers: this.headers});
+  }
+
+  getReservationToken(resId: number, closing: boolean): Observable<string> {
+    return this.http.get<string>(this.baseUrl + "reservationtoken/" + resId + "/" + closing, { headers: this.headers});
+  }
+
+  validateReservationToken(token: string): Observable<boolean> {
+    return this.http.post<boolean>(this.baseUrl + "reservationtoken/" + token, { headers: this.headers});
   }
 
   private convertReservationDateFormats(res: IReservationDetail[]){
