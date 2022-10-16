@@ -47,7 +47,7 @@ namespace Lendship.Backend.Controllers
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = model.Name,
-                Credit = 0,
+                Credit = 1000,
                 EmailNotificationsEnabled = true,
                 Latitude = model.Latitude,
                 Longitude = model.Longitude,

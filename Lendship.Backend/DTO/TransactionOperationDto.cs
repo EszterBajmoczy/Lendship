@@ -13,7 +13,6 @@ using System.Text;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
-using static Lendship.Backend.DTO.ReservationDetailDto;
 
 namespace Lendship.Backend.DTO
 {
@@ -21,14 +20,38 @@ namespace Lendship.Backend.DTO
     /// 
     /// </summary>
     [DataContract]
-    public partial class ReservationTokenDto : IEquatable<ReservationTokenDto>
+    public partial class TransactionOperationDto : IEquatable<TransactionOperationDto>
     {
         /// <summary>
-        /// Gets or Sets ReservationToken
+        /// Gets or Sets Succeeded
         /// </summary>
 
-        [DataMember(Name="reservationToken")]
-        public string ReservationToken { get; set; }
+        [DataMember(Name= "succeeded")]
+        public bool Succeeded { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Operation
+        /// </summary>
+        [Required]
+        
+        [DataMember(Name="operation")]
+        public string Operation { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Credit
+        /// </summary>
+        [Required]
+
+        [DataMember(Name = "credit")]
+        public int Credit { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Message
+        /// </summary>
+        [Required]
+
+        [DataMember(Name = "message")]
+        public string Message { get; set; }
 
         /// <summary>
         /// Gets or Sets OtherUser
@@ -54,11 +77,18 @@ namespace Lendship.Backend.DTO
         [DataMember(Name = "isLender")]
         public bool IsLender { get; set; }
 
+        /// <summary>
+        /// Returns the string presentation of the object
+        /// </summary>
+        /// <returns>String presentation of the object</returns>
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class Reservation {\n");
-            sb.Append("  ReservationToken: ").Append(ReservationToken).Append("\n");
+            sb.Append("class TransferOperation {\n");
+            sb.Append("  Succeeded: ").Append(Succeeded).Append("\n");
+            sb.Append("  Operation: ").Append(Operation).Append("\n");
+            sb.Append("  Credit: ").Append(Credit).Append("\n");
+            sb.Append("  Message: ").Append(Message).Append("\n");
             sb.Append("  OtherUser: ").Append(OtherUser).Append("\n");
             sb.Append("  ReservationId: ").Append(ReservationId).Append("\n");
             sb.Append("  AdvertisementId: ").Append(AdvertisementId).Append("\n");
@@ -85,37 +115,56 @@ namespace Lendship.Backend.DTO
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((ReservationForAdvertisementDto)obj);
+            return obj.GetType() == GetType() && Equals((CategoryDto)obj);
         }
 
         /// <summary>
-        /// Returns true if Reservation instances are equal
+        /// Returns true if Advertisement instances are equal
         /// </summary>
-        /// <param name="other">Instance of Reservation to be compared</param>
+        /// <param name="other">Instance of Advertisement to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(ReservationTokenDto other)
+        public bool Equals(TransactionOperationDto other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
 
             return 
                 (
-                    ReservationToken == other.ReservationToken ||
-                    ReservationToken != null &&
-                    ReservationToken.Equals(other.ReservationToken)
-                ) && (
+                    Succeeded == other.Succeeded ||
+                    Succeeded != null &&
+                    Succeeded.Equals(other.Succeeded)
+                ) && 
+                (
+                    Operation == other.Operation ||
+                    Operation != null &&
+                    Operation.Equals(other.Operation)
+                ) &&
+                (
+                    Credit == other.Credit ||
+                    Credit != null &&
+                    Credit.Equals(other.Credit)
+                ) &&
+                (
+                    Message == other.Message ||
+                    Message != null &&
+                    Message.Equals(other.Message)
+                ) &&
+                (
                     OtherUser == other.OtherUser ||
                     OtherUser != null &&
                     OtherUser.Equals(other.OtherUser)
-                ) && (
+                ) &&
+                (
                     ReservationId == other.ReservationId ||
                     ReservationId != null &&
                     ReservationId.Equals(other.ReservationId)
-                ) && (
+                ) &&
+                (
                     AdvertisementId == other.AdvertisementId ||
                     AdvertisementId != null &&
                     AdvertisementId.Equals(other.AdvertisementId)
-                ) && (
+                ) &&
+                (
                     IsLender == other.IsLender ||
                     IsLender != null &&
                     IsLender.Equals(other.IsLender)
@@ -132,29 +181,35 @@ namespace Lendship.Backend.DTO
             {
                 var hashCode = 41;
                 // Suitable nullity checks etc, of course :)
-                if (ReservationToken != null)
-                    hashCode = hashCode * 59 + ReservationToken.GetHashCode();
+                if (Succeeded != null)
+                hashCode = hashCode * 59 + Succeeded.GetHashCode();
+                if (Operation != null)
+                hashCode = hashCode * 59 + Operation.GetHashCode();
+                if (Credit != null)
+                hashCode = hashCode * 59 + Credit.GetHashCode();
+                if (Message != null)
+                hashCode = hashCode * 59 + Message.GetHashCode();
                 if (OtherUser != null)
-                    hashCode = hashCode * 59 + OtherUser.GetHashCode();
+                hashCode = hashCode * 59 + OtherUser.GetHashCode();
                 if (ReservationId != null)
-                    hashCode = hashCode * 59 + ReservationId.GetHashCode();
+                hashCode = hashCode * 59 + ReservationId.GetHashCode();
                 if (AdvertisementId != null)
-                    hashCode = hashCode * 59 + AdvertisementId.GetHashCode();
+                hashCode = hashCode * 59 + AdvertisementId.GetHashCode();
                 if (IsLender != null)
-                    hashCode = hashCode * 59 + IsLender.GetHashCode();
+                hashCode = hashCode * 59 + IsLender.GetHashCode();
                 return hashCode;
             }
         }
 
         #region Operators
-#pragma warning disable 1591
+        #pragma warning disable 1591
 
-        public static bool operator ==(ReservationTokenDto left, ReservationTokenDto right)
+        public static bool operator ==(TransactionOperationDto left, TransactionOperationDto right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(ReservationTokenDto left, ReservationTokenDto right)
+        public static bool operator !=(TransactionOperationDto left, TransactionOperationDto right)
         {
             return !Equals(left, right);
         }

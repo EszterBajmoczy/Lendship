@@ -1,4 +1,5 @@
-﻿using Lendship.Backend.Converters;
+﻿using Lendship.Backend.Authentication;
+using Lendship.Backend.Converters;
 using Lendship.Backend.DTO;
 using Lendship.Backend.Exceptions;
 using Lendship.Backend.Interfaces.Converters;
@@ -20,6 +21,7 @@ namespace Lendship.Backend.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly LendshipDbContext _dbContext;
         private readonly IReservationConverter _reservationConverter;
+        private readonly IUserConverter _userConverter;
 
         public ReservationService(INotificationService notificationService, IHttpContextAccessor httpContextAccessor, LendshipDbContext dbContext)
         {
@@ -29,6 +31,7 @@ namespace Lendship.Backend.Services
 
             //TODO inject converters!!
             _reservationConverter = new ReservationConverter(new AdvertisementConverter(new UserConverter()), new UserConverter());
+            _userConverter = new UserConverter();
         }
                 
         public void CreateReservation(ReservationDetailDto reservationDto, int advertisementId)
@@ -41,6 +44,11 @@ namespace Lendship.Backend.Services
             if (advertisement == null)
             {
                 throw new AdvertisementNotFoundException("Advertisement not exists.");
+            }
+
+            if (signedInUserId == advertisement.User.Id)
+            {
+                throw new Exception("Can not make reservation for own advertisement.");
             }
 
             var reservation = _reservationConverter.ConvertToEntity(reservationDto, user, advertisement);
@@ -213,7 +221,6 @@ namespace Lendship.Backend.Services
             reservation.ReservationState = reservationState;
 
             _dbContext.Update(reservation);
-            _dbContext.SaveChanges();
         }
 
         public IEnumerable<ReservationDto> GetReservationsForAdvertisement(int advertisementId)
@@ -252,7 +259,7 @@ namespace Lendship.Backend.Services
             return reservations;
         }
 
-        public string GetReservationToken(int reservationId, bool closing)
+        public ReservationTokenDto GetReservationToken(int reservationId, bool closing)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -266,7 +273,7 @@ namespace Lendship.Backend.Services
             if (reservation == null)
             {
                 throw new ReservationNotFoundException("Reservation not found.");
-            } else if (reservation.User.Id != signedInUserId  && reservation.Advertisement.User.Id != signedInUserId)
+            } else if (reservation.User.Id != signedInUserId && reservation.Advertisement.User.Id != signedInUserId)
             {
                 throw new ReservationNotFoundException("Not authorized operation.");
             }
@@ -285,11 +292,21 @@ namespace Lendship.Backend.Services
             builder.Append('-');
             builder.Append(DateTime.UtcNow.Ticks);
 
-            return builder.ToString();
+            var result = new ReservationTokenDto()
+            {
+                ReservationToken = builder.ToString(),
+                OtherUser = _userConverter.ConvertToDto(reservation.User.Id == signedInUserId ? reservation.User : reservation.Advertisement.User),
+                ReservationId = reservation.Id,
+                AdvertisementId = reservation.Advertisement.Id,
+                IsLender = reservation.User.Id == signedInUserId ? true : false
+            };
+
+            return result;
         }
 
-        public bool ValidateReservationToken(string reservationToken)
+        public TransactionOperationDto ValidateReservationToken(string reservationToken)
         {
+            var result = new TransactionOperationDto() { Succeeded = false };
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var indexFirst = reservationToken.IndexOf('-');
@@ -297,7 +314,7 @@ namespace Lendship.Backend.Services
 
             if (indexFirst == -1)
             {
-                return false;
+                return result;
             }
 
             var closing = int.Parse(reservationToken.Substring(0, 1));
@@ -306,6 +323,7 @@ namespace Lendship.Backend.Services
             var time = long.Parse(reservationToken.Substring(indexLast + 1 , reservationToken.Length - indexLast - 1));
             var nowInTicks = DateTime.UtcNow.Ticks;
 
+            //TODO close-dok szűrése
             var reservation = _dbContext.Reservations
                                 .AsNoTracking()
                                 .Include(r => r.User)
@@ -316,20 +334,99 @@ namespace Lendship.Backend.Services
                                     && (r.User.Id == signedInUserId || r.Advertisement.User.Id == signedInUserId))
                                 .FirstOrDefault();
 
-            if (reservation == null || !(time >= DateTime.UtcNow.AddMinutes(-5).Ticks && time < DateTime.UtcNow.Ticks))
+            //if (reservation == null || !(time >= DateTime.UtcNow.AddMinutes(-5).Ticks && time < DateTime.UtcNow.Ticks))
+            if (reservation == null)
             {
-                return false;
+                return result;
             }
 
             if (closing == 1)
             {
+                TransferCredit(reservation.User, reservation.Advertisement.User, reservation.Advertisement.Credit, result);
                 UpdateReservationState(reservation, "Closed", signedInUserId);
             } else
             {
+                ReserveToken(reservation.User, reservation.Advertisement.Credit, result);
                 UpdateReservationState(reservation, "Ongoing", signedInUserId);
             }
+            _dbContext.SaveChanges();
 
-            return true;
+            result.OtherUser = _userConverter.ConvertToDto(reservation.User.Id == signedInUserId ? reservation.Advertisement.User : reservation.User);
+            result.ReservationId = reservation.Id;
+            result.AdvertisementId = reservation.Advertisement.Id;
+            result.IsLender = reservation.User.Id == signedInUserId ? true : false;
+            return result;
+        }
+
+        public bool IsReservationClosed(int reservationId)
+        {
+            return _dbContext.Reservations
+                        .Where(r => r.Id == reservationId)
+                        .Select(r => r.ReservationState == ReservationState.Closed)
+                        .FirstOrDefault();
+        }
+
+        private void TransferCredit(ApplicationUser lender, ApplicationUser advertiser, int? credit, TransactionOperationDto result)
+        {
+            result.Operation = "Close";
+
+            if (credit == null || credit != 0)
+            {
+                result.Succeeded = true;
+            }
+            else if (credit < lender.ReservedCredit)
+            {
+                lender.ReservedCredit = lender.ReservedCredit - (int)credit;
+                advertiser.Credit = advertiser.Credit + (int)credit;
+
+                result.Succeeded = true;
+                result.Credit = (int)credit;
+                result.Message = credit + " credit has been transfered.";
+            }
+            else if (credit < lender.ReservedCredit + lender.Credit)
+            {
+                var notReservedCredits = (int)credit - lender.ReservedCredit;
+                lender.ReservedCredit = 0;
+                lender.Credit = lender.Credit - notReservedCredits;
+
+                result.Succeeded = true;
+                result.Credit = (int)credit;
+                result.Message = credit + " credit has been transfered.";
+            } else
+            {
+                var allCredit = lender.ReservedCredit + lender.Credit;
+                lender.ReservedCredit = 0;
+                lender.Credit = 0;
+                advertiser.Credit = allCredit;
+
+                result.Succeeded = false;
+                result.Credit = (int)credit;
+                result.Message = "Lender does not have enough credit..., " + allCredit + " has been transfered.";
+            }
+            _dbContext.Update(lender);
+            _dbContext.Update(advertiser);
+        }
+
+        private void ReserveToken(ApplicationUser lender, int? credit, TransactionOperationDto result)
+        {
+            result.Operation = "Reserve";
+
+            if (credit > lender.Credit)
+            {
+                result.Succeeded = false;
+                result.Message = "Lender does not have enough credit!";
+            }
+
+            if (credit != null && credit != 0)
+            {
+                lender.Credit = lender.Credit - (int)credit;
+                lender.ReservedCredit = (int)credit;
+
+                result.Succeeded = true;
+                result.Credit = (int)credit;
+            }
+            result.Succeeded = true;
+            _dbContext.Update(lender);
         }
 
         private ReservationState GetReservationState(string state)

@@ -230,5 +230,29 @@ namespace Lendship.Backend.Controllers
                 return this.BadRequest("Exception at validating reservation token: " + e.Message);
             }
         }
+
+        /// <summary>
+        /// check if reservation is closed
+        /// </summary>
+        /// <remarks>Check if reservation is closed</remarks>
+        /// <param name="reservationId">property or service</param>
+        /// <response code="200">Validation succeeded</response>
+        /// <response code="400">bad request</response>
+        /// <response code="401"></response>
+        [HttpGet]
+        [Route("closed/{reservationId}")]
+        public virtual IActionResult ValidateReservationToken([FromRoute][Required] int reservationId)
+        {
+            try
+            {
+                var succees = _reservationService.IsReservationClosed(reservationId);
+                return new ObjectResult(JsonConvert.SerializeObject(succees));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception at checking if reservation is closed: " + e.Message);
+                return this.BadRequest("Exception at checking if reservation is closed: " + e.Message);
+            }
+        }
     }
 }

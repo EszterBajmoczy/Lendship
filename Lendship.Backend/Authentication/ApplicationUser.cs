@@ -11,6 +11,9 @@ namespace Lendship.Backend.Authentication
         public int Credit { get; set; }
 
         [Required]
+        public int ReservedCredit { get; set; }
+
+        [Required]
         public bool EmailNotificationsEnabled { get; set; }
 
         [Required]
