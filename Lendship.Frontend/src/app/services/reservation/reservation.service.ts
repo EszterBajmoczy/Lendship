@@ -6,7 +6,9 @@ import {Reservation} from "../../models/reservation";
 import {IAvailability} from "../../models/availability";
 import {environment} from "../../../environments/environment";
 import {IReservationDetail} from "../../models/reservation-detail";
-import {IReservationBasic, ReservationToken} from "../../models/reservation-basic";
+import {IReservationBasic} from "../../models/reservation-basic";
+import {ITransactionOperation} from "../../models/transaction-operation";
+import {IReservationToken, QRToken} from "../../models/reservation-token";
 
 @Injectable({
   providedIn: 'root'
@@ -57,13 +59,17 @@ export class ReservationService {
     return this.http.get<IReservationBasic[]>(this.baseUrl + "recent", { headers: this.headers});
   }
 
-  getReservationToken(resId: number, closing: boolean): Observable<string> {
-    return this.http.get<string>(this.baseUrl + "reservationtoken/" + resId + "/" + closing, { headers: this.headers});
+  getReservationToken(resId: number, closing: boolean): Observable<IReservationToken> {
+    return this.http.get<IReservationToken>(this.baseUrl + "reservationtoken/" + resId + "/" + closing, { headers: this.headers});
   }
 
-  validateReservationToken(token: string): Observable<boolean> {
-    var data = new ReservationToken(token);
-    return this.http.post<boolean>(this.baseUrl + "reservationtoken",  data, { headers: this.headers});
+  validateReservationToken(token: string): Observable<ITransactionOperation> {
+    var data = new QRToken(token);
+    return this.http.post<ITransactionOperation>(this.baseUrl + "reservationtoken",  data, { headers: this.headers});
+  }
+
+  isReservationClosed(reservationId: number): Observable<boolean> {
+    return this.http.get<boolean>(this.baseUrl + "closed/" + reservationId, { headers: this.headers});
   }
 
   private convertReservationDateFormats(res: IReservationDetail[]){

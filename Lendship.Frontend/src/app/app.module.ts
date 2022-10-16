@@ -32,6 +32,7 @@ import {TokenInterceptor} from "./interceptors/token.interceptor";
 import {EvaluationPopupComponent} from "./pages/popup/evaluation-popup/evaluation-popup.component";
 import {QrcodeComponent} from "./pages/grcode-page/qrcode.component";
 import { QRCodeModule } from 'angularx-qrcode';
+import {InfoPopupComponent} from "./pages/popup/info-popup/info-popup.component";
 
 @NgModule({
     declarations: [
@@ -56,6 +57,7 @@ import { QRCodeModule } from 'angularx-qrcode';
         ErrorPageComponent,
         EvaluationPopupComponent,
         QrcodeComponent,
+        InfoPopupComponent,
     ],
   imports: [
     BrowserModule,

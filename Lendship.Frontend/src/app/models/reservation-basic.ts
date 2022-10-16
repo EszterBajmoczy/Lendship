@@ -4,11 +4,3 @@ export interface IReservationBasic {
   isOwn: number;
   dates: string;
 }
-
-export class ReservationToken {
-  reservationtoken: string;
-
-  constructor(token: string) {
-    this.reservationtoken = token;
-  }
-}

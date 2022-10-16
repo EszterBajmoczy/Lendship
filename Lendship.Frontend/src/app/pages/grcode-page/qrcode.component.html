@@ -10,26 +10,23 @@
     <span class="sr-only">Loading...</span>
   </div>
 </div>
-
-<div *ngIf="error">
-  <h3>Something went wrong with the code validation!</h3>
-</div>
 <div>
   <div *ngIf="scannerEnabled">
     <zxing-scanner #scanner (scanSuccess)="scanSuccessHandler($event)">
     </zxing-scanner>
   </div>
 
-  <div *ngIf="!scannerEnabled && token !== undefined && !error">
-    <h3 *ngIf="!closing; else closing_content" class="text-center">Your lender or advertiser should scan this QR code to verify the begin of lending.</h3>
+  <div *ngIf="!scannerEnabled && token !== undefined" class="text-center">
+    <h3 *ngIf="!closing; else closing_content" >Your lender or advertiser should scan this QR code to verify the begin of lending.</h3>
     <ng-template #closing_content>
       <h3 *ngIf="closing" class="text-center mb-2">Your lender or advertiser should scan this QR code to close the lending transaction.</h3>
     </ng-template>
 
     <qrcode [qrdata]="token" [width]="400" [errorCorrectionLevel]="'M'"  class="d-flex justify-content-center"></qrcode>
+    <button *ngIf="closing" class="btn btn-success" (click)="openEvaluation(evaluationPopUp)">Create evaluation</button>
   </div>
 
-  <div *ngIf="!scannerEnabled && token === undefined && !error">
+  <div *ngIf="!scannerEnabled && token === undefined">
     <div *ngIf="!loading && !scannerEnabled" class="container-fluid form-container col-lg-10">
       <span *ngIf="reservations.length == 0">You don't have reservations in the next days</span>
       <div>
@@ -47,3 +44,31 @@
     </div>
   </div>
 </div>
+
+<ng-template #evaluationPopUp let-modal>
+  <div class="modal-header">
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body d-flex justify-content-center">
+    <app-evaluation-popup *ngIf="evaluationBasic !== undefined" class="w-100"
+                          [userTo] = "evaluationBasic.userTo"
+                          [advertisementId] = "evaluationBasic.advertisementId"
+                          [reservationId] = "evaluationBasic.reservationId"
+                          [isLender] = "evaluationBasic.isLender"
+                          [message] = "evaluationBasic.message"
+                          (evaluationAdvertiser)="submitEvaluationAdvertiser($event)"
+                          (evaluationLender)="submitEvaluationLender($event)">
+    </app-evaluation-popup>
+  </div>
+</ng-template>
+
+<ng-template #sendMsgPopup let-modal>
+  <div class="modal-header">
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body d-flex justify-content-center">
+    <app-message-popup class="w-100">
+    </app-message-popup>
+  </div>
+  <button type="button" class="btn btn-outline-dark" (click)="modal.close('Ok')">Ok</button>
+</ng-template>
