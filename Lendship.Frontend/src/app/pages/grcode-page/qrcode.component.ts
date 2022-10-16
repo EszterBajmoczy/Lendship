@@ -24,11 +24,13 @@ export class QrcodeComponent implements OnInit {
   information: string = "No se ha detectado información de";
 
   evaluationBasic: EvaluationBasic | undefined;
+  operationClose: boolean = false;
+  isMessage: boolean = false;
 
   @ViewChild('evaluationPopUp')
   private evaluationPopUp: TemplateRef<any> | undefined;
 
-  @ViewChild('sendMsgPopup')
+  @ViewChild('infoPopup')
   private informationPopup: TemplateRef<any> | undefined;
 
   constructor(private reservationService: ReservationService,
@@ -50,18 +52,18 @@ export class QrcodeComponent implements OnInit {
 
     this.reservationService.validateReservationToken($event)
       .subscribe(result => {
-        //TODO
-        // siker -> reserve van elég kredit, vagy nem kell
-        // sikertelen -> reserve nincs kredit, Message
-        // siker -> close van kredit, vagy nem kell
-        // sikertelen -> close nincs elég kredit vagy kevesebb, Message
+        this.evaluationBasic = new EvaluationBasic(result.otherUser, result.reservationId, result.advertisementId, result.isLender, result.message)
+        this.operationClose = result.operation === "Close";
 
         if (result.operation === "Close") {
-          this.evaluationBasic = new EvaluationBasic(result.otherUser, result.reservationId, result.advertisementId, result.isLender, result.message)
           this.openEvaluation(this.evaluationPopUp)
         } else {
-          //TODO info mennyi lett lefoglalva
-          this.openInformation(this.evaluationPopUp, result.message)
+          if (result.message !== undefined && result.message != null && result.message != "") {
+            this.isMessage = true;
+            this.openInformation(this.informationPopup)
+          } else{
+            this.router.navigateByUrl('home');
+          }
         }
       });
   }
@@ -87,28 +89,15 @@ export class QrcodeComponent implements OnInit {
   }
 
   openEvaluation(content: any) {
-    console.log("open dialog");
-
-    if(this.evaluationBasic !== undefined){
-      var modalRef = this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'});
-      modalRef.result.catch((res) => {  this.router.navigateByUrl('home') });
-
+    if (this.evaluationBasic !== undefined){
+      this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'})
+        .result.catch((res) => {  this.router.navigateByUrl('home') });
     }
-    //modalRef.componentInstance.userTo = otherUser;
-    //modalRef.componentInstance.advertisementId = advertisementId;
-    //modalRef.componentInstance.reservationId = reservationId;
-    //modalRef.componentInstance.isLender = isLender;
-    //modalRef.componentInstance.message = message;
-
   }
 
-  openInformation(content: any, message: string) {
-    console.log("open dialog");
-
-    var modalRef = this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'});
-    modalRef.componentInstance.information = message;
-
-    modalRef.result.catch((res) => {  this.router.navigateByUrl('home') });
+  openInformation(content: any) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'})
+      .result.catch((res) => {  this.router.navigateByUrl('home') });
   }
 
   submitEvaluationAdvertiser(evaluation: EvaluationAdvertiser) {

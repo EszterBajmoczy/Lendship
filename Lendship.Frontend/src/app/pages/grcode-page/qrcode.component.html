@@ -50,7 +50,7 @@
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body d-flex justify-content-center">
-    <app-evaluation-popup *ngIf="evaluationBasic !== undefined" class="w-100"
+    <app-evaluation-popup *ngIf="evaluationBasic !== undefined && operationClose" class="w-100"
                           [userTo] = "evaluationBasic.userTo"
                           [advertisementId] = "evaluationBasic.advertisementId"
                           [reservationId] = "evaluationBasic.reservationId"
@@ -62,13 +62,14 @@
   </div>
 </ng-template>
 
-<ng-template #sendMsgPopup let-modal>
+<ng-template #infoPopup let-modal>
   <div class="modal-header">
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body d-flex justify-content-center">
-    <app-message-popup class="w-100">
-    </app-message-popup>
+    <app-info-popup  class="w-100"*ngIf="evaluationBasic !== undefined && isMessage"
+                     [information] = "evaluationBasic.message">
+    </app-info-popup>
   </div>
   <button type="button" class="btn btn-outline-dark" (click)="modal.close('Ok')">Ok</button>
 </ng-template>

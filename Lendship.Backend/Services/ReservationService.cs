@@ -424,6 +424,7 @@ namespace Lendship.Backend.Services
 
                 result.Succeeded = true;
                 result.Credit = (int)credit;
+                result.Message = credit + " credit was reserved.";
             }
             result.Succeeded = true;
             _dbContext.Update(lender);
