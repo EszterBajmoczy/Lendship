@@ -147,7 +147,7 @@ export class ReservationPageComponent implements OnInit {
 
   reservedByUser(date: NgbDate){
     let result = false;
-    this.usersReservations?.forEach( res => {
+    this.usersReservations.forEach( res => {
       if(date.after(res.dateFromNgbDate) && date.before(res.dateToNgbDate)) {
         result = true;
       }
@@ -157,7 +157,7 @@ export class ReservationPageComponent implements OnInit {
 
   reservedToUser(date: NgbDate){
     let result = false;
-    this.reservationsForUsersAdvertisements?.forEach( res => {
+    this.reservationsForUsersAdvertisements.forEach( res => {
 
       if(date.after(res.dateFromNgbDate) && date.before(res.dateToNgbDate)) {
         result = true;

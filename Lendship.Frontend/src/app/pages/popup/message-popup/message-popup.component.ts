@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormBuilder, Validators} from "@angular/forms";
+import {UntypedFormBuilder, Validators} from "@angular/forms";
 import {Conversation, IConversation} from "../../../models/conversation";
 import {ConversationService} from "../../../services/conversation/conversation.service";
 import {Router} from "@angular/router";
@@ -20,7 +20,7 @@ export class MessagePopupComponent implements OnInit {
     msgContent: ['', [Validators.required]]
   });
 
-  constructor(private formBuilder: FormBuilder, private conService: ConversationService, private router: Router) {
+  constructor(private formBuilder: UntypedFormBuilder, private conService: ConversationService, private router: Router) {
     conService.getAllConversation()
       .subscribe((cons) => {
         let conId = this.checkForExistingConversations(cons)

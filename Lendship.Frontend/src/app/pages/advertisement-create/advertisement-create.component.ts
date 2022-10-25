@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {UntypedFormBuilder, UntypedFormGroup, Validators} from "@angular/forms";
 import {LocationValidator} from "../../shared/valid-location";
 import {GeocodingService} from "../../services/geocoding/geocoding.service";
 import {Availability, IAvailability} from "../../models/availability";
@@ -37,12 +37,12 @@ export class AdvertisementCreateComponent implements OnInit {
 
   mode: string = "";
   id: number = 0;
-  advertisementForm: FormGroup;
+  advertisementForm: UntypedFormGroup;
 
   submitting = false;
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private locationValidator: LocationValidator,
     private geoCodingService: GeocodingService,
     private modalService: NgbModal,

@@ -2,10 +2,11 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule} from "@angular/forms";
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
-
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import {AutocompleteLibModule} from 'angular-ng-autocomplete';
+
+import { ZXingScannerModule } from '@zxing/ngx-scanner';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -29,6 +30,9 @@ import { NotificationsPageComponent} from "./pages/notifications-page/notificati
 import { ErrorPageComponent} from "./pages/error-page/error-page.component";
 import {TokenInterceptor} from "./interceptors/token.interceptor";
 import {EvaluationPopupComponent} from "./pages/popup/evaluation-popup/evaluation-popup.component";
+import {QrcodeComponent} from "./pages/grcode-page/qrcode.component";
+import { QRCodeModule } from 'angularx-qrcode';
+import {InfoPopupComponent} from "./pages/popup/info-popup/info-popup.component";
 
 @NgModule({
     declarations: [
@@ -52,6 +56,8 @@ import {EvaluationPopupComponent} from "./pages/popup/evaluation-popup/evaluatio
         NotificationsPageComponent,
         ErrorPageComponent,
         EvaluationPopupComponent,
+        QrcodeComponent,
+        InfoPopupComponent,
     ],
   imports: [
     BrowserModule,
@@ -61,6 +67,8 @@ import {EvaluationPopupComponent} from "./pages/popup/evaluation-popup/evaluatio
     FormsModule,
     NgbModule,
     AutocompleteLibModule,
+    ZXingScannerModule,
+    QRCodeModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }

@@ -31,10 +31,12 @@ export class AppHeaderComponent {
       this.isLoggedIn = true;
     }
 
-    notificationService.getNewNotifications().subscribe((notifications) => {
-      this.notificationCount = notifications.length;
-      this.notifications = notifications;
-    });
+    if(this.isLoggedIn){
+      notificationService.getNewNotifications().subscribe((notifications) => {
+        this.notificationCount = notifications.length;
+        this.notifications = notifications;
+      });
+    }
   }
 
   ngOnInit(): void {

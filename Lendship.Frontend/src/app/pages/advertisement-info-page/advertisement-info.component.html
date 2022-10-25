@@ -90,7 +90,7 @@
         <div class="modal-body d-flex justify-content-center">
           <app-message-popup class="w-100"
             [advertisementId] = id
-            [advertisementName] = ad?.title
+            [advertisementName] = ad.title
             (msg)="msg($event)"
             (conversationId)="getConversationId($event)">
           </app-message-popup>
@@ -102,7 +102,7 @@
 
     <div class="d-flex justify-content-center p-2">
       <button class="btn btn-primary m-2" (click)="open(sendMsgPopup)">Send message</button>
-      <button class="btn btn-primary m-2" (click)="open(reservePopup)">Reserve</button>
+      <button *ngIf="!isOwnAdvertisement" class="btn btn-primary m-2" (click)="open(reservePopup)">Reserve</button>
     </div>
   </div>
 </div>

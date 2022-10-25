@@ -1,7 +1,8 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormBuilder } from "@angular/forms";
+import {UntypedFormBuilder } from "@angular/forms";
 import {EvaluationAdvertiser, EvaluationLender} from "../../../models/evaluation";
 import {User} from "../../../models/user";
+import {ReservationService} from "../../../services/reservation/reservation.service";
 
 @Component({
   selector: 'app-evaluation-popup',
@@ -13,6 +14,8 @@ export class EvaluationPopupComponent implements OnInit {
   @Input() advertisementId: number = 0;
   @Input() reservationId: number = 0;
   @Input() isLender = false;
+  @Input() message = "";
+  isClosed = true;
 
   @Output() evaluationAdvertiser = new EventEmitter<EvaluationAdvertiser>();
   @Output() evaluationLender = new EventEmitter<EvaluationLender>();
@@ -27,7 +30,9 @@ export class EvaluationPopupComponent implements OnInit {
     isAnonymous: [false]
   });
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private reservationService: ReservationService, private formBuilder: UntypedFormBuilder) {
+    reservationService.isReservationClosed(this.reservationId)
+      .subscribe(result => this.isClosed = result);
   }
 
   ngOnInit(): void {
@@ -50,10 +55,6 @@ export class EvaluationPopupComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.userTo)
-    console.log(this.isLender)
-    console.log("!")
-    console.log()
     if (this.isLender && this.userTo !== undefined) {
       let lenderEv = new EvaluationLender(this.userTo, this.advertisementId, this.reservationId, this.flexibility, this.reliability, this.qualityAtReturn, this.evaluationForm.value.comment, this.evaluationForm.value.isAnonymous)
       console.log(lenderEv)

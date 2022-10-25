@@ -6,7 +6,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {AdvertisementDetail} from "../../models/advertisement-detail";
 import {AuthService} from "../../services/auth/auth.service";
 import { DatePipe } from '@angular/common'
-import {FormBuilder, Validators} from "@angular/forms";
+import {UntypedFormBuilder, Validators} from "@angular/forms";
 import {environment} from "../../../environments/environment";
 
 @Component({
@@ -39,7 +39,7 @@ export class ConversationInfoPageComponent implements OnInit {
     private adService: AdvertisementService,
     private authService: AuthService,
     private datePipe: DatePipe,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private router: Router,
     activatedRoute: ActivatedRoute)
   {
