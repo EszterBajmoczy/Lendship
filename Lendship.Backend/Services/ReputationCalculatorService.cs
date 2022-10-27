@@ -1,8 +1,7 @@
 ﻿using Lendship.Backend.Authentication;
 using Lendship.Backend.Interfaces.EvaluationCalcuting;
+using Lendship.Backend.Interfaces.Repositories;
 using Lendship.Backend.Interfaces.Services;
-using Lendship.Backend.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -12,7 +11,8 @@ namespace Lendship.Backend.Services
 {
     public class ReputationCalculatorService: IReputationCalculatorService
     {
-        private readonly LendshipDbContext _dbContext;
+        private readonly IUserRepository _userRepository;
+        private readonly IEvaluationRepository _evaluationRepository;
         private readonly IEvaluationCalculator _evaluationCalculator;
 
         private readonly int m;
@@ -21,9 +21,14 @@ namespace Lendship.Backend.Services
         private readonly double weight2;
         private readonly double weight3;
 
-        public ReputationCalculatorService(LendshipDbContext dbContext, IConfiguration configuration, IEvaluationCalculator evaluationCalculator)
+        public ReputationCalculatorService(
+            IConfiguration configuration,
+            IUserRepository userRepository,
+            IEvaluationRepository evaluationRepository,
+            IEvaluationCalculator evaluationCalculator)
         {
-            _dbContext = dbContext;
+            _userRepository = userRepository;
+            _evaluationRepository = evaluationRepository;
             _evaluationCalculator = evaluationCalculator;
 
             var config = configuration.GetSection("Reputation");
@@ -37,9 +42,8 @@ namespace Lendship.Backend.Services
 
         public void RecalculateAdvertiserReputationForUser(ApplicationUser user)
         {
-            var evaluationsAsAdvertiser = _dbContext.EvaluationAdvertisers
-                                                        .Include(e => e.UserTo)
-                                                        .Where(e => e.UserTo.Id == user.Id);
+            var evaluationsAsAdvertiser = _evaluationRepository.GetAdvertiserEvaluationsByUser(user.Id);
+
             var oneYear = DateTime.Now.AddYears(-1);
             var twoYear = DateTime.Now.AddYears(-2);
             var threeYear = DateTime.Now.AddYears(-3);
@@ -60,8 +64,7 @@ namespace Lendship.Backend.Services
             user.EvaluationAsAdvertiser = _evaluationCalculator.calculateAdviser(user.AdvertiserFlexibility, user.AdvertiserReliability, user.AdvertiserQualityOfProduct);
             user.EvaluationAsAdvertiserCount = evaluationsAsAdvertiser.Count();
 
-            _dbContext.Update(user);
-            _dbContext.SaveChanges();
+            _userRepository.Update(user);
         }
 
         public void RecalculateLenderReputationForUser(ApplicationUser user)
@@ -70,9 +73,7 @@ namespace Lendship.Backend.Services
             var twoYear = DateTime.Now.AddYears(-2);
             var threeYear = DateTime.Now.AddYears(-3);
 
-            var evaluationsAsLender = _dbContext.EvaluationLenders
-                                                        .Include(e => e.UserTo)
-                                                        .Where(e => e.UserTo.Id == user.Id);
+            var evaluationsAsLender = _evaluationRepository.GetLenderEvaluationsByUser(user.Id);
 
             user.LenderFlexibility = Calculate(evaluationsAsLender.Where(e => e.Creation >= oneYear).Select(e => e.Flexibility),
                 evaluationsAsLender.Where(e => e.Creation >= twoYear && e.Creation < oneYear).Select(e => e.Flexibility),
@@ -90,8 +91,7 @@ namespace Lendship.Backend.Services
             user.EvaluationAsLender = _evaluationCalculator.calculateLender(user.LenderFlexibility, user.LenderReliability, user.LenderQualityAtReturn);
             user.EvaluationAsLenderCount = evaluationsAsLender.Count();
 
-            _dbContext.Update(user);
-            _dbContext.SaveChanges();
+            _userRepository.Update(user);
         }
 
         double Calculate(IEnumerable<int> evaluationGroup1, IEnumerable<int> evaluationGroup2, IEnumerable<int> evaluationGroup3, IEnumerable<int> evaluationGroup4)

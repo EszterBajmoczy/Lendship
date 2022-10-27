@@ -1,7 +1,7 @@
-﻿using Lendship.Backend.Converters;
-using Lendship.Backend.DTO;
+﻿using Lendship.Backend.DTO;
 using Lendship.Backend.Exceptions;
 using Lendship.Backend.Interfaces.Converters;
+using Lendship.Backend.Interfaces.Repositories;
 using Lendship.Backend.Interfaces.Services;
 using Lendship.Backend.Models;
 using Microsoft.AspNetCore.Http;
@@ -16,38 +16,51 @@ namespace Lendship.Backend.Services
     public class AdvertisementService : IAdvertisementService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly LendshipDbContext _dbContext;
+        private readonly IAdvertisementRepository _advertisementRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly ISavedAdvertisementRepository _savedAdvertisementRepository;
+        private readonly IAvailabilityRepository _availabilityRepository;
+
         private readonly ICategoryService _categoryService;
-        private readonly INotificationService _notificationService;
+        private readonly IReservationService _reservationService;
         private readonly IImageService _imageService;
 
         private readonly IAdvertisementDetailsConverter _adDetailsConverter;
         private readonly IAdvertisementConverter _adConverter;
         private readonly IAvailabilityConverter _availabilityConverter;
 
-        public AdvertisementService(IHttpContextAccessor httpContextAccessor, LendshipDbContext dbContext, ICategoryService categoryService, INotificationService notificationService, IImageService imageService)
+        public AdvertisementService(
+            IHttpContextAccessor httpContextAccessor,
+            IAdvertisementRepository advertisementRepository, 
+            
+            IUserRepository userRepository,
+            ISavedAdvertisementRepository savedAdvertisementRepository,
+            IAvailabilityRepository availabilityRepository,
+            ICategoryService categoryService,
+            IReservationService reservationService, 
+            IImageService imageService,
+            IAdvertisementDetailsConverter advertisementDetailsConverter,
+            IAdvertisementConverter advertisementConverter,
+            IAvailabilityConverter availabilityConverter)
         {
             _httpContextAccessor = httpContextAccessor;
-            _dbContext = dbContext;
+            _advertisementRepository = advertisementRepository;
+            _userRepository = userRepository;
+            _savedAdvertisementRepository = savedAdvertisementRepository;
+            _availabilityRepository = availabilityRepository;
+
             _categoryService = categoryService;
-            _notificationService = notificationService;
+            _reservationService = reservationService;
             _imageService = imageService;
 
-            //TODO inject converters!!
-            _adDetailsConverter = new AdvertisementDetailsConverter(new UserConverter(), new AvailabilityConverter());
-            _adConverter = new AdvertisementConverter(new UserConverter());
-            _availabilityConverter = new AvailabilityConverter();
+            _adDetailsConverter = advertisementDetailsConverter;
+            _adConverter = advertisementConverter;
+            _availabilityConverter = availabilityConverter;
         }
 
         public AdvertisementDetailsDto GetAdvertisement(int advertisementId)
         {
-            var advertisement = _dbContext.Advertisements
-                .Include(a => a.User)
-                .Include(a => a.Category)
-                .Include(a => a.ImageLocations)
-                .Include(a => a.Availabilities)
-                .Where(a => a.Id == advertisementId)
-                .FirstOrDefault();
+            var advertisement = _advertisementRepository.GetById(advertisementId);
 
             if (advertisement == null)
             {
@@ -62,18 +75,12 @@ namespace Lendship.Backend.Services
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var category = _dbContext.Categories.Where(x => x.Name.ToLower() == advertisement.Category.Name.ToLower()).FirstOrDefault();
-            var user = _dbContext.Users.Where(x => x.Id == signedInUserId).FirstOrDefault();
-
-            if(category == null)
-            {
-                category = _categoryService.AddCategory(advertisement.Category.Name.ToLower());
-            }
+            var category = _categoryService.GetOrCreateCategoryByName(advertisement.Category.Name);
+            var user = _userRepository.GetById(signedInUserId);
 
             var ad =_adDetailsConverter.ConvertToEntity(advertisement, user, category);
 
-            _dbContext.Advertisements.Add(ad);
-            _dbContext.SaveChanges();
+            _advertisementRepository.Create(ad);
 
             UpdateAvailabilities(ad, advertisement.Availabilities);
 
@@ -84,13 +91,9 @@ namespace Lendship.Backend.Services
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var oldAd = _dbContext.Advertisements
-                            .AsNoTracking()
-                            .Include(a => a.User)
-                            .Where(a => a.Id == advertisement.Id)
-                            .FirstOrDefault();            
+            var oldAd = _advertisementRepository.GetById(advertisement.Id);
 
-            if(oldAd == null)
+            if (oldAd == null)
             {
                 throw new AdvertisementNotFoundException("Advertisement not found.");
             }
@@ -100,142 +103,86 @@ namespace Lendship.Backend.Services
                 throw new UpdateNotAllowedException("Update not allowed.");
             }
 
-            var category = _dbContext.Categories.Where(x => x.Name.ToLower() == advertisement.Category.Name.ToLower()).FirstOrDefault();
+            var category = _categoryService.GetOrCreateCategoryByName(advertisement.Category.Name);
 
-            if (category == null)
-            {
-                category = _categoryService.AddCategory(advertisement.Category.Name.ToLower());
-            }
-
-            var user = _dbContext.Users.Where(x => x.Id == signedInUserId).FirstOrDefault();
+            var user = _userRepository.GetById(signedInUserId);
 
             var ad = _adDetailsConverter.ConvertToEntity(advertisement, user, category);
 
-            _dbContext.Update(ad);
+            _advertisementRepository.Update(ad);
 
             UpdateAvailabilities(ad, advertisement.Availabilities);
 
-            _dbContext.SaveChanges();
+            //_dbContext.SaveChanges();
         }
 
         public void DeleteAdvertisement(int advertisementId)
         {
-            var advertisement = _dbContext.Advertisements
-                .Where(a => a.Id == advertisementId)
-                .Include(a => a.User)
-                .FirstOrDefault();
-            
-            if(advertisement == null)
+            var advertisement = _advertisementRepository.GetById(advertisementId);
+
+
+            if (advertisement == null)
             {
                 throw new AdvertisementNotFoundException("Advertisement not found");
             }
 
-            var reservations = _dbContext.Reservations
-                .Where(r => r.Advertisement == advertisement && r.DateFrom >= DateTime.Now)
-                .Include(r => r.User)
-                .ToList();
-
-            foreach (var res in reservations)
-            {
-                _notificationService.CreateNotification("Advertisement was deleted", res, res.User.Id);
-                _notificationService.CreateNotification("Reservation was deleted, because you deleted the advertisement", res, advertisement.User.Id);
-            }
-
             _imageService.DeleteImages(advertisementId);
 
-            _dbContext.Advertisements.Remove(advertisement);
-            _dbContext.Reservations.RemoveRange(reservations);
-            _dbContext.SaveChanges();
+            _advertisementRepository.Delete(advertisementId);
+            _reservationService.RemoveUpcommingReservations(advertisementId);
         }
 
         public IEnumerable<AdvertisementDto> GetAdvertisements(string advertisementType, bool creditPayment, bool cashPayment, string category, string city, int distance, string word, string sortBy)
         {
-            //TODO query string
-            var resultList = new List<AdvertisementDto>();
+            var ads = _advertisementRepository.GetAll();
 
-            var ads = _dbContext.Advertisements
-                        .Include(a => a.ImageLocations)
-                        .ToList();
-
-            ads = FilterAdvertisments(ads, advertisementType, creditPayment, cashPayment, category, city, distance, word, sortBy);
-
-            foreach (var ad in ads)
-            {
-                var dto = _adConverter.ConvertToDto(ad);
-                resultList.Add(dto);
-            }
-
-            return resultList;
+            return FilterAdvertisments(ads, advertisementType, creditPayment, cashPayment, category, city, distance, word, sortBy)
+                    .Select(x => _adConverter.ConvertToDto(x));
         }
 
         public IEnumerable<AdvertisementDto> GetUsersAdvertisements(string advertisementType, bool creditPayment, bool cashPayment, string category, string city, int distance, string word, string sortBy)
         {
-            //TODO query string
-            var resultList = new List<AdvertisementDto>();
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var ads = _dbContext.Advertisements
-                        .Include(a => a.ImageLocations)
+            var ads = _advertisementRepository.GetAll()
                         .Where(a => a.User.Id == signedInUserId)
                         .ToList();
 
-            ads = FilterAdvertisments(ads, advertisementType, creditPayment, cashPayment, category, city, distance, word, sortBy);
-
-            foreach (var ad in ads)
-            {
-                var dto = _adConverter.ConvertToDto(ad);
-                resultList.Add(dto);
-            }
-
-            return resultList;
+            return FilterAdvertisments(ads, advertisementType, creditPayment, cashPayment, category, city, distance, word, sortBy)
+                .Select(x => _adConverter.ConvertToDto(x));
         }
 
         public IEnumerable<AdvertisementDto> GetSavedAdvertisements(string advertisementType, bool creditPayment, bool cashPayment, string category, string city, int distance, string word, string sortBy)
         {
-            //TODO query string
-            var resultList = new List<AdvertisementDto>();
-
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var savedAds = _dbContext.SavedAdvertisements.Where(sa => sa.UserId == signedInUserId).Select(a => a.AdvertisementId).ToList();
-            var advertisements = _dbContext.Advertisements
-                .Include(a => a.ImageLocations)
+            var savedAds = _savedAdvertisementRepository.GetSavedAdvertisementIdsByUser(signedInUserId).ToList();
+            var advertisements = _advertisementRepository.GetAll()
                 .Where(a => savedAds.Contains(a.Id))
                 .ToList();
 
-            advertisements = FilterAdvertisments(advertisements, advertisementType, creditPayment, cashPayment, category, city, distance, word, sortBy);
-
-            foreach(var ad in advertisements)
-            {
-                var dto = _adConverter.ConvertToDto(ad);
-                resultList.Add(dto);
-            }
-
-            return resultList;
+            return FilterAdvertisments(advertisements, advertisementType, creditPayment, cashPayment, category, city, distance, word, sortBy)
+                .Select(x => _adConverter.ConvertToDto(x));
         }
 
         public void RemoveSavedAdvertisement(int advertisementId)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var savedAds = _dbContext.SavedAdvertisements.Where(sa => sa.UserId == signedInUserId && sa.AdvertisementId == advertisementId).ToList();
-            _dbContext.SavedAdvertisements.RemoveRange(savedAds);
-            _dbContext.SaveChanges();
+            _savedAdvertisementRepository.DeleteAll(signedInUserId, advertisementId);
         }
 
         public void SaveAdvertisementForUser(int advertisementId)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var advertisement = _dbContext.Advertisements
-                .Where(a => a.Id == advertisementId)
-                .FirstOrDefault();
+            var advertisement = _advertisementRepository.GetById(advertisementId);
 
             if (advertisement == null)
             {
                 throw new AdvertisementNotFoundException("Advertisement not found");
             }
             
-            var savedAd = _dbContext.SavedAdvertisements.Where(sa => sa.UserId == signedInUserId && sa.AdvertisementId == advertisementId).FirstOrDefault();
+            var savedAd = _savedAdvertisementRepository.Get(signedInUserId, advertisementId);
             if(savedAd == null)
             {
                 var newSaveAd = new SavedAdvertisement
@@ -243,8 +190,7 @@ namespace Lendship.Backend.Services
                     UserId = signedInUserId,
                     AdvertisementId = advertisementId
                 };
-                _dbContext.SavedAdvertisements.Add(newSaveAd);
-                _dbContext.SaveChanges();
+                _savedAdvertisementRepository.Create(newSaveAd);
             }
         }
 
@@ -252,16 +198,13 @@ namespace Lendship.Backend.Services
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var connection = _dbContext.SavedAdvertisements
-                .Where(s => s.UserId == signedInUserId && s.AdvertisementId == advertisementId)
-                .FirstOrDefault();
+            var connection = _savedAdvertisementRepository.Get(signedInUserId, advertisementId);
 
             return connection != null;
         }
 
-        private List<Advertisement> FilterAdvertisments(List<Advertisement> ads, string advertisementType, bool creditPayment, bool cashPayment, string category, string city, int distance, string word, string sortBy)
+        private IEnumerable<Advertisement> FilterAdvertisments(IEnumerable<Advertisement> ads, string advertisementType, bool creditPayment, bool cashPayment, string category, string city, int distance, string word, string sortBy)
         {
-            var result = ads;
             //TODO advertisemnetType!!
 
             if (creditPayment && cashPayment)
@@ -304,13 +247,12 @@ namespace Lendship.Backend.Services
                     break;
             }
 
-            return result;
+            return ads;
         }
 
         private void UpdateAvailabilities(Advertisement ad, List<AvailabilityDto> availabilities)
         {
-            var savedAv = _dbContext.Availabilites
-                        .Where(a => a.AdvertisementId == ad.Id);
+            var savedAv = _availabilityRepository.GetByAdvertisement(ad.Id);
 
             var avIds = availabilities
                             .Where(a => a.Id != 0)
@@ -319,10 +261,8 @@ namespace Lendship.Backend.Services
             var toAdd = availabilities.Where(a => a.Id == 0).Select(a => _availabilityConverter.ConvertToEntity(a, ad));
             var toDelete = savedAv.Where(a => !avIds.Contains(a.Id));
 
-            _dbContext.Availabilites.RemoveRange(toDelete);
-            _dbContext.Availabilites.AddRange(toAdd);
-
-            _dbContext.SaveChanges();
+            _availabilityRepository.DeleteRange(toDelete);
+            _availabilityRepository.AddRange(toAdd);
         }
     }
 }

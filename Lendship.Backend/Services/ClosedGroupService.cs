@@ -1,9 +1,8 @@
-﻿using Lendship.Backend.Converters;
-using Lendship.Backend.DTO;
+﻿using Lendship.Backend.DTO;
 using Lendship.Backend.Exceptions;
 using Lendship.Backend.Interfaces.Converters;
+using Lendship.Backend.Interfaces.Repositories;
 using Lendship.Backend.Interfaces.Services;
-using Lendship.Backend.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -15,72 +14,56 @@ namespace Lendship.Backend.Services
     public class ClosedGroupService : IClosedGroupService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly LendshipDbContext _dbContext;
-        private readonly IUserConverter _userConverter;
-        private readonly IClosedGroupConverter _cgConverter;
+        private readonly IClosedGroupRepository _closedGroupRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IUsersAndClosedGroupsRepository _usersAndClosedGroupsRepository;
 
-        public ClosedGroupService(IHttpContextAccessor httpContextAccessor, LendshipDbContext dbContext)
+        private readonly IClosedGroupConverter _closedGroupConverter;
+
+        public ClosedGroupService(
+            IHttpContextAccessor httpContextAccessor, 
+            IClosedGroupRepository closedGroupRepository,
+            IUserRepository userRepository,
+            IUsersAndClosedGroupsRepository usersAndClosedGroupsRepository,
+            IClosedGroupConverter closedGroupConverter)
         {
             _httpContextAccessor = httpContextAccessor;
-            _dbContext = dbContext;
+            _closedGroupRepository = closedGroupRepository;
+            _userRepository = userRepository;
+            _usersAndClosedGroupsRepository = usersAndClosedGroupsRepository;
 
-            //TODO inject converters!!
-            _userConverter = new UserConverter();
-            _cgConverter = new ClosedGroupConverter(_userConverter);
+            _closedGroupConverter = closedGroupConverter;
         }
 
         public ClosedGroupDto GetClosedGroupOfAdvertisement(int advertisementId)
         {
-            var usersAndCloseGroups = _dbContext.UsersAndClosedGroups
-                                .Include(u => u.User)
-                                .Where(x => x.ClosedGroup.AdvertismentId == advertisementId)
-                                .ToList();
-
-            var closedGroupDto = _cgConverter.ConvertToDto(advertisementId, usersAndCloseGroups);
-            return closedGroupDto;
+            var usersAndCloseGroups = _usersAndClosedGroupsRepository.GetByAdvertisement(advertisementId);
+            return _closedGroupConverter.ConvertToDto(advertisementId, usersAndCloseGroups);
         }
 
         public void CreateClosedGroup(ClosedGroupDto closedGroup)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            var userIds = _dbContext.Users
-                        .Where(u => closedGroup.UserEmails.Contains(u.Email))
-                        .Select(u => u.Id)
-                        .ToList();
+            var userIds = _userRepository.GetIdsByEmails(closedGroup.UserEmails);
 
             if (!userIds.Contains(signedInUserId))
             {
-                userIds.Add(signedInUserId);
+                userIds.Append(signedInUserId);
             }
 
-            var cGroup = _cgConverter.ConvertToEntity(closedGroup);
-            _dbContext.ClosedGroups.Add(cGroup);
-            _dbContext.SaveChanges();
+            var cGroup = _closedGroupConverter.ConvertToEntity(closedGroup);
+            _closedGroupRepository.Create(cGroup);
 
-            foreach (var userId in userIds)
-            {
-                var relation = new UsersAndClosedGroups()
-                {
-                    UserId = userId,
-                    ClosedGroupId = cGroup.Id
-                };
-                _dbContext.UsersAndClosedGroups.Add(relation);
-            }
-
-            _dbContext.SaveChanges();
+            _usersAndClosedGroupsRepository.Create(cGroup.Id, userIds);
         }
 
         public void AddUserToClosedGroup(string email, int closedGroupId)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = _dbContext.Users
-                .Where(x => x.Email == email)
-                .FirstOrDefault();
-            var validModification = _dbContext.UsersAndClosedGroups
-                                .Any(x => x.ClosedGroupId == closedGroupId && x.UserId == signedInUserId);
+            var user = _userRepository.GetByEmail(email);
+            var isModificationAllowed = _usersAndClosedGroupsRepository.IsModificationAllowed(closedGroupId, signedInUserId);
 
-            if(!validModification)
+            if(!isModificationAllowed)
             {
                 throw new InvalidOperationException("Modification not allowed.");
             } else if (user == null)
@@ -88,30 +71,16 @@ namespace Lendship.Backend.Services
                 throw new UserNotFoundException("User with the email address not found: " + email);
             }
 
-            var newRelation = new UsersAndClosedGroups()
-            {
-                UserId = user.Id,
-                ClosedGroupId = closedGroupId
-            };
-
-            _dbContext.UsersAndClosedGroups.Add(newRelation);
-            _dbContext.SaveChanges();
+            _usersAndClosedGroupsRepository.Create(closedGroupId, user.Id);
         }
 
         public void RemoveUserToClosedGroup(string email, int closedGroupId)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = _dbContext.Users
-                .Where(x => x.Email == email)
-                .FirstOrDefault();
-            var validModification = _dbContext.UsersAndClosedGroups
-                                .Any(x => x.ClosedGroupId == closedGroupId && x.UserId == signedInUserId);
+            var user = _userRepository.GetByEmail(email);
+            var isModificationAllowed = _usersAndClosedGroupsRepository.IsModificationAllowed(closedGroupId, signedInUserId);
 
-            var entity = _dbContext.UsersAndClosedGroups
-                                    .Where(u => u.ClosedGroupId == closedGroupId && u.UserId == user.Id)
-                                    .FirstOrDefault();
-
-            if (!validModification)
+            if (!isModificationAllowed)
             {
                 throw new InvalidOperationException("Modification not allowed.");
             }
@@ -120,8 +89,7 @@ namespace Lendship.Backend.Services
                 throw new UserNotFoundException("User with the email address not found: " + email);
             }
 
-            _dbContext.UsersAndClosedGroups.Remove(entity);
-            _dbContext.SaveChanges();
+            _usersAndClosedGroupsRepository.Delete(closedGroupId, user.Id);
         }
     }
 }

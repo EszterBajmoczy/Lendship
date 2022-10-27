@@ -1,6 +1,6 @@
-﻿using Lendship.Backend.Converters;
-using Lendship.Backend.DTO;
+﻿using Lendship.Backend.DTO;
 using Lendship.Backend.Interfaces.Converters;
+using Lendship.Backend.Interfaces.Repositories;
 using Lendship.Backend.Interfaces.Services;
 using Lendship.Backend.Models;
 using Microsoft.AspNetCore.Http;
@@ -14,34 +14,31 @@ namespace Lendship.Backend.Services
     public class NotificationService : INotificationService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly LendshipDbContext _dbContext;
+        private readonly INotificationRepository _notificationRepository;
         private readonly INotificationConverter _notificationConverter;
 
-        public NotificationService(IHttpContextAccessor httpContextAccessor, LendshipDbContext dbContext)
+        public NotificationService(
+            IHttpContextAccessor httpContextAccessor, 
+            INotificationRepository notificationRepository,
+            INotificationConverter notificationConverter)
         {
             _httpContextAccessor = httpContextAccessor;
-            _dbContext = dbContext;
+            _notificationRepository = notificationRepository;
 
-            //TODO inject converters!!
-            _notificationConverter = new NotificationConverter();
+            _notificationConverter = notificationConverter;
         }
 
         public IEnumerable<NotificationDTO> GetAllNotifications(string searchInAdvertisementTitle)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return _dbContext.Notifications
-                        .Where(n => n.UserId == signedInUserId && (searchInAdvertisementTitle == null || n.AdvertisementTitle.Contains(searchInAdvertisementTitle)))
-                        .OrderByDescending(n => n.TimeSpan)
-                        .Select(n => _notificationConverter.ConvertToDto(n))
-                        .ToList();
+            return _notificationRepository.GetAll(signedInUserId, searchInAdvertisementTitle)
+                        .Select(n => _notificationConverter.ConvertToDto(n));
         }
 
         public IEnumerable<NotificationDTO> GetNewNotifications()
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return _dbContext.Notifications
-                        .Where(n => n.UserId == signedInUserId && n.New)
-                        .OrderByDescending(n => n.TimeSpan)
+            return _notificationRepository.GetAllNew(signedInUserId)
                         .Select(n => _notificationConverter.ConvertToDto(n))
                         .ToList();
         }
@@ -49,15 +46,7 @@ namespace Lendship.Backend.Services
         public void SetSeenNotifications(List<int> ids)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var notifications = _dbContext.Notifications
-                                    .Where(n => n.UserId == signedInUserId && n.New && ids.Contains(n.Id));
-            foreach (var noti in notifications)
-            {
-                noti.New = false;
-            }
-
-            _dbContext.UpdateRange(notifications);
-            _dbContext.SaveChanges();
+            _notificationRepository.SetSeenNotifications(ids, signedInUserId);
         }
 
         void INotificationService.CreateNotification(string msg, Reservation reservation, string userId)
@@ -75,8 +64,7 @@ namespace Lendship.Backend.Services
                 TimeSpan = DateTime.Now
             };
 
-            _dbContext.Notifications.Add(notification);
-            _dbContext.SaveChanges();
+            _notificationRepository.Create(notification);
         }
     }
 }

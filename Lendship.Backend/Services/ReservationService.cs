@@ -1,12 +1,11 @@
 ﻿using Lendship.Backend.Authentication;
-using Lendship.Backend.Converters;
 using Lendship.Backend.DTO;
 using Lendship.Backend.Exceptions;
 using Lendship.Backend.Interfaces.Converters;
+using Lendship.Backend.Interfaces.Repositories;
 using Lendship.Backend.Interfaces.Services;
 using Lendship.Backend.Models;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,29 +16,40 @@ namespace Lendship.Backend.Services
 {
     public class ReservationService : IReservationService
     {
-        private readonly INotificationService _notificationService;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly LendshipDbContext _dbContext;
+        private readonly INotificationService _notificationService;
+        private readonly IReservationRepository _reservationRepository;
+        private readonly IAdvertisementRepository _advertisementRepository;
+        private readonly IUserRepository _userRepository;
+
         private readonly IReservationConverter _reservationConverter;
         private readonly IUserConverter _userConverter;
 
-        public ReservationService(INotificationService notificationService, IHttpContextAccessor httpContextAccessor, LendshipDbContext dbContext)
+        public ReservationService( 
+            IHttpContextAccessor httpContextAccessor,
+            INotificationService notificationService,
+            IReservationRepository reservationRepository,
+            IAdvertisementRepository advertisementRepository,
+            IUserRepository userRepository,
+            IReservationConverter reservationConverter,
+            IUserConverter userConverter)
         {
-            _notificationService = notificationService;
             _httpContextAccessor = httpContextAccessor;
-            _dbContext = dbContext;
+            _notificationService = notificationService;
+            _reservationRepository = reservationRepository;
+            _advertisementRepository = advertisementRepository;
+            _userRepository = userRepository;
 
-            //TODO inject converters!!
-            _reservationConverter = new ReservationConverter(new AdvertisementConverter(new UserConverter()), new UserConverter());
-            _userConverter = new UserConverter();
+            _reservationConverter = reservationConverter;
+            _userConverter = userConverter;
         }
                 
         public void CreateReservation(ReservationDetailDto reservationDto, int advertisementId)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var user = _dbContext.Users.Where(x => x.Id == signedInUserId).FirstOrDefault();
-            var advertisement = _dbContext.Advertisements.Where(x => x.Id == advertisementId).FirstOrDefault();
+            var user = _userRepository.GetById(signedInUserId);
+            var advertisement = _advertisementRepository.GetById(advertisementId);
 
             if (advertisement == null)
             {
@@ -53,64 +63,33 @@ namespace Lendship.Backend.Services
 
             var reservation = _reservationConverter.ConvertToEntity(reservationDto, user, advertisement);
 
-            _dbContext.Reservations.Add(reservation);
-            _dbContext.SaveChanges();
+            _reservationRepository.Create(reservation);
         }
 
         public IEnumerable<ReservationDetailDto> GetReservations()
         {
-            var resultList = new List<ReservationDetailDto>();
-
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var reservations = _dbContext.Reservations
-                        .Include(r => r.Advertisement)
-                        .Include(r => r.Advertisement.User)
-                        .Include(a => a.Advertisement.ImageLocations)
-                        .Include(r => r.User)
-                        .Where(r => r.User.Id == signedInUserId)
-                        .ToList();
+            var reservations = _reservationRepository.GetByUser(signedInUserId)
+                .Select(x => _reservationConverter.ConvertToDetailDto(x));
 
-            foreach (var res in reservations)
-            {
-                var dto = _reservationConverter.ConvertToDetailDto(res);
-                resultList.Add(dto);
-            }
-
-            return resultList;
+            return reservations;
         }
 
         public IEnumerable<ReservationDetailDto> GetReservationsForUser()
         {
-            var resultList = new List<ReservationDetailDto>();
-
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var reservations = _dbContext.Reservations
-                                    .Include(r => r.Advertisement)
-                                    .Include(r => r.Advertisement.User)
-                                    .Include(a => a.Advertisement.ImageLocations)
-                                    .Include(r => r.User)
-                                    .Where(r => r.Advertisement.User.Id == signedInUserId)
-                                    .ToList();
+            var reservations = _reservationRepository.GetByUser(signedInUserId)
+                                .Select(r => _reservationConverter.ConvertToDetailDto(r));
 
-            foreach (var res in reservations)
-            {
-                var dto = _reservationConverter.ConvertToDetailDto(res);
-                resultList.Add(dto);
-            }
-
-            return resultList;
+            return reservations;
         }
 
         public void UpdateReservation(ReservationDetailDto reservationDto)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var oldRes = _dbContext.Reservations
-                            .AsNoTracking()
-                            .Include(r => r.User)
-                            .Include(r => r.Advertisement)
-                            .Where(r => r.Id == reservationDto.Id)
-                            .FirstOrDefault();
+            var oldRes = _reservationRepository.GetById(reservationDto.Id);
+
             if (oldRes == null)
             {
                 throw new ReservationNotFoundException("Reservation not found.");
@@ -127,22 +106,14 @@ namespace Lendship.Backend.Services
             }
 
             var reservation = _reservationConverter.ConvertToEntity(reservationDto, oldRes.User, oldRes.Advertisement);
-
-            _dbContext.Update(reservation);
-            _dbContext.SaveChanges();
+            _reservationRepository.Update(reservation);
         }
 
         public void AdmitReservation(int reservationId)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var reservation = _dbContext.Reservations
-                                .AsNoTracking()
-                                .Include(r => r.User)
-                                .Include(r => r.Advertisement)
-                                .Include(r => r.Advertisement.User)
-                                .Where(r => r.Id == reservationId)
-                                .FirstOrDefault();
+            var reservation = _reservationRepository.GetById(reservationId);
 
             if (reservation == null)
             {
@@ -170,22 +141,14 @@ namespace Lendship.Backend.Services
             {
                 reservation.ReservationState = ReservationState.Closed;
             }
-
-            _dbContext.Update(reservation);
-            _dbContext.SaveChanges();
+            _reservationRepository.Update(reservation);
         }
 
         public void UpdateReservationState(int reservationId, string state)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var reservation = _dbContext.Reservations
-                                .AsNoTracking()
-                                .Include(r => r.User)
-                                .Include(r => r.Advertisement)
-                                .Include(r => r.Advertisement.User)
-                                .Where(r => r.Id == reservationId)
-                                .FirstOrDefault();
+            var reservation = _reservationRepository.GetById(reservationId);
 
             if (reservation == null)
             {
@@ -202,14 +165,7 @@ namespace Lendship.Backend.Services
                 throw new UpdateNotAllowedException("Update not allowed.");
             }
 
-            var reservationState = GetReservationState(state);
-
-            _notificationService.CreateNotification("Reservation state changed: " + reservationState, reservation, signedInUserId == reservation.User.Id ? signedInUserId : reservation.Advertisement.User.Id);
-            
-            reservation.ReservationState = reservationState;
-
-            _dbContext.Update(reservation);
-            _dbContext.SaveChanges();
+            UpdateReservationState(reservation, state, signedInUserId);
         }
 
         private void UpdateReservationState(Reservation reservation, string state, string signedInUserId)
@@ -220,38 +176,34 @@ namespace Lendship.Backend.Services
 
             reservation.ReservationState = reservationState;
 
-            _dbContext.Update(reservation);
+            _reservationRepository.Update(reservation);
         }
 
         public IEnumerable<ReservationDto> GetReservationsForAdvertisement(int advertisementId)
         {
-            var resultList = new List<ReservationDto>();
+            var reservations = _reservationRepository.GetByAdvertisement(advertisementId)
+                .Select(x => _reservationConverter.ConvertToDto(x));
 
-            var reservations = _dbContext.Reservations
-                                    .Include(r => r.Advertisement)
-                                    .Where(r => r.Advertisement.Id == advertisementId)
-                                    .ToList();
+            return reservations;
+        }
 
+        public void RemoveUpcommingReservations(int advertisementId)
+        {
+            var reservations = _reservationRepository.GetByAdvertisement(advertisementId);
             foreach (var res in reservations)
             {
-                var dto = _reservationConverter.ConvertToDto(res);
-                resultList.Add(dto);
+                _notificationService.CreateNotification("Advertisement was deleted", res, res.User.Id);
+                _notificationService.CreateNotification("Reservation was deleted, because you deleted the advertisement", res, res.Advertisement.User.Id);
             }
 
-            return resultList;
+            _reservationRepository.RemoveUpcommingReservations(advertisementId);
         }
 
         public IEnumerable<ReservationForAdvertisementDto> GetRecentReservations()
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var begin = DateTime.UtcNow.AddDays(-5);
-            var end = DateTime.UtcNow.AddDays(5);
 
-            var reservations = _dbContext.Reservations
-                                .Include(r => r.Advertisement)
-                                .Include(r => r.Advertisement.User)
-                                .Where(r => (r.Advertisement.User.Id == signedInUserId || r.User.Id == signedInUserId) && r.ReservationState != ReservationState.Closed
-                                        && ((r.DateFrom > begin && r.DateFrom < end) || (r.DateTo > begin && r.DateTo < end)))
+            var reservations = _reservationRepository.GetRecentReservations(signedInUserId)
                                 .Select(r => _reservationConverter.ConvertToReservationForAdvertisementDto(r, true))
                                 .ToList();
 
@@ -263,12 +215,7 @@ namespace Lendship.Backend.Services
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var reservation = _dbContext.Reservations
-                                .Include(r => r.User)
-                                .Include(r => r.Advertisement)
-                                .Include(r => r.Advertisement.User)
-                                .Where(r => r.Id == reservationId)
-                                .FirstOrDefault();
+            var reservation = _reservationRepository.GetById(reservationId);
 
             if (reservation == null)
             {
@@ -292,7 +239,7 @@ namespace Lendship.Backend.Services
             builder.Append('-');
             builder.Append(DateTime.UtcNow.Ticks);
 
-            var result = new ReservationTokenDto()
+            return new ReservationTokenDto()
             {
                 ReservationToken = builder.ToString(),
                 OtherUser = _userConverter.ConvertToDto(reservation.User.Id == signedInUserId ? reservation.User : reservation.Advertisement.User),
@@ -300,8 +247,6 @@ namespace Lendship.Backend.Services
                 AdvertisementId = reservation.Advertisement.Id,
                 IsLender = reservation.User.Id == signedInUserId ? true : false
             };
-
-            return result;
         }
 
         public TransactionOperationDto ValidateReservationToken(string reservationToken)
@@ -324,15 +269,7 @@ namespace Lendship.Backend.Services
             var nowInTicks = DateTime.UtcNow.Ticks;
 
             //TODO close-dok szűrése
-            var reservation = _dbContext.Reservations
-                                .AsNoTracking()
-                                .Include(r => r.User)
-                                .Include(r => r.Advertisement)
-                                .Include(r => r.Advertisement.User)
-                                .Where(r => r.Id == reservationId
-                                    && (r.User.Id == userId || r.Advertisement.User.Id == userId)
-                                    && (r.User.Id == signedInUserId || r.Advertisement.User.Id == signedInUserId))
-                                .FirstOrDefault();
+            var reservation = _reservationRepository.GetReservation(userId, signedInUserId, reservationId);
 
             //if (reservation == null || !(time >= DateTime.UtcNow.AddMinutes(-5).Ticks && time < DateTime.UtcNow.Ticks))
             if (reservation == null)
@@ -349,7 +286,6 @@ namespace Lendship.Backend.Services
                 ReserveToken(reservation.User, reservation.Advertisement.Credit, result);
                 UpdateReservationState(reservation, "Ongoing", signedInUserId);
             }
-            _dbContext.SaveChanges();
 
             result.OtherUser = _userConverter.ConvertToDto(reservation.User.Id == signedInUserId ? reservation.Advertisement.User : reservation.User);
             result.ReservationId = reservation.Id;
@@ -360,10 +296,7 @@ namespace Lendship.Backend.Services
 
         public bool IsReservationClosed(int reservationId)
         {
-            return _dbContext.Reservations
-                        .Where(r => r.Id == reservationId)
-                        .Select(r => r.ReservationState == ReservationState.Closed)
-                        .FirstOrDefault();
+            return _reservationRepository.IsReservationClosed(reservationId);
         }
 
         private void TransferCredit(ApplicationUser lender, ApplicationUser advertiser, int? credit, TransactionOperationDto result)
@@ -403,8 +336,9 @@ namespace Lendship.Backend.Services
                 result.Credit = (int)credit;
                 result.Message = "Lender does not have enough credit..., " + allCredit + " has been transfered.";
             }
-            _dbContext.Update(lender);
-            _dbContext.Update(advertiser);
+
+            _userRepository.Update(lender);
+            _userRepository.Update(advertiser);
         }
 
         private void ReserveToken(ApplicationUser lender, int? credit, TransactionOperationDto result)
@@ -427,7 +361,7 @@ namespace Lendship.Backend.Services
                 result.Message = credit + " credit was reserved.";
             }
             result.Succeeded = true;
-            _dbContext.Update(lender);
+            _userRepository.Update(lender);
         }
 
         private ReservationState GetReservationState(string state)
