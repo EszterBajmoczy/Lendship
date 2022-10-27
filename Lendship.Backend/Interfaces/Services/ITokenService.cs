@@ -7,9 +7,9 @@ namespace Lendship.Backend.Interfaces.Services
 {
     public interface ITokenService
     {
-        bool IsCurrentTokenValid();
+        bool IsCurrentTokenDeactivated();
 
-        bool IsRefreshTokenValid(string refreshToken);
+        bool IsRefreshTokenDeactivated(string refreshToken);
 
         Task DeactivateCurrentTokenAndRefreshTokenAsync(string refreshToken);
 
