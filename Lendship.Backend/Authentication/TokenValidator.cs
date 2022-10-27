@@ -19,6 +19,12 @@ namespace Lendship.Backend.Authentication
             _tokenHandler = new JwtSecurityTokenHandler();
         }
 
+        public TokenValidator(ITokenService tokenService, JwtSecurityTokenHandler tokenHandler)
+        {
+            _tokenService = tokenService;
+            _tokenHandler = tokenHandler;
+        }
+
         public bool CanValidateToken => true;
 
         public int MaximumTokenSizeInBytes { get => _maxTokenSizeInBytes; set => _maxTokenSizeInBytes = value; }
@@ -27,8 +33,8 @@ namespace Lendship.Backend.Authentication
 
         public ClaimsPrincipal ValidateToken(string securityToken, TokenValidationParameters validationParameters, out SecurityToken validatedToken)
         {
-            var valid = _tokenService.IsCurrentTokenValid();
-            if (!valid)
+            var isDeactivated = _tokenService.IsCurrentTokenDeactivated();
+            if (isDeactivated)
             {
                 throw new InvalidTokenException("Error by validating the token.");
             }

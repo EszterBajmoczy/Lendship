@@ -101,7 +101,7 @@ namespace Lendship.Backend.Controllers
         [Route("refresh")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenModel model)
         {
-            if (!_tokenService.IsRefreshTokenValid(model.RefreshToken))
+            if (!_tokenService.IsRefreshTokenDeactivated(model.RefreshToken))
             {
                 return Unauthorized();
             }
