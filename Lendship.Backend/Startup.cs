@@ -1,9 +1,13 @@
 using Lendship.Backend.Authentication;
+using Lendship.Backend.Converters;
 using Lendship.Backend.DTO.Authentication;
 using Lendship.Backend.EvaluationCalcuting;
+using Lendship.Backend.Interfaces.Converters;
 using Lendship.Backend.Interfaces.EvaluationCalcuting;
+using Lendship.Backend.Interfaces.Repositories;
 using Lendship.Backend.Interfaces.Services;
 using Lendship.Backend.Models;
+using Lendship.Backend.Repositories;
 using Lendship.Backend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -68,6 +72,38 @@ namespace Lendship.Backend
 
             services.AddHttpContextAccessor();
 
+            //converters
+            services.AddScoped<IAdvertisementConverter, AdvertisementConverter>();
+            services.AddScoped<IAdvertisementDetailsConverter, AdvertisementDetailsConverter>();
+            services.AddScoped<IAvailabilityConverter, AvailabilityConverter>();
+            services.AddScoped<ICategoryConverter, CategoryConverter>();
+            services.AddScoped<IClosedGroupConverter, ClosedGroupConverter>();
+            services.AddScoped<IConversationConverter, ConversationConverter>();
+            services.AddScoped<IEvaluationAdvertiserConverter, EvaluationAdvertiserConverter>();
+            services.AddScoped<IEvaluationLenderConverter, EvaluationLenderConverter>();
+            services.AddScoped<IMessageConverter, MessageConverter>();
+            services.AddScoped<INotificationConverter, NotificationConverter>();
+            services.AddScoped<IReservationConverter, ReservationConverter>();
+            services.AddScoped<IUserConverter, UserConverter>();
+
+            //repositories
+            services.AddScoped<IAdvertisementRepository, AdvertisementRepository>();
+            services.AddScoped<IAvailabilityRepository, AvailabilityRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IClosedGroupRepository, ClosedGroupRepository>();
+            services.AddScoped<IConversationRepository, ConversationRepository>();
+            services.AddScoped<IEvaluationRepository, EvaluationRepository>();
+            services.AddScoped<IImageLocationRepository, ImageLocationRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
+            services.AddScoped<IReservationRepository, ReservationRepository>();
+            services.AddScoped<ISavedAdvertisementRepository, SavedAdvertisementRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUsersAndClosedGroupsRepository, UsersAndClosedGroupsRepository>();
+            services.AddScoped<IUsersAndClosedGroupsRepository, UsersAndClosedGroupsRepository>();
+
+
+            //services
             services.AddScoped<IAdvertisementService, AdvertisementService>();
             services.AddScoped<IReservationService, ReservationService>();
             services.AddScoped<IEvaluationService, EvaluationService>();

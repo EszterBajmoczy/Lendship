@@ -1,7 +1,7 @@
 ﻿using Lendship.Backend.DTO;
 using Lendship.Backend.Exceptions;
+using Lendship.Backend.Interfaces.Repositories;
 using Lendship.Backend.Interfaces.Services;
-using Lendship.Backend.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -18,15 +18,24 @@ namespace Lendship.Backend.Services
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IConfiguration _configuration;
-        private readonly LendshipDbContext _dbContext;
+        private readonly IUserRepository _userRepository;
+        private readonly IAdvertisementRepository _advertisementRepository;
+        private readonly IImageLocationRepository _imageRepository;
 
         private static Random random = new Random();
 
-        public ImageService(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, LendshipDbContext dbContext)
+        public ImageService(
+            IHttpContextAccessor httpContextAccessor, 
+            IConfiguration configuration, 
+            IUserRepository userRepository,
+            IAdvertisementRepository advertisementRepository,
+            IImageLocationRepository imageRepository)
         {
             _httpContextAccessor = httpContextAccessor;
             _configuration = configuration;
-            _dbContext = dbContext;
+            _userRepository = userRepository;
+            _advertisementRepository = advertisementRepository;
+            _imageRepository = imageRepository;
         }
 
         public void DeleteProfileImage()
@@ -35,11 +44,9 @@ namespace Lendship.Backend.Services
             DeleteFiles(imgLocation);
 
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = _dbContext.Users.Where(u => u.Id == signedInUserId).FirstOrDefault();
-
+            var user = _userRepository.GetById(signedInUserId);
             user.ImageLocation = "";
-            _dbContext.Update(user);
-            _dbContext.SaveChanges();
+            _userRepository.Update(user);
 
         }
 
@@ -56,10 +63,7 @@ namespace Lendship.Backend.Services
             var directory = Path.Combine(location, signedInUserId, advertisementId.ToString(), fileName);
 
             File.Delete(directory);
-
-            var images =_dbContext.ImageLocations.Where(i => i.AdvertisementId == advertisementId && i.Location.Contains(fileName));
-            _dbContext.RemoveRange(images);
-            _dbContext.SaveChanges();
+            _imageRepository.DeleteImageFromAdvertisement(advertisementId, fileName);
         }
 
         private void DeleteFiles(string location, int? advertisementId = null)
@@ -81,18 +85,12 @@ namespace Lendship.Backend.Services
                 Console.WriteLine("No file in the directory." + e.Message);
             }
 
-            var images = _dbContext.ImageLocations.Where(i => i.AdvertisementId == advertisementId);
-            _dbContext.RemoveRange(images);
-            _dbContext.SaveChanges();
+            _imageRepository.DeleteImagesByAdvertisement(advertisementId);
         }
 
         public List<ImageDTO> GetImages(int advertisementId)
         {
-            var userId = _dbContext.Advertisements
-                .Include(a => a.User)
-                .Where(a => a.Id == advertisementId)
-                .Select(a => a.User.Id)
-                .FirstOrDefault();
+            var userId = _advertisementRepository.GetById(advertisementId).User.Id;
             var imgLocation = _configuration.GetSection("Image").GetValue("LocationFolder", "wwwroot\\images");
             var directory = Path.Combine(imgLocation, userId, advertisementId.ToString());
 
@@ -151,7 +149,7 @@ namespace Lendship.Backend.Services
             }
 
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = _dbContext.Users.Where(u => u.Id == signedInUserId).FirstOrDefault();
+            var user = _userRepository.GetById(signedInUserId);
             var imgLocation = _configuration.GetSection("Image").GetValue("ProfileLocationFolder", "wwwroot\\images\\profile");
 
             var path = Path.Combine(imgLocation, signedInUserId);
@@ -159,17 +157,13 @@ namespace Lendship.Backend.Services
             var fullpath = UploadProfileImg(file, path);
             user.ImageLocation = fullpath;
 
-            _dbContext.Update(user);
-            _dbContext.SaveChanges();
+            _userRepository.Update(user);
         }
 
         public void UploadImages(IFormFileCollection files, int advertisementId)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var ad = _dbContext.Advertisements
-                .Include(a => a.User)
-                .Where(a => a.Id == advertisementId)
-                .FirstOrDefault();
+            var ad = _advertisementRepository.GetById(advertisementId);
 
             var imgLocation = _configuration.GetSection("Image").GetValue("LocationFolder", "wwwroot\\images");
 
@@ -187,7 +181,8 @@ namespace Lendship.Backend.Services
 
                 UploadImg(file, fullPath, path, advertisementId);
             }
-            _dbContext.SaveChanges();
+
+            _advertisementRepository.Update(ad);
         }
 
         private string UploadProfileImg(IFormFile file, string path)
@@ -224,12 +219,7 @@ namespace Lendship.Backend.Services
             using (var stream = new FileStream(fullPathWidthName, FileMode.Create))
             {
                 file.CopyTo(stream);
-
-                _dbContext.ImageLocations.Add(new ImageLocation()
-                {
-                    AdvertisementId = advertisementId,
-                    Location = Path.Combine(path, fileName)
-                });
+                _imageRepository.Create(advertisementId, Path.Combine(path, fileName));
             }
         }
 
