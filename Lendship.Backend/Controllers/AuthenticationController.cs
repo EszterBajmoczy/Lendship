@@ -1,17 +1,20 @@
 ﻿using Lendship.Backend.Authentication;
 using Lendship.Backend.DTO.Authentication;
 using Lendship.Backend.DTO.Authentication.Authentication;
+using Lendship.Backend.Exceptions;
 using Lendship.Backend.Interfaces.Services;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Lendship.Backend.Controllers
@@ -25,12 +28,19 @@ namespace Lendship.Backend.Controllers
         private readonly ITokenService _tokenService;
         private readonly IEmailService _emailService;
 
+        private JwtSecurityTokenHandler _tokenHandler;
+
+        private readonly CustomTokenValidationParameters _validatorParameter;
+
         public AuthenticationController(UserManager<ApplicationUser> userManager, IConfiguration configuration, ITokenService tokenService, IEmailService emailService)
         {
             _userManager = userManager;
             _configuration = configuration;
             _tokenService = tokenService;
             _emailService = emailService;
+
+            _validatorParameter = new CustomTokenValidationParameters(configuration);
+            _tokenHandler = new JwtSecurityTokenHandler();
         }
 
         [HttpPost]
@@ -101,48 +111,59 @@ namespace Lendship.Backend.Controllers
         [Route("refresh")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenModel model)
         {
-            if (!_tokenService.IsRefreshTokenDeactivated(model.RefreshToken))
+            if (_tokenService.IsRefreshTokenDeactivated(model.RefreshToken))
             {
-                return Unauthorized();
+                return Unauthorized("Invalid refresh token");
             }
-            var refreshToken = new JwtSecurityToken(model.RefreshToken);
-            var userId = refreshToken.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault();
-            var user = await _userManager.FindByIdAsync(userId.Value);
-
-            var audience = refreshToken.Audiences.FirstOrDefault();
-            var validAudience = _configuration.GetSection("JWT").GetValue("Audience", "defaultAudience");
-
-            var issuer = refreshToken.Issuer;
-            var validIssuer = _configuration.GetSection("JWT").GetValue("Issuer", "defaultIssuer");
-
-            if (refreshToken.ValidTo < DateTime.Now 
-                || user == null
-                || audience != validAudience
-                || issuer != validIssuer)
+            
+            try
             {
-                return Unauthorized();
-            }
+                _tokenHandler.ValidateToken(model.RefreshToken, _validatorParameter.GetTokenValidationParameters(), out SecurityToken validatedToken);
 
-            var userRoles = await _userManager.GetRolesAsync(user);
-            var authClaims = new List<Claim>
+                var refreshToken = new JwtSecurityToken(model.RefreshToken);
+                var userId = refreshToken.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault();
+                var user = await _userManager.FindByIdAsync(userId.Value);
+
+                var audience = refreshToken.Audiences.FirstOrDefault();
+                var validAudience = _configuration.GetSection("JWT").GetValue("Audience", "defaultAudience");
+
+                var issuer = refreshToken.Issuer;
+                var validIssuer = _configuration.GetSection("JWT").GetValue("Issuer", "defaultIssuer");
+
+                if (refreshToken.ValidTo < DateTime.Now
+                    || user == null
+                    || audience != validAudience
+                    || issuer != validIssuer)
+                {
+                    return Unauthorized("Invalid refresh token");
+                }
+
+                var userRoles = await _userManager.GetRolesAsync(user);
+                var authClaims = new List<Claim>
                     {
                         new Claim(ClaimTypes.NameIdentifier, user.Id),
                         new Claim(ClaimTypes.Name, user.UserName),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     };
 
-            foreach (var userRole in userRoles)
-            {
-                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+                foreach (var userRole in userRoles)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+                }
+
+                var token = _tokenService.GenerateNewToken(authClaims, false);
+
+                return Ok(new
+                {
+                    token = new JwtSecurityTokenHandler().WriteToken(token),
+                    expiration = token.ValidTo,
+                });
             }
-
-            var token = _tokenService.GenerateNewToken(authClaims, false);
-
-            return Ok(new
+            catch (Exception e)
             {
-                token = new JwtSecurityTokenHandler().WriteToken(token),
-                expiration = token.ValidTo,
-            });
+                return Unauthorized("Invalid refresh token");
+            }
+            
         }
 
         [HttpPost("logout")]

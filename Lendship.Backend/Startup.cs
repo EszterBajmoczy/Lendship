@@ -99,9 +99,8 @@ namespace Lendship.Backend
             services.AddScoped<IReservationRepository, ReservationRepository>();
             services.AddScoped<ISavedAdvertisementRepository, SavedAdvertisementRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUsersAndConversationsRepository, UsersAndConversationsRepository>();
             services.AddScoped<IUsersAndClosedGroupsRepository, UsersAndClosedGroupsRepository>();
-            services.AddScoped<IUsersAndClosedGroupsRepository, UsersAndClosedGroupsRepository>();
-
 
             //services
             services.AddScoped<IAdvertisementService, AdvertisementService>();
@@ -135,14 +134,7 @@ namespace Lendship.Backend
                     options.SecurityTokenValidators.Add(serviceProvider.GetService<TokenValidator>());
                     options.SaveToken = true;
                     options.RequireHttpsMetadata = false;
-                    options.TokenValidationParameters = new TokenValidationParameters()
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidAudience = Configuration.GetSection("JWT").GetValue("Audience", "defaultAudience"),
-                        ValidIssuer = Configuration.GetSection("JWT").GetValue("Issuer", "defaultIssuer"),
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetSection("JWT").GetValue("Key", "defaultKey")))
-                    };
+                    options.TokenValidationParameters = new CustomTokenValidationParameters(Configuration).GetTokenValidationParameters();
                 });
 
             services.AddScoped<IProfileService, ProfileService>();
