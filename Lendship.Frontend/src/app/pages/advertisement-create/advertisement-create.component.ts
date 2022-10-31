@@ -8,9 +8,9 @@ import {AdvertisementService} from "../../services/advertisement/advertisement.s
 import {AdvertisementDetail} from "../../models/advertisement-detail";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FileUploadService} from "../../services/file-upload/file-upload.service";
-import {NgbDateHandlerService} from "../../services/date-handler/ngb-date-handler.service";
 import {Category} from "../../models/category";
 import {environment} from "../../../environments/environment";
+import {DateHandlerService} from "../../services/date-handler/date-handler.service";
 
 
 @Component({
@@ -48,7 +48,7 @@ export class AdvertisementCreateComponent implements OnInit {
     private modalService: NgbModal,
     private advertisementService: AdvertisementService,
     private fileUploadService: FileUploadService,
-    private ngbDateHandlerService: NgbDateHandlerService,
+    private ngbDateHandlerService: DateHandlerService,
     private router: Router,
     activatedRoute: ActivatedRoute)
   {

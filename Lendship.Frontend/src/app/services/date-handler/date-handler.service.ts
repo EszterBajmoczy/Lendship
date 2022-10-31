@@ -4,7 +4,7 @@ import {NgbDate} from "@ng-bootstrap/ng-bootstrap";
 @Injectable({
   providedIn: 'root'
 })
-export class NgbDateHandlerService {
+export class DateHandlerService {
 
   constructor() { }
 

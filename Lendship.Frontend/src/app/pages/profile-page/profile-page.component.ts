@@ -5,6 +5,7 @@ import {UserService} from "../../services/user/user.service";
 import {UserDetail} from "../../models/user-detail";
 import {AuthService} from "../../services/auth/auth.service";
 import {environment} from "../../../environments/environment";
+import {DateHandlerService} from "../../services/date-handler/date-handler.service";
 
 @Component({
   selector: 'app-profile-page',
@@ -13,8 +14,8 @@ import {environment} from "../../../environments/environment";
 })
 export class ProfilePageComponent implements OnInit {
   baseUrl = environment.baseUrl;
-  image
   user: UserDetail | undefined;
+  isOwn: Boolean = true;
 
   evaluationsAdvertiser: EvaluationAdvertiser[] | undefined;
   evaluationsLender: EvaluationLender[] | undefined;
@@ -22,24 +23,30 @@ export class ProfilePageComponent implements OnInit {
   showAdvertiserEvaluations: boolean = false;
   showLenderEvaluations: boolean = false;
 
-  constructor(private userService: UserService, authService: AuthService, activatedRoute: ActivatedRoute) {
-    this.image = authService.getProfileImage();
+  constructor(
+    private userService: UserService,
+    authService: AuthService,
+    private dateHandlerService: DateHandlerService,
+    activatedRoute: ActivatedRoute) {
     activatedRoute.params.subscribe( params => {
       let id = params['id'];
       if(id != null){
         this.userService.getOtherUser(id)
           .subscribe(user => {
-            console.log("other" +user);
+            console.log("other");
+            console.log(user);
             this.user = user;
+            this.isOwn = false;
           });
       } else {
         this.userService.getUser()
           .subscribe(user => {
             console.log(user);
             this.user = user;
-            this.loadAdvertiserEvaluations();
+            this.isOwn = true;
           });
       }
+      this.loadAdvertiserEvaluations();
     });
   }
 
@@ -49,6 +56,9 @@ export class ProfilePageComponent implements OnInit {
       this.userService.getEvaluationAdvertiserUser(this.user.id)
         .subscribe(evaluations => {
           console.log(evaluations);
+          evaluations.map(ev => {
+            ev.creationFormatted = this.dateHandlerService.convertDateToString(new Date(ev.creation));
+          });
           this.evaluationsAdvertiser = evaluations;
         });
     }
@@ -61,6 +71,9 @@ export class ProfilePageComponent implements OnInit {
       this.userService.getEvaluationLenderUser(this.user.id)
         .subscribe(evaluations => {
           console.log(evaluations);
+          evaluations.map(ev => {
+            ev.creationFormatted = this.dateHandlerService.convertDateToString(new Date(ev.creation));
+          });
           this.evaluationsLender = evaluations;
         });
     }

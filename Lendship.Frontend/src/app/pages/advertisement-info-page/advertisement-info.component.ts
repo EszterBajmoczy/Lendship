@@ -157,4 +157,8 @@ export class AdvertisementInfoComponent implements OnInit {
         this.router.navigateByUrl('conversations/' + this.id + '/' + conId);
       });
   }
+
+  goToProfile(id: string) {
+    this.router.navigateByUrl('profile/' + id);
+  }
 }

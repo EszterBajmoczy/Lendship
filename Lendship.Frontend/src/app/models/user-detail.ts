@@ -8,4 +8,5 @@ export interface UserDetail extends User{
   location: string,
   registration: string,
   image: string,
+  credit: number,
 }
