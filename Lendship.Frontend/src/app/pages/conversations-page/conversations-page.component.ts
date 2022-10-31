@@ -19,6 +19,11 @@ export class ConversationsPageComponent implements OnInit {
       .subscribe((cons) => {
         console.log(cons);
         console.log(cons[0].users[0].image);
+        cons.map(con => {
+          if (con.users[0].image === undefined || con.users[0].image.length === 0){
+            con.users[0].image = environment.baseImage;
+          }
+        })
         this.conversations = cons;
         this.loading = false;
       });

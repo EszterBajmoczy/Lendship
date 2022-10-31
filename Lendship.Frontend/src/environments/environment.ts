@@ -6,7 +6,8 @@ export const environment = {
   production: false,
   baseUrl: "https://localhost:44377/",
   geocodingBaseUrl: "https://maps.googleapis.com/maps/api/geocode/json",
-  geocodingApiKey: "AIzaSyA6IWSb32vNokzBHBMHnl-LanAa9fU56Yc"
+  geocodingApiKey: "AIzaSyA6IWSb32vNokzBHBMHnl-LanAa9fU56Yc",
+  baseImage: "//blank.jpg",
 };
 
 /*
