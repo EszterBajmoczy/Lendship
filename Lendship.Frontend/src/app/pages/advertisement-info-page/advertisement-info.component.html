@@ -5,7 +5,7 @@
 </div>
 <div *ngIf="ad" class="container col-lg-10">
   <div class="d-flex justify-content-between">
-    <div class="d-flex profile-info align-items-center mt-2 mb-lg-4">
+    <div class="d-flex profile-info align-items-center mt-2 mb-lg-4" (click)="goToProfile(ad.user.id)">
       <div class="me-4">
         <img *ngIf="ad.user.image === undefined; else elseBlock" class="rounded-circle img-profile" style="object-fit: cover" src="https://localhost:44377/images/blank.jpg">
         <ng-template #elseBlock>
@@ -101,7 +101,7 @@
     </div>
 
     <div class="d-flex justify-content-center p-2">
-      <button class="btn btn-primary m-2" (click)="open(sendMsgPopup)">Send message</button>
+      <button *ngIf="!isOwnAdvertisement" class="btn btn-primary m-2" (click)="open(sendMsgPopup)">Send message</button>
       <button *ngIf="!isOwnAdvertisement" class="btn btn-primary m-2" (click)="open(reservePopup)">Reserve</button>
     </div>
   </div>

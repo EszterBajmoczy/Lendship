@@ -4,7 +4,7 @@ import {IReservationDetail} from "../../models/reservation-detail";
 import {Router} from "@angular/router";
 import {User} from "../../models/user";
 import {NgbCalendar, NgbDate, NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {NgbDateHandlerService} from "../../services/date-handler/ngb-date-handler.service";
+import {DateHandlerService} from "../../services/date-handler/date-handler.service";
 import {EvaluationAdvertiser, EvaluationLender} from "../../models/evaluation";
 import {UserService} from "../../services/user/user.service";
 import {environment} from "../../../environments/environment";
@@ -34,7 +34,7 @@ export class ReservationPageComponent implements OnInit {
 
   constructor(private reservationService: ReservationService,
               private userService: UserService,
-              private ngbDateHandler: NgbDateHandlerService,
+              private ngbDateHandler: DateHandlerService,
               private calendar: NgbCalendar,
               private modalService: NgbModal,
               private router: Router) {
