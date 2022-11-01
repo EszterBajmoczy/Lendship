@@ -22,9 +22,7 @@ namespace Lendship.Backend.Models
 
         public DbSet<EvaluationLender> EvaluationLenders { get; set; }
 
-        public DbSet<ClosedGroup> ClosedGroups { get; set; }
-
-        public DbSet<UsersAndClosedGroups> UsersAndClosedGroups { get; set; }
+        public DbSet<PrivateUser> PrivateUsers { get; set; }
 
         public DbSet<Message> Messages { get; set; }
 

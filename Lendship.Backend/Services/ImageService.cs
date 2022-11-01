@@ -90,7 +90,8 @@ namespace Lendship.Backend.Services
 
         public List<ImageDTO> GetImages(int advertisementId)
         {
-            var userId = _advertisementRepository.GetById(advertisementId).User.Id;
+            var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = _advertisementRepository.GetById(advertisementId, signedInUserId).User.Id;
             var imgLocation = _configuration.GetSection("Image").GetValue("LocationFolder", "wwwroot\\images");
             var directory = Path.Combine(imgLocation, userId, advertisementId.ToString());
 
@@ -163,7 +164,7 @@ namespace Lendship.Backend.Services
         public void UploadImages(IFormFileCollection files, int advertisementId)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var ad = _advertisementRepository.GetById(advertisementId);
+            var ad = _advertisementRepository.GetById(advertisementId, signedInUserId);
 
             var imgLocation = _configuration.GetSection("Image").GetValue("LocationFolder", "wwwroot\\images");
 

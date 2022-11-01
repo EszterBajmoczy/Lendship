@@ -123,7 +123,7 @@ namespace Lendship.Backend.DTO
         [Required]
         
         [DataMember(Name="category")]
-        public Category Category { get; set; }
+        public CategoryDto Category { get; set; }
 
         /// <summary>
         /// Gets or Sets Availabilities
@@ -140,9 +140,16 @@ namespace Lendship.Backend.DTO
         public List<string> ImageLocations { get; set; }
 
         /// <summary>
+        /// Gets or Sets PrivateUsers
+        /// </summary>
+
+        [DataMember(Name = "privateUsers")]
+        public List<UserDto> PrivateUsers { get; set; }
+
+        /// <summary>
         /// Gets or Sets Creation
         /// </summary>
-        
+
         [DataMember(Name="creation")]
         public DateTime? Creation { get; set; }
 

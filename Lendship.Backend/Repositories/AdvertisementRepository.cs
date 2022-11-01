@@ -16,23 +16,29 @@ namespace Lendship.Backend.Repositories
             _dbContext = dbContext;
         }
 
-        public IEnumerable<Advertisement> GetAll()
-        {
-            return _dbContext.Advertisements
-                .Include(a => a.User)
-                .Include(a => a.Category)
-                .Include(a => a.ImageLocations)
-                .Include(a => a.Availabilities);
-        }
-
-        public Advertisement GetById(int? id)
+        public IEnumerable<Advertisement> GetAll(string signedInUserId)
         {
             return _dbContext.Advertisements
                 .Include(a => a.User)
                 .Include(a => a.Category)
                 .Include(a => a.ImageLocations)
                 .Include(a => a.Availabilities)
-                .Where(a => a.Id == id)
+                .Include(a => a.PrivateUsers)
+                .ThenInclude(p => p.User)
+                .Where(x => x.User.Id == signedInUserId || (!x.IsPublic && x.PrivateUsers.Any(p => p.UserId == signedInUserId)));
+        }
+
+        public Advertisement GetById(int? id, string signedInUserId)
+        {
+            return _dbContext.Advertisements
+                .AsNoTracking()
+                .Include(a => a.User)
+                .Include(a => a.Category)
+                .Include(a => a.ImageLocations)
+                .Include(a => a.Availabilities)
+                .Include(a => a.PrivateUsers)
+                .ThenInclude(p => p.User)
+                .Where(a => a.Id == id && (a.User.Id == signedInUserId || (!a.IsPublic && a.PrivateUsers.Any(p => p.UserId == signedInUserId))))
                 .FirstOrDefault();
         }
 

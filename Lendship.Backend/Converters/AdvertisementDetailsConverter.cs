@@ -12,11 +12,13 @@ namespace Lendship.Backend.Converters
     {
         private readonly IUserConverter _userConverter;
         private readonly IAvailabilityConverter _availabillityConverter;
+        private readonly ICategoryConverter _categoryConverter;
 
-        public AdvertisementDetailsConverter(IUserConverter userConverter, IAvailabilityConverter availabillityConverter)
+        public AdvertisementDetailsConverter(IUserConverter userConverter, IAvailabilityConverter availabillityConverter, ICategoryConverter categoryConverter)
         {
             _userConverter = userConverter;
             _availabillityConverter = availabillityConverter;
+            _categoryConverter = categoryConverter;
         }
 
         public AdvertisementDetailsDto ConvertToDto(Advertisement ad)
@@ -27,6 +29,12 @@ namespace Lendship.Backend.Converters
             }
 
             var userDTO = _userConverter.ConvertToDto(ad.User);
+            var privateUserDTOs = new List<UserDto>();
+
+            if (ad.PrivateUsers != null && ad.PrivateUsers.Count > 0)
+            {
+                privateUserDTOs = ad.PrivateUsers.Select(x => _userConverter.ConvertToDto(x.User)).ToList();
+            }
 
             IEnumerable<AvailabilityDto> availabilityDtos = ad.Availabilities.Select(a => _availabillityConverter.ConvertToDto(a));
 
@@ -44,9 +52,10 @@ namespace Lendship.Backend.Converters
                 Longitude = ad.Longitude,
                 Location = ad.Location,
                 IsPublic = ad.IsPublic,
-                Category = ad.Category,
+                Category = _categoryConverter.ConvertToDto(ad.Category),
                 Availabilities = availabilityDtos.ToList(),
                 ImageLocations = ad.ImageLocations.Select(i => i.Location).ToList(),
+                PrivateUsers = privateUserDTOs,
                 Creation = ad.Creation
             };
         }
