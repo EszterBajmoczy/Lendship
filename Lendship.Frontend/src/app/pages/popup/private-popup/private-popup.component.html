@@ -1,0 +1,8 @@
+<form [formGroup]="privateUserForm">
+  <div class="text-center">
+    <input class="w-100" type="text" formControlName="userEmail" placeholder="Email address">
+    <p *ngIf="error.length > 0" class="text-danger">{{error}}</p>
+    <button type="button" class="btn btn-primary m-2" (click)="checkUser()">Check if user exists</button>
+  </div>
+</form>
+

@@ -120,14 +120,26 @@
       </div>
 
       <div class="d-flex align-items-center">
-        <input formControlName="isPublic" id="isPublic" type="checkbox"  class="me-2 ms-0 w-auto filled-in">
+        <input formControlName="isPublic" id="isPublic" type="checkbox" (click)="showPrivateWindow()" class="me-2 ms-0 w-auto filled-in">
         <label for="isPublic">Public</label>
+      </div>
+      <div *ngIf="isPrivate" class="availability-section mt-4">
+        <div class="d-flex align-items-center justify-content-between ps-4 pe-4 pt-2 pb-2">
+          <p class="form-info m-0">Add users who can see the advertisement</p>
+          <button class="btn btn-primary" type='button' (click)="open(privatePopup)"><i class="fa-solid fa-plus"></i></button>
+        </div>
+        <div class="d-flex">
+          <div *ngFor="let user of privateUserList; let i = index" class="date-section d-flex align-items-center">
+            <p class="form-info m-0 p-2">{{user.name}}</p>
+            <button class="btn btn-primary m-0" (click)="removePrivateUser(i)"><i class="fa-solid fa-circle-minus"></i></button>
+          </div>
+        </div>
       </div>
 
       <div class="availability-section mt-4">
         <div class="d-flex align-items-center justify-content-between ps-4 pe-4 pt-2 pb-2">
           <p class="form-info m-0">Add availabilities</p>
-          <button class="btn btn-primary" type='button' (click)="open(reservePopup)"><i class="fa-solid fa-calendar-plus"></i></button>
+          <button class="btn btn-primary" type='button' (click)="open(availabilityPopup)"><i class="fa-solid fa-calendar-plus"></i></button>
         </div>
 
         <div *ngFor="let av of availabilities; let i = index" class="date-section d-flex align-items-center align-items-center justify-content-between">
@@ -156,9 +168,9 @@
   </div>
 </div>
 
-<ng-template #reservePopup let-modal>
+<ng-template #availabilityPopup let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Select availability interval</h4>
+    <h4 class="modal-title" >Select availability interval</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body d-flex justify-content-center">
@@ -171,4 +183,20 @@
     <button type="button" class="btn btn-outline-dark" (click)="modal.close('Cancel')">Cancel</button>
     <button type="button" class="btn btn-outline-dark" (click)="modal.close('Add')">Add</button>
   </div>
+</ng-template>
+
+<ng-template #privatePopup let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Add user by email</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body d-flex justify-content-center">
+    <app-private-popup class="w-100"
+                       [addedUsers]="privateUserList"
+                       (user)="addPrivateUser($event)">
+
+    </app-private-popup>
+  </div>
+
+  <button type="button" [disabled]="privateUserToBe === undefined" class="btn btn-outline-dark" (click)="modal.close('AddPrivateUser')">Add user</button>
 </ng-template>

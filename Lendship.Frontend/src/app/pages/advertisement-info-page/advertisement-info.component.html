@@ -25,7 +25,9 @@
       <button *ngIf="!isOwnAdvertisement && isSaved" class="btn btn-success align-self-center m-1" (click)="remove()"><i class="fa-solid fa-star"></i></button>
     </div>
  </div>
-
+  <div *ngIf="!ad.isPublic" class="private d-flex p-2">
+    <p class="m-0">This advertisement is private.</p>
+  </div>
   <div class="bg-white align-content-center">
     <h3 class="text-center p-4">{{ad.title}}</h3>
     <div class="d-flex justify-content-between">

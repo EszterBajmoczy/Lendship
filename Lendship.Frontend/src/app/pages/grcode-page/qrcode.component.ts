@@ -62,7 +62,11 @@ export class QrcodeComponent implements OnInit {
             this.isMessage = true;
             this.openInformation(this.informationPopup)
           } else{
-            this.router.navigateByUrl('home');
+            console.log("???????!!!!!!!")
+            console.log(result)
+            this.evaluationBasic.message = "Wrong QR code!"
+            this.isMessage = true;
+            this.openInformation(this.informationPopup)
           }
         }
       });
@@ -97,7 +101,9 @@ export class QrcodeComponent implements OnInit {
 
   openInformation(content: any) {
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'})
-      .result.catch((res) => {  this.router.navigateByUrl('home') });
+      .result
+        .then((res) => { this.router.navigateByUrl('home') })
+        .catch((res) => { this.router.navigateByUrl('home') });
   }
 
   submitEvaluationAdvertiser(evaluation: EvaluationAdvertiser) {

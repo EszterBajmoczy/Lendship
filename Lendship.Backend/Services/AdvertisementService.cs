@@ -24,6 +24,7 @@ namespace Lendship.Backend.Services
         private readonly ICategoryService _categoryService;
         private readonly IReservationService _reservationService;
         private readonly IImageService _imageService;
+        private readonly IPrivateUserService _privateUserService;
 
         private readonly IAdvertisementDetailsConverter _adDetailsConverter;
         private readonly IAdvertisementConverter _adConverter;
@@ -39,6 +40,7 @@ namespace Lendship.Backend.Services
             ICategoryService categoryService,
             IReservationService reservationService, 
             IImageService imageService,
+            IPrivateUserService privateUserService,
             IAdvertisementDetailsConverter advertisementDetailsConverter,
             IAdvertisementConverter advertisementConverter,
             IAvailabilityConverter availabilityConverter)
@@ -52,6 +54,7 @@ namespace Lendship.Backend.Services
             _categoryService = categoryService;
             _reservationService = reservationService;
             _imageService = imageService;
+            _privateUserService = privateUserService;
 
             _adDetailsConverter = advertisementDetailsConverter;
             _adConverter = advertisementConverter;
@@ -60,8 +63,9 @@ namespace Lendship.Backend.Services
 
         public AdvertisementDetailsDto GetAdvertisement(int advertisementId)
         {
-            var advertisement = _advertisementRepository.GetById(advertisementId);
-
+            var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var advertisement = _advertisementRepository.GetById(advertisementId, signedInUserId);
+            
             if (advertisement == null)
             {
                 throw new AdvertisementNotFoundException("Advertisement not found.");
@@ -83,6 +87,7 @@ namespace Lendship.Backend.Services
             _advertisementRepository.Create(ad);
 
             UpdateAvailabilities(ad, advertisement.Availabilities);
+            _privateUserService.UpdatePrivateUsers(ad.Id, advertisement.PrivateUsers);
 
             return ad.Id;
         }
@@ -91,7 +96,7 @@ namespace Lendship.Backend.Services
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var oldAd = _advertisementRepository.GetById(advertisement.Id);
+            var oldAd = _advertisementRepository.GetById(advertisement.Id, signedInUserId);
 
             if (oldAd == null)
             {
@@ -106,19 +111,20 @@ namespace Lendship.Backend.Services
             var category = _categoryService.GetOrCreateCategoryByName(advertisement.Category.Name);
 
             var user = _userRepository.GetById(signedInUserId);
+            var privateUsers = advertisement.PrivateUsers.Select(x => _userRepository.GetById(x.Id.ToString()));
 
             var ad = _adDetailsConverter.ConvertToEntity(advertisement, user, category);
 
             _advertisementRepository.Update(ad);
 
             UpdateAvailabilities(ad, advertisement.Availabilities);
-
-            //_dbContext.SaveChanges();
+            _privateUserService.UpdatePrivateUsers(ad.Id, advertisement.PrivateUsers);
         }
 
         public void DeleteAdvertisement(int advertisementId)
         {
-            var advertisement = _advertisementRepository.GetById(advertisementId);
+            var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var advertisement = _advertisementRepository.GetById(advertisementId, signedInUserId);
 
 
             if (advertisement == null)
@@ -134,7 +140,9 @@ namespace Lendship.Backend.Services
 
         public IEnumerable<AdvertisementDto> GetAdvertisements(string advertisementType, bool creditPayment, bool cashPayment, string category, string city, int distance, string word, string sortBy)
         {
-            var ads = _advertisementRepository.GetAll();
+            var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var ads = _advertisementRepository.GetAll(signedInUserId)
+                        .Where(x => x.User.Id == signedInUserId || (!x.IsPublic && x.PrivateUsers.Any(p => p.UserId == signedInUserId)));
 
             return FilterAdvertisments(ads, advertisementType, creditPayment, cashPayment, category, city, distance, word, sortBy)
                     .Select(x => _adConverter.ConvertToDto(x));
@@ -144,7 +152,7 @@ namespace Lendship.Backend.Services
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var ads = _advertisementRepository.GetAll()
+            var ads = _advertisementRepository.GetAll(signedInUserId)
                         .Where(a => a.User.Id == signedInUserId)
                         .ToList();
 
@@ -157,9 +165,10 @@ namespace Lendship.Backend.Services
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var savedAds = _savedAdvertisementRepository.GetSavedAdvertisementIdsByUser(signedInUserId).ToList();
-            var advertisements = _advertisementRepository.GetAll()
-                .Where(a => savedAds.Contains(a.Id))
-                .ToList();
+            var advertisements = _advertisementRepository.GetAll(signedInUserId)
+                        .Where(x => x.User.Id == signedInUserId || (!x.IsPublic && x.PrivateUsers.Any(p => p.UserId == signedInUserId)))
+                        .Where(a => savedAds.Contains(a.Id))
+                        .ToList();
 
             return FilterAdvertisments(advertisements, advertisementType, creditPayment, cashPayment, category, city, distance, word, sortBy)
                 .Select(x => _adConverter.ConvertToDto(x));
@@ -175,7 +184,7 @@ namespace Lendship.Backend.Services
         public void SaveAdvertisementForUser(int advertisementId)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var advertisement = _advertisementRepository.GetById(advertisementId);
+            var advertisement = _advertisementRepository.GetById(advertisementId, signedInUserId);
 
             if (advertisement == null)
             {

@@ -46,7 +46,7 @@ namespace Lendship.Backend.Services
         public int CreateConversation(ConversationDto conversationDto)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var advertisement = _advertisementRepository.GetById(conversationDto.AdvertisementId);
+            var advertisement = _advertisementRepository.GetById(conversationDto.AdvertisementId, signedInUserId);
 
             if (advertisement == null)
             {

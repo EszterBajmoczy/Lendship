@@ -76,8 +76,8 @@ namespace Lendship.Backend.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exception at uploading profile image: " + e.Message);
-                return this.BadRequest("Exception at uploading profile image: " + e.Message);
+                Console.WriteLine("Exception at uploading images: " + e.Message);
+                return this.BadRequest("Exception at uploading images: " + e.Message);
             }
 
             throw new NotImplementedException();

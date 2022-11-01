@@ -50,5 +50,6 @@ namespace Lendship.Backend.Models
 
         public ICollection<Availability> Availabilities { get; set; }
 
+        public virtual ICollection<PrivateUser> PrivateUsers { get; set; }
     }
 }
