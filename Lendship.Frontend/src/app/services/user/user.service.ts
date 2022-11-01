@@ -7,6 +7,7 @@ import { GeocodingService} from "../geocoding/geocoding.service";
 import {EvaluationAdvertiser, EvaluationLender} from "../../models/evaluations";
 import {environment} from "../../../environments/environment";
 import {IEvaluationAdvertiser, IEvaluationLender} from "../../models/evaluation";
+import {User} from "../../models/user";
 
 @Injectable({
   providedIn: 'root'
@@ -27,9 +28,14 @@ export class UserService {
   }
 
   getOtherUser(id: string): Observable<UserDetail>{
-    return this.http.get<UserDetail>(this.baseUrl + "Profile/" + id, { headers: this.headers})
+    return this.http.get<UserDetail>(this.baseUrl + "Profile/user/" + id, { headers: this.headers})
       .pipe(
         map((response: UserDetail) => this.setLocation(response)));
+  }
+
+  getUserByEmail(email: string): Observable<User>{
+    console.log()
+    return this.http.get<User>(this.baseUrl + "Profile/email/" + email, { headers: this.headers});
   }
 
   getEvaluationAdvertiserUser(id: string): Observable<EvaluationAdvertiser[]>{

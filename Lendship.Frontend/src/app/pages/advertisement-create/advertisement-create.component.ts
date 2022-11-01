@@ -11,6 +11,7 @@ import {FileUploadService} from "../../services/file-upload/file-upload.service"
 import {Category} from "../../models/category";
 import {environment} from "../../../environments/environment";
 import {DateHandlerService} from "../../services/date-handler/date-handler.service";
+import {User} from "../../models/user";
 
 
 @Component({
@@ -23,6 +24,9 @@ export class AdvertisementCreateComponent implements OnInit {
   baseUrl = environment.baseUrl;
   advertisement: AdvertisementDetail | undefined;
   availabilities = Array<Availability>();
+  privateUserList = Array<User>();
+  privateUserToBe: User | undefined;
+  isPrivate = false;
 
   categories = Array<Category>();
   categoryKeyword = 'name';
@@ -59,11 +63,12 @@ export class AdvertisementCreateComponent implements OnInit {
           .subscribe((ad) => {
               this.advertisement = ad;
               this.availabilities = this.transformAvailabilities(ad.availabilities);
+              this.privateUserList = ad.privateUsers;
+              this.isPrivate = !ad.isPublic;
               this.mode = "Edit";
               this.initializeForm();
-              console.log(ad.imageLocations);
+              console.log(ad);
             }
-            //TODO error handling
           )
       } else {
         this.mode = "Create";
@@ -86,9 +91,10 @@ export class AdvertisementCreateComponent implements OnInit {
       location: ["", [Validators.required], [this.locationValidator.exists.bind(this.locationValidator)]],
       latitude: [0],
       longitude: [0],
-      isPublic: [true],
+      isPublic: [!this.isPrivate],
       category: [null, [Validators.required]],
-      availabilities: []
+      availabilities: [],
+      privateUsers: []
     });
   }
 
@@ -114,9 +120,10 @@ export class AdvertisementCreateComponent implements OnInit {
       location: [this.advertisement?.location, [Validators.required], [this.locationValidator.exists.bind(this.locationValidator)]],
       latitude: [this.advertisement?.latitude],
       longitude: [this.advertisement?.longitude],
-      isPublic: [true],
+      isPublic: [this.advertisement?.isPublic],
       category: [this.advertisement?.category, [Validators.required]],
-      availabilities: [this.advertisement?.availabilities]
+      availabilities: [this.advertisement?.availabilities],
+      privateUsers: [this.advertisement?.privateUsers]
     });
   }
 
@@ -163,6 +170,10 @@ export class AdvertisementCreateComponent implements OnInit {
     this.advertisementForm.get("availabilities")?.setValue(value);
   }
 
+  set privateUsers(value: User[]) {
+    this.advertisementForm.get("privateUsers")?.setValue(value);
+  }
+
   set category(value: any) {
     this.advertisementForm.get("category")?.setValue(value);
   }
@@ -187,13 +198,14 @@ export class AdvertisementCreateComponent implements OnInit {
         this.latitude = data.results[0].geometry.location.lat;
         this.longitude = data.results[0].geometry.location.lng;
         this.availability = this.availabilities;
+        this.privateUsers = this.privateUserList;
 
         let categoryName = this.category?.value.name;
         if(categoryName === undefined){
           this.category = new Category(0, this.category?.value);
         }
-
-        this.save(this.advertisementForm.value)
+        console.log(this.advertisementForm.value);
+        this.save(this.advertisementForm.value);
       })
   }
 
@@ -220,6 +232,11 @@ export class AdvertisementCreateComponent implements OnInit {
         let dateTo = this.ngbDateHandlerService.convertNgbDateToString(this.reserveTo);
         this.availabilities.push(new Availability(0, dateFrom, dateTo));
         this.error = "";
+      } else if(result == "AddPrivateUser" && this.privateUserToBe !== undefined){
+        console.log("AddPrivateUser");
+        this.privateUserList.push(this.privateUserToBe);
+        this.privateUserToBe = undefined;
+        console.log(this.privateUserList)
       }
     });
   }
@@ -242,7 +259,7 @@ export class AdvertisementCreateComponent implements OnInit {
   }
 
   uploadFiles(id: number) {
-    if(this.newImages != null){
+    if(this.newImages != null && this.newImages.length > 0){
       this.fileUploadService.upload(id, this.newImages)
         .subscribe(
         (event: any) => {
@@ -264,5 +281,17 @@ export class AdvertisementCreateComponent implements OnInit {
       let element = this.advertisement?.imageLocations.splice(i, 1)[0];
       this.fileUploadService.deleteFile(this.advertisement?.id, element);
     }
+  }
+
+  showPrivateWindow() {
+    this.isPrivate = !this.isPrivate;
+  }
+
+  addPrivateUser(user: User) {
+    this.privateUserToBe = user;
+  }
+
+  removePrivateUser(i: number) {
+    this.privateUserList.splice(i, 1);
   }
 }
