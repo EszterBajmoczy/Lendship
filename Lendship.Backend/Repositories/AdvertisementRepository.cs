@@ -25,7 +25,7 @@ namespace Lendship.Backend.Repositories
                 .Include(a => a.Availabilities)
                 .Include(a => a.PrivateUsers)
                 .ThenInclude(p => p.User)
-                .Where(x => x.User.Id == signedInUserId || (!x.IsPublic && x.PrivateUsers.Any(p => p.UserId == signedInUserId)));
+                .Where(x => x.IsPublic || x.User.Id == signedInUserId || x.PrivateUsers.Any(p => p.UserId == signedInUserId));
         }
 
         public Advertisement GetById(int? id, string signedInUserId)

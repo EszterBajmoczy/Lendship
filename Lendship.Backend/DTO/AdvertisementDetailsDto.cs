@@ -19,6 +19,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using Lendship.Backend.Models;
+using static Lendship.Backend.DTO.ReservationDetailDto;
 
 namespace Lendship.Backend.DTO
 { 
@@ -34,6 +35,33 @@ namespace Lendship.Backend.DTO
 
         [DataMember(Name="id")]
         public int? Id { get; set; }
+
+        /// <summary>
+        /// Gets or Sets AdvertisementType
+        /// </summary>
+        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public enum AdvertisementTypeEnum
+        {
+            /// <summary>
+            /// Enum CreatedEnum for Property
+            /// </summary>
+            [EnumMember(Value = "Property")]
+            PropertyEnum = 1,
+
+            /// <summary>
+            /// Enum AcceptedEnum for Service
+            /// </summary>
+            [EnumMember(Value = "Service")]
+            ServiceEnum = 2
+        }
+
+        /// <summary>
+        /// Gets or Sets AdvertisementType
+        /// </summary>
+        [Required]
+
+        [DataMember(Name = "advertisementType")]
+        public AdvertisementTypeEnum? AdvertisementType { get; set; }
 
         /// <summary>
         /// Gets or Sets User
@@ -217,12 +245,12 @@ namespace Lendship.Backend.DTO
                     Id == other.Id ||
                     Id != null &&
                     Id.Equals(other.Id)
-                ) && 
+                ) &&
                 (
                     User == other.User ||
                     User != null &&
                     User.Equals(other.User)
-                ) && 
+                ) &&
                 (
                     Title == other.Title ||
                     Title != null &&
@@ -336,7 +364,7 @@ namespace Lendship.Backend.DTO
                     hashCode = hashCode * 59 + Availabilities.GetHashCode();
                     if (ImageLocations != null)
                     hashCode = hashCode * 59 + ImageLocations.GetHashCode();
-                if (Creation != null)
+                    if (Creation != null)
                     hashCode = hashCode * 59 + Creation.GetHashCode();
                 return hashCode;
             }

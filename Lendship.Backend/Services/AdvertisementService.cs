@@ -1,4 +1,5 @@
-﻿using Lendship.Backend.DTO;
+﻿using GeoCoordinatePortable;
+using Lendship.Backend.DTO;
 using Lendship.Backend.Exceptions;
 using Lendship.Backend.Interfaces.Converters;
 using Lendship.Backend.Interfaces.Repositories;
@@ -26,7 +27,7 @@ namespace Lendship.Backend.Services
         private readonly IImageService _imageService;
         private readonly IPrivateUserService _privateUserService;
 
-        private readonly IAdvertisementDetailsConverter _adDetailsConverter;
+        private readonly IAdvertisementConverter _adDetailsConverter;
         private readonly IAdvertisementConverter _adConverter;
         private readonly IAvailabilityConverter _availabilityConverter;
 
@@ -41,7 +42,7 @@ namespace Lendship.Backend.Services
             IReservationService reservationService, 
             IImageService imageService,
             IPrivateUserService privateUserService,
-            IAdvertisementDetailsConverter advertisementDetailsConverter,
+            IAdvertisementConverter advertisementDetailsConverter,
             IAdvertisementConverter advertisementConverter,
             IAvailabilityConverter availabilityConverter)
         {
@@ -71,7 +72,7 @@ namespace Lendship.Backend.Services
                 throw new AdvertisementNotFoundException("Advertisement not found.");
             }
 
-            var advertisementDto = _adDetailsConverter.ConvertToDto(advertisement);
+            var advertisementDto = _adDetailsConverter.ConvertToDetailsDto(advertisement);
             return advertisementDto;
         }
 
@@ -138,17 +139,16 @@ namespace Lendship.Backend.Services
             _reservationService.RemoveUpcommingReservations(advertisementId);
         }
 
-        public IEnumerable<AdvertisementDto> GetAdvertisements(string advertisementType, bool creditPayment, bool cashPayment, string category, string city, int distance, string word, string sortBy)
+        public IEnumerable<AdvertisementDto> GetAdvertisements(string advertisementType, bool creditPayment, bool cashPayment, string category, double latitude, double longitude, int distance, string word, string sortBy)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var ads = _advertisementRepository.GetAll(signedInUserId)
-                        .Where(x => x.User.Id == signedInUserId || (!x.IsPublic && x.PrivateUsers.Any(p => p.UserId == signedInUserId)));
+            var ads = _advertisementRepository.GetAll(signedInUserId);
 
-            return FilterAdvertisments(ads, advertisementType, creditPayment, cashPayment, category, city, distance, word, sortBy)
+            return FilterAdvertisments(ads, advertisementType, creditPayment, cashPayment, category, latitude, longitude, distance, word, sortBy)
                     .Select(x => _adConverter.ConvertToDto(x));
         }
 
-        public IEnumerable<AdvertisementDto> GetUsersAdvertisements(string advertisementType, bool creditPayment, bool cashPayment, string category, string city, int distance, string word, string sortBy)
+        public IEnumerable<AdvertisementDto> GetUsersAdvertisements(string advertisementType, bool creditPayment, bool cashPayment, string category, double latitude, double longitude, int distance, string word, string sortBy)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -156,11 +156,11 @@ namespace Lendship.Backend.Services
                         .Where(a => a.User.Id == signedInUserId)
                         .ToList();
 
-            return FilterAdvertisments(ads, advertisementType, creditPayment, cashPayment, category, city, distance, word, sortBy)
+            return FilterAdvertisments(ads, advertisementType, creditPayment, cashPayment, category, latitude, longitude, distance, word, sortBy)
                 .Select(x => _adConverter.ConvertToDto(x));
         }
 
-        public IEnumerable<AdvertisementDto> GetSavedAdvertisements(string advertisementType, bool creditPayment, bool cashPayment, string category, string city, int distance, string word, string sortBy)
+        public IEnumerable<AdvertisementDto> GetSavedAdvertisements(string advertisementType, bool creditPayment, bool cashPayment, string category, double latitude, double longitude, int distance, string word, string sortBy)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -170,7 +170,7 @@ namespace Lendship.Backend.Services
                         .Where(a => savedAds.Contains(a.Id))
                         .ToList();
 
-            return FilterAdvertisments(advertisements, advertisementType, creditPayment, cashPayment, category, city, distance, word, sortBy)
+            return FilterAdvertisments(advertisements, advertisementType, creditPayment, cashPayment, category, latitude, longitude, distance, word, sortBy)
                 .Select(x => _adConverter.ConvertToDto(x));
         }
 
@@ -212,45 +212,54 @@ namespace Lendship.Backend.Services
             return connection != null;
         }
 
-        private IEnumerable<Advertisement> FilterAdvertisments(IEnumerable<Advertisement> ads, string advertisementType, bool creditPayment, bool cashPayment, string category, string city, int distance, string word, string sortBy)
+        private IEnumerable<Advertisement> FilterAdvertisments(IEnumerable<Advertisement> ads, string advertisementType, bool creditPayment, bool cashPayment, string category, double latitude, double longitude, int distance, string word, string sortBy)
         {
-            //TODO advertisemnetType!!
+            if (advertisementType != null && advertisementType.Length > 0)
+            {
+                ads = ads.Where(a => a.AdvertisementType.ToString() == advertisementType);
+            }
 
             if (creditPayment && cashPayment)
             {
-                ads = ads.Where(a => a.Credit != null || a.Price != null).ToList();
+                ads = ads.Where(a => a.Credit != null || a.Price != null);
             }
             else if (creditPayment)
             {
-                ads = ads.Where(a => a.Credit != null).ToList();
+                ads = ads.Where(a => a.Credit != null);
             }
             else if (cashPayment)
             {
-                ads = ads.Where(a => a.Price != null).ToList();
+                ads = ads.Where(a => a.Price != null);
             }
 
             if (category != null && category != "")
             {
-                ads = ads.Where(a => a.Category.Name.ToLower() == category.ToLower()).ToList();
+                ads = ads.Where(a => a.Category.Name.ToLower() == category.ToLower());
             }
 
             if (word != null)
             {
-                ads = ads.Where(a => a.Title.Contains(word) || a.Description.Contains(word)).ToList();
+                ads = ads.Where(a => a.Title.Contains(word) || a.Description.Contains(word));
             }
 
             //TODO city and distance!!
 
+            if (latitude > 0 && longitude > 0 && distance > 0)
+            {
+                var distanceInMeter = distance * 1000;
+                ads = ads.Where(a => (new GeoCoordinate((double)a.Latitude, (double)a.Longitude)).GetDistanceTo(new GeoCoordinate(latitude, longitude)) <= distanceInMeter);
+            }
+
             switch (sortBy)
             {
                 case "Price":
-                    ads = ads.OrderBy(a => a.Price).ToList();
+                    ads = ads.OrderBy(a => a.Price);
                     break;
                 case "Credit":
-                    ads = ads.OrderBy(a => a.Credit).ToList();
+                    ads = ads.OrderBy(a => a.Credit);
                     break;
                 case "Creation":
-                    ads = ads.OrderBy(a => a.Creation).ToList();
+                    ads = ads.OrderBy(a => a.Creation);
                     break;
                 default:
                     break;

@@ -74,7 +74,6 @@ namespace Lendship.Backend
 
             //converters
             services.AddScoped<IAdvertisementConverter, AdvertisementConverter>();
-            services.AddScoped<IAdvertisementDetailsConverter, AdvertisementDetailsConverter>();
             services.AddScoped<IAvailabilityConverter, AvailabilityConverter>();
             services.AddScoped<ICategoryConverter, CategoryConverter>();
             services.AddScoped<IPrivateUserConverter, PrivateUserConverter>();
