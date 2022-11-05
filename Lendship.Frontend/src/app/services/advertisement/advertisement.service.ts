@@ -21,8 +21,8 @@ export class AdvertisementService {
     this.headers = authService.getHeaders();
   }
 
-  getAdvertisements(): Observable<Advertisement[]>{
-    return this.http.get<Advertisement[]>(this.baseUrl, { headers: this.headers});
+  getAdvertisements(search: string): Observable<Advertisement[]>{
+    return this.http.get<Advertisement[]>(this.baseUrl + search, { headers: this.headers});
   }
 
   getOwnAdvertisements(): Observable<Advertisement[]>{

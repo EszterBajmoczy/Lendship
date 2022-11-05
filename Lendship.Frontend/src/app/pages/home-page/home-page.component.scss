@@ -1,2 +1,15 @@
 @import "src/styles/cards.scss";
+@import "src/styles/buttons.scss";
+
+.search {
+  background-color: $color-info;
+}
+
+.advertisementType {
+  background-color: $color-info;
+}
+
+.disabled {
+  background-color: dimgrey;
+}
 

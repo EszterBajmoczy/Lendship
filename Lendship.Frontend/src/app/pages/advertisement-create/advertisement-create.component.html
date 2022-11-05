@@ -8,6 +8,11 @@
     <h1 class="text-center mb-5 mt-2">{{mode}}</h1>
     <form class="align-items-start m-4" [formGroup]="advertisementForm" (ngSubmit)="onSubmit()">
 
+      <div class="d-flex align-items-center">
+        <input formControlName="isService" id="isService" type="checkbox" class="me-2 ms-0 w-auto filled-in">
+        <label for="isService">Service</label>
+      </div>
+
       <div class="d-flex justify-content-between mt-4">
         <label class="col-lg-4" for="title">Title:</label>
         <input id="title" type="text" formControlName="title" placeholder="Title">

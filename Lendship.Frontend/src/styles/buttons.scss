@@ -18,6 +18,12 @@
   color: white;
 }
 
+.btn-disabled {
+  background-color: $color-grey;
+  border: 0;
+  color: black;
+}
+
 .btn-success-long {
   background-color: $color-success;
   border: 0;
