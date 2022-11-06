@@ -11,6 +11,8 @@ import {environment} from "../../../environments/environment";
 })
 export class AdvertisementsPageComponent implements OnInit {
   baseUrl = environment.baseUrl;
+  modeOwn = "Own";
+  modeSaved = "Saved";
   ownAds: Advertisement[] | undefined;
   savedAds: Advertisement[] | undefined;
 
@@ -18,7 +20,7 @@ export class AdvertisementsPageComponent implements OnInit {
   showSaved: boolean = false;
 
   constructor(private adService: AdvertisementService, private router: Router) {
-    this.adService.getOwnAdvertisements()
+    this.adService.getOwnAdvertisements("")
       .subscribe(ads => {
         if(ads !== undefined){
           this.ownAds = ads;
@@ -34,7 +36,7 @@ export class AdvertisementsPageComponent implements OnInit {
   loadSavedAdvertisements(){
     this.showSaved = ! this.showSaved;
     if(this.savedAds === undefined){
-      this.adService.getSavedAdvertisements()
+      this.adService.getSavedAdvertisements("")
         .subscribe( data => {
           if(data !== undefined){
             this.savedAds = data
@@ -47,5 +49,13 @@ export class AdvertisementsPageComponent implements OnInit {
 
   cardClicked(id: number) {
     this.router.navigate(['advertisement', id]);
+  }
+
+  searchSavedAdvertisements(advertisements: Advertisement[]) {
+    this.savedAds = advertisements;
+  }
+
+  searchOwnAdvertisements(advertisements: Advertisement[]) {
+    this.ownAds = advertisements;
   }
 }
