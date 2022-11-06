@@ -38,3 +38,13 @@
 body {
   background-color: $color-primary;
 }
+
+.search {
+  background-color: $color-info;
+  border: 0;
+  color: $color-secondary;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+}
+

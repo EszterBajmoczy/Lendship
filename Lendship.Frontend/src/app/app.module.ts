@@ -34,6 +34,7 @@ import {QrcodeComponent} from "./pages/grcode-page/qrcode.component";
 import { QRCodeModule } from 'angularx-qrcode';
 import {InfoPopupComponent} from "./pages/popup/info-popup/info-popup.component";
 import { PrivatePopupComponent } from './pages/popup/private-popup/private-popup.component';
+import {AppSearchComponent} from "./components/common/search/app-search.componenet";
 
 
 @NgModule({
@@ -61,6 +62,7 @@ import { PrivatePopupComponent } from './pages/popup/private-popup/private-popup
         QrcodeComponent,
         InfoPopupComponent,
         PrivatePopupComponent,
+        AppSearchComponent,
     ],
   imports: [
     BrowserModule,
