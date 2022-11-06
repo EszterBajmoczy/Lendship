@@ -157,6 +157,7 @@ namespace Lendship.Backend.Controllers
                 {
                     token = new JwtSecurityTokenHandler().WriteToken(token),
                     expiration = token.ValidTo,
+                    image = user.ImageLocation
                 });
             }
             catch (Exception e)
