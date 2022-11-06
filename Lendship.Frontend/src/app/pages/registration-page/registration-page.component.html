@@ -3,14 +3,16 @@
     <span class="sr-only">Loading...</span>
   </div>
 </div>
-<div class="container-fluid form-container col-lg-6 d-flex justify-content-center">
+<div class="container-fluid form-container col-12 col-md-10 col-lg-8 d-flex justify-content-center">
   <div class="container px-lg-5">
     <h1 class="text-center mb-5 mt-2">Registration</h1>
-    <form class="align-items-start m-4" [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+    <form class="align-items-start m-0 m-md-4" [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
 
-      <div class="d-flex justify-content-between mt-4">
-        <label class="col-lg-4" for="name">Username:</label>
-        <input id="name" type="text" formControlName="name" placeholder="Username">
+      <div class="d-sm-flex justify-content-sm-between mt-4">
+        <label class="col-12 col-sm-4" for="name">Username:</label>
+        <span class="col-12 col-sm-8">
+          <input id="name" type="text" formControlName="name" placeholder="Username" class="w-100">
+        </span>
       </div>
       <div class="error mb-4">
         <div class="d-flex justify-content-end" *ngIf="!name?.valid && (name?.dirty || name?.touched)">
@@ -21,9 +23,11 @@
       </div>
 
 
-      <div class="d-flex justify-content-between mt-4">
-        <label class="col-lg-4" for="email">Email address:</label>
-        <input id="email" type="text" formControlName="email" placeholder="Email address">
+      <div class="d-sm-flex justify-content-sm-between mt-4">
+        <label class="col-12 col-sm-4" for="email">Email address:</label>
+        <span class="col-12 col-sm-8">
+          <input id="email" type="text" formControlName="email" placeholder="Email address" class="w-100">
+        </span>
       </div>
       <div class="error mb-4">
         <div class="d-flex justify-content-end" *ngIf="!email?.valid && (email?.dirty || email?.touched)">
@@ -36,9 +40,11 @@
         </div>
       </div>
 
-      <div class="d-flex justify-content-between mt-4">
-        <label class="col-lg-4" for="location">Location:</label>
-        <input id="location" type="text" formControlName="location" placeholder="Location">
+      <div class="d-sm-flex justify-content-sm-between mt-4">
+        <label class="col-12 col-sm-4" for="location">Location:</label>
+        <span class="col-12 col-sm-8">
+          <input id="location" type="text" formControlName="location" placeholder="Location" class="w-100">
+        </span>
       </div>
       <div class="error mb-4">
         <div class="d-flex justify-content-end">
@@ -54,9 +60,11 @@
         </div>
       </div>
 
-      <div class="d-flex justify-content-between">
-        <label class="col-lg-4" for="password">Password:</label>
-        <input id="password" type="password" formControlName="password" placeholder="Password" >
+      <div class="d-sm-flex justify-content-sm between">
+        <label class="col-12 col-sm-4" for="password">Password:</label>
+        <span class="col-12 col-sm-8">
+          <input id="password" type="password" formControlName="password" placeholder="Password" class="w-100">
+        </span>
       </div>
       <div class="error mb-4">
         <div class="error d-flex justify-content-end" *ngIf="!password?.valid && (password?.dirty || password?.touched)">
@@ -72,9 +80,12 @@
         </div>
       </div>
 
-      <div class="d-flex justify-content-between">
-        <label class="col-lg-4" for="confirmPassword">Confirm password:</label>
-        <input id="confirmPassword" type="password" formControlName="confirmPassword" placeholder="Password">
+      <div class="d-sm-flex justify-content-sm between">
+        <label class="col-12 col-sm-4" for="confirmPassword">Confirm password:</label>
+        <span class="col-12 col-sm-8">
+          <input id="confirmPassword" type="password" formControlName="confirmPassword" placeholder="Password" class="w-100">
+        </span>
+
       </div>
       <div class="error mb-4">
         <div class="error d-flex justify-content-end" *ngIf="!confirmPassword?.valid && (confirmPassword?.dirty || confirmPassword?.touched)">
@@ -89,7 +100,6 @@
           </div>
         </div>
       </div>
-
 
       <p class="d-flex justify-content-center mt-4">
         <button class="btn btn-info" type="submit" [disabled]="!registrationForm.valid">Register</button>

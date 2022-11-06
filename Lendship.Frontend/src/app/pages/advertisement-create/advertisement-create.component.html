@@ -13,9 +13,12 @@
         <label for="isService">Service</label>
       </div>
 
-      <div class="d-flex justify-content-between mt-4">
-        <label class="col-lg-4" for="title">Title:</label>
-        <input id="title" type="text" formControlName="title" placeholder="Title">
+      <div class="d-md-flex justify-content-md-between mt-4">
+        <label class="col-12 col-md-4" for="title">Title:</label>
+
+        <span class="col-12 col-md-8">
+          <input id="title" type="text" formControlName="title" placeholder="Title" class="w-100">
+        </span>
       </div>
       <div class="error mb-4">
         <div class="d-flex justify-content-end" *ngIf="!title?.valid && (title?.dirty || title?.touched)">
@@ -26,7 +29,7 @@
       </div>
 
       <div class="d-flex justify-content-between mt-4">
-        <label class="col-lg-4" for="price">Price:</label>
+        <label class="col-4" for="price">Price:</label>
         <input id="price" type="number" formControlName="price" placeholder="1000">
       </div>
       <div class="error mb-4">
@@ -38,7 +41,7 @@
       </div>
 
       <div class="d-flex justify-content-between mt-4">
-        <label class="col-lg-4" for="credit">Credit:</label>
+        <label class="col-4" for="credit">Credit:</label>
         <input id="credit" type="number" formControlName="credit" placeholder="1000">
       </div>
       <div class="error mb-4">
@@ -50,7 +53,7 @@
       </div>
 
       <div class="d-flex justify-content-between mt-4">
-        <label class="col-lg-4" for="deposit">Deposit:</label>
+        <label class="col-4" for="deposit">Deposit:</label>
         <input id="deposit" type="number" formControlName="deposit" placeholder="1000">
       </div>
       <div class="error mb-4">
@@ -61,9 +64,9 @@
         </div>
       </div>
 
-      <div class="d-flex justify-content-between mt-4">
-        <label class="col-lg-4" for="description">Description:</label>
-        <textarea class="col-lg-8" rows="3" id="description"  type="text" formControlName="description" placeholder="Description"></textarea>
+      <div class="d-md-flex justify-content-md-between mt-4">
+        <label class="col-12 col-md-4" for="description">Description:</label>
+        <textarea class="col-12 col-md-8" rows="3" id="description"  type="text" formControlName="description" placeholder="Description"></textarea>
       </div>
       <div class="error mb-4">
         <div class="d-flex justify-content-end" *ngIf="!description?.valid && (description?.dirty || description?.touched)">
@@ -73,14 +76,16 @@
         </div>
       </div>
 
-      <div class="d-flex justify-content-between mt-4">
-        <label class="col-lg-4" for="instructionManual">Instruction manual:</label>
-        <textarea class="col-lg-8" rows="3" id="instructionManual" type="text" formControlName="instructionManual" placeholder="Instruction manual"></textarea>
+      <div class="d-md-flex justify-content-md-between mt-4">
+        <label class="col-12 col-md-4" for="instructionManual">Instruction manual:</label>
+        <textarea class="col-12 col-md-8" rows="3" id="instructionManual" type="text" formControlName="instructionManual" placeholder="Instruction manual"></textarea>
       </div>
 
-      <div class="d-flex justify-content-between mt-4">
-        <label class="col-lg-4" for="location">Location:</label>
-        <input id="location" type="text" formControlName="location" placeholder="Location">
+      <div class="d-md-flex justify-content-md-between mt-4">
+        <label class="col-12 col-md-4" for="location">Location:</label>
+        <span class="col-12 col-md-8">
+          <input id="location" type="text" formControlName="location" placeholder="Location" class="w-100">
+        </span>
       </div>
       <div class="error mb-4">
         <div class="d-flex justify-content-end">
@@ -96,11 +101,11 @@
         </div>
       </div>
 
-      <div class="d-flex justify-content-between mt-4">
-        <label class="col-lg-4" for="category">Category:</label>
+      <div class="d-md-flex justify-content-md-between mt-4">
+        <label class="col-12 col-md-4" for="category">Category:</label>
 
         <ng-autocomplete
-          id="category" type="text" formControlName="category" placeholder="Category"
+          id="category" type="text" formControlName="category" placeholder="Category" class="w-100"
           [data]="categories"
           [searchKeyword]="categoryKeyword"
           [itemTemplate]="itemTemplate"

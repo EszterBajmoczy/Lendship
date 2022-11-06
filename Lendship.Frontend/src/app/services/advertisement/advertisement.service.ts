@@ -25,12 +25,12 @@ export class AdvertisementService {
     return this.http.get<Advertisement[]>(this.baseUrl + search, { headers: this.headers});
   }
 
-  getOwnAdvertisements(): Observable<Advertisement[]>{
-    return this.http.get<Advertisement[]>(this.baseUrl + "own", { headers: this.headers});
+  getOwnAdvertisements(search: string): Observable<Advertisement[]>{
+    return this.http.get<Advertisement[]>(this.baseUrl + "own/" + search, { headers: this.headers});
   }
 
-  getSavedAdvertisements(): Observable<Advertisement[]>{
-    return this.http.get<Advertisement[]>(this.baseUrl + "saved", { headers: this.headers});
+  getSavedAdvertisements(search: string): Observable<Advertisement[]>{
+    return this.http.get<Advertisement[]>(this.baseUrl + "saved/" + search, { headers: this.headers});
   }
 
   getAdvertisementDetailById(id: number): Observable<AdvertisementDetail>{

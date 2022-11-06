@@ -142,7 +142,7 @@ export class ReservationPageComponent implements OnInit {
 
   userClicked(user: User) {
     //TODO navigate to profil page
-    this.router.navigate(['home']);
+    this.router.navigateByUrl('profile/' + user.id);
   }
 
   reservedByUser(date: NgbDate){
