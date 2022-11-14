@@ -4,6 +4,8 @@ import { UntypedFormBuilder, Validators} from "@angular/forms";
 import { AuthService} from "../../services/auth/auth.service";
 import { LocationValidator} from "../../shared/valid-location";
 import { GeocodingService} from "../../services/geocoding/geocoding.service";
+import {FileUploadService} from "../../services/file-upload/file-upload.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-registration-page',
@@ -13,8 +15,16 @@ import { GeocodingService} from "../../services/geocoding/geocoding.service";
 })
 export class RegistrationPageComponent implements OnInit {
   submitting = false;
+  newImageName = "";
+  newImage: File | undefined;
 
-  constructor(private formBuilder: UntypedFormBuilder, private authService: AuthService, private locationValidator: LocationValidator, private geoCodingService: GeocodingService) { }
+  constructor(
+    private formBuilder: UntypedFormBuilder,
+    private authService: AuthService,
+    private router: Router,
+    private locationValidator: LocationValidator,
+    private geoCodingService: GeocodingService,
+    private fileUploadService: FileUploadService) { }
 
   ngOnInit(): void {
   }
@@ -61,13 +71,36 @@ export class RegistrationPageComponent implements OnInit {
     if(this.registrationForm.invalid){
       return;
     }
+
     this.geoCodingService.getLatLong(this.registrationForm.get("location")?.value)
       .subscribe(data => {
         this.latitude = data.results[0].geometry.location.lat;
         this.longitude = data.results[0].geometry.location.lng;
 
-        this.authService.register(this.registrationForm.value);
+        this.authService.register(this.registrationForm.value)
+          .subscribe(response => {
+            if (this.newImage !== undefined){
+              this.fileUploadService.uploadProfile(response.token, this.newImage)
+                .subscribe(resp => {
+                  console.log(resp);
+                  response.image = resp.path;
+                  this.authService.loginData(response)
+                });
+            } else {
+              this.authService.loginData(response)
+            }
+          });
         this.submitting = true;
       })
+  }
+
+  addFile(img: File) {
+    this.newImageName = img.name;
+    this.newImage = img;
+  }
+
+  removeNewImage() {
+    this.newImageName = "";
+    this.newImage = undefined;
   }
 }

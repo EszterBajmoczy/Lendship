@@ -74,7 +74,7 @@
           <div [hidden]="password?.errors?.['required'] || !password?.errors?.['minlength']">
             <p class="form-error m-0">Password must be minimum 6 character long.</p>
           </div>
-          <div [hidden]="password?.errors?.['minlength'] || password?.errors?.['required'] || password?.errors?.['pattern']">
+          <div [hidden]="password?.errors?.['minlength'] || password?.errors?.['required'] || !password?.errors?.['pattern']">
             <p class="form-error m-0">Password must contain uppercase, lowercase letters, number, special character.</p>
           </div>
         </div>
@@ -85,7 +85,6 @@
         <span class="col-12 col-sm-8">
           <input id="confirmPassword" type="password" formControlName="confirmPassword" placeholder="Password" class="w-100">
         </span>
-
       </div>
       <div class="error mb-4">
         <div class="error d-flex justify-content-end" *ngIf="!confirmPassword?.valid && (confirmPassword?.dirty || confirmPassword?.touched)">
@@ -95,10 +94,16 @@
           <div [hidden]="confirmPassword?.errors?.['required'] || !confirmPassword?.errors?.['minlength']">
             <p class="form-error m-0">Password must be minimum 6 charachter long.</p>
           </div>
-          <div [hidden]="confirmPassword?.errors?.['minlength'] || confirmPassword?.errors?.['required'] || confirmPassword?.errors?.['pattern']">
+          <div [hidden]="confirmPassword?.errors?.['minlength'] || confirmPassword?.errors?.['required'] || !confirmPassword?.errors?.['pattern']">
             <p class="form-error m-0">Password must contain upper and lowcase letters, number, special character.</p>
           </div>
         </div>
+      </div>
+
+      <app-file-upload (files)="addFile($event)" ></app-file-upload>
+      <div *ngIf="newImageName !== undefined" class="date-section d-flex text-center align-items-center align-items-center justify-content-between">
+        <p class="mb-0">{{newImageName}}</p>
+        <button class="btn btn-primary m-0" (click)="removeNewImage()"><i class="fa-solid fa-circle-minus"></i></button>
       </div>
 
       <p class="d-flex justify-content-center mt-4">
