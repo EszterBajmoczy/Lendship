@@ -3,12 +3,13 @@ import { LoginUser} from "../../models/login-user";
 import { RegisterUser} from "../../models/registration-user";
 import { LoginResponse} from "../../models/response-login";
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {map, of, tap} from 'rxjs';
+import { of, tap} from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LocalStorageService} from "../localstorage/localstorage.service";
 import { JWTTokenService} from "../jwttoken/jwttoken.service";
 import { Router } from '@angular/router';
 import {environment} from "../../../environments/environment";
+import {FileUploadService} from "../file-upload/file-upload.service";
 
 @Injectable({
   providedIn: 'root'
@@ -28,26 +29,22 @@ export class AuthService {
   }
 
   public login(userData: LoginUser) {
-    const loginCall = this.http.post<LoginResponse>(this.baseUrl + "/login",userData);
-
-    loginCall.subscribe(response => {
-      this.saveLoginData(response)
-
-      this.router.navigate(['home'])
-        .then(() => {
-          window.location.reload();
-        });
-    });
+    return this.http.post<LoginResponse>(this.baseUrl + "/login",userData);
   }
 
   public register(userData: RegisterUser) {
-    const registerCall = this.http.post<LoginResponse>(this.baseUrl + "/register",userData);
-
-    registerCall.subscribe(response => {
-      this.saveLoginData(response)
-      this.login(userData);
-    });
+    return this.http.post<LoginResponse>(this.baseUrl + "/register", userData);
   }
+
+  public loginData(userData: LoginResponse) {
+    this.saveLoginData(userData);
+
+    this.router.navigateByUrl('home')
+      .then(() => {
+        window.location.reload();
+      });
+  }
+
 
   private saveLoginData(resp: LoginResponse) {
     this.localstorageService.set("ACCESS_TOKEN", resp.token);

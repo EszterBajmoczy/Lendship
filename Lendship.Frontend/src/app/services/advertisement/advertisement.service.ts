@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { Advertisement } from "../../models/advertisement";
+import { AdvertisementList } from "../../models/advertisementList";
 import { AuthService } from "../auth/auth.service";
 import { AdvertisementDetail } from "../../models/advertisement-detail";
 import { environment } from "../../../environments/environment";
@@ -21,16 +21,16 @@ export class AdvertisementService {
     this.headers = authService.getHeaders();
   }
 
-  getAdvertisements(): Observable<Advertisement[]>{
-    return this.http.get<Advertisement[]>(this.baseUrl, { headers: this.headers});
+  getAdvertisements(search: string): Observable<AdvertisementList>{
+    return this.http.get<AdvertisementList>(this.baseUrl + search, { headers: this.headers});
   }
 
-  getOwnAdvertisements(): Observable<Advertisement[]>{
-    return this.http.get<Advertisement[]>(this.baseUrl + "own", { headers: this.headers});
+  getOwnAdvertisements(search: string): Observable<AdvertisementList>{
+    return this.http.get<AdvertisementList>(this.baseUrl + "own/" + search, { headers: this.headers});
   }
 
-  getSavedAdvertisements(): Observable<Advertisement[]>{
-    return this.http.get<Advertisement[]>(this.baseUrl + "saved", { headers: this.headers});
+  getSavedAdvertisements(search: string): Observable<AdvertisementList>{
+    return this.http.get<AdvertisementList>(this.baseUrl + "saved/" + search, { headers: this.headers});
   }
 
   getAdvertisementDetailById(id: number): Observable<AdvertisementDetail>{

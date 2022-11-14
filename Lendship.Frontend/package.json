@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --ssl --ssl-key d:\\\\certificates\\\\localhost.key  --ssl-cert d:\\\\certificates\\\\localhost.crt",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
@@ -20,7 +20,7 @@
     "@angular/platform-browser-dynamic": "^14.2.6",
     "@angular/router": "^14.2.6",
     "@fortawesome/fontawesome-free": "^6.1.1",
-    "@ng-bootstrap/ng-bootstrap": "^12.0.2",
+    "@ng-bootstrap/ng-bootstrap": "^13.1.0",
     "@popperjs/core": "^2.10.2",
     "@zxing/ngx-scanner": "^3.6.2",
     "angular-ng-autocomplete": "^2.0.12",

@@ -3,7 +3,6 @@
 @import "src/styles/profile-infos";
 
 .gallery {
-  max-width: 50%;
   height: auto;
 }
 
@@ -42,4 +41,13 @@ p {
 .private {
   background-color: $color-info;
   color: white;
+}
+
+.image {
+  object-fit: fill;
+  height: 5rem;
+}
+
+.imgRow {
+  background-color: lightgrey;
 }

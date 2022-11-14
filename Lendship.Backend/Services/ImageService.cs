@@ -2,6 +2,7 @@
 using Lendship.Backend.Exceptions;
 using Lendship.Backend.Interfaces.Repositories;
 using Lendship.Backend.Interfaces.Services;
+using Lendship.Backend.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -142,7 +143,7 @@ namespace Lendship.Backend.Services
             };
         }
 
-        public void UploadProfileImage(IFormFile file)
+        public string UploadProfileImage(IFormFile file)
         {
             if (file.ContentType != "image/jpg" && file.ContentType != "image/jpeg" && file.ContentType != "image/png")
             {
@@ -153,12 +154,12 @@ namespace Lendship.Backend.Services
             var user = _userRepository.GetById(signedInUserId);
             var imgLocation = _configuration.GetSection("Image").GetValue("ProfileLocationFolder", "wwwroot\\images\\profile");
 
-            var path = Path.Combine(imgLocation, signedInUserId);
 
-            var fullpath = UploadProfileImg(file, path);
-            user.ImageLocation = fullpath;
+            var imgPath = UploadProfileImg(file, imgLocation, signedInUserId);
+            user.ImageLocation = imgPath;
 
             _userRepository.Update(user);
+            return imgPath;
         }
 
         public void UploadImages(IFormFileCollection files, int advertisementId)
@@ -186,8 +187,11 @@ namespace Lendship.Backend.Services
             _advertisementRepository.Update(ad);
         }
 
-        private string UploadProfileImg(IFormFile file, string path)
+        private string UploadProfileImg(IFormFile file, string imgLocation, string signedInUserId)
         {
+
+            var path = Path.Combine(imgLocation, signedInUserId);
+
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
@@ -202,7 +206,7 @@ namespace Lendship.Backend.Services
                 file.CopyTo(stream);
             }
 
-            return fullPath;
+            return Path.Combine("\\", signedInUserId, fileName);
         }
 
         private void UploadImg(IFormFile file, string fullPath, string path, int advertisementId)

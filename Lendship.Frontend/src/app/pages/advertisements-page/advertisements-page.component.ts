@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AdvertisementService} from "../../services/advertisement/advertisement.service";
-import { Advertisement } from "../../models/advertisement";
+import { AdvertisementList } from "../../models/advertisementList";
 import { Router} from "@angular/router";
 import {environment} from "../../../environments/environment";
 
@@ -11,20 +11,25 @@ import {environment} from "../../../environments/environment";
 })
 export class AdvertisementsPageComponent implements OnInit {
   baseUrl = environment.baseUrl;
-  ownAds: Advertisement[] | undefined;
-  savedAds: Advertisement[] | undefined;
+  modeOwn = "Own";
+  modeSaved = "Saved";
+  ownAds: AdvertisementList | undefined;
+  ownAdsLoading = true;
+  savedAds: AdvertisementList | undefined;
+  savedAdsLoading = true;
+  searchOwnWithOutPaging = "";
+  searchSavedWithOutPaging = "";
 
   showOwn: boolean = true;
   showSaved: boolean = false;
 
   constructor(private adService: AdvertisementService, private router: Router) {
-    this.adService.getOwnAdvertisements()
+    this.adService.getOwnAdvertisements("")
       .subscribe(ads => {
         if(ads !== undefined){
           this.ownAds = ads;
-        } else {
-          this.ownAds = new Array<Advertisement>()
         }
+        this.ownAdsLoading = false;
       })
   }
 
@@ -34,18 +39,33 @@ export class AdvertisementsPageComponent implements OnInit {
   loadSavedAdvertisements(){
     this.showSaved = ! this.showSaved;
     if(this.savedAds === undefined){
-      this.adService.getSavedAdvertisements()
+      this.adService.getSavedAdvertisements("")
         .subscribe( data => {
           if(data !== undefined){
             this.savedAds = data
-          } else {
-            this.savedAds = new Array<Advertisement>()
           }
+          this.savedAdsLoading = false;
         });
     }
   }
 
   cardClicked(id: number) {
     this.router.navigate(['advertisement', id]);
+  }
+
+  searchSavedAdvertisements(advertisements: AdvertisementList) {
+    this.savedAds = advertisements;
+  }
+
+  searchOwnAdvertisements(advertisements: AdvertisementList) {
+    this.ownAds = advertisements;
+  }
+
+  updateOwnSearchWithOutPaging(search: string) {
+    this.searchOwnWithOutPaging = search;
+  }
+
+  updateSavedSearchWithOutPaging(search: string) {
+    this.searchSavedWithOutPaging = search;
   }
 }

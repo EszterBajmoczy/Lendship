@@ -1,7 +1,7 @@
 <div class="container col-lg-10" >
-  <div class="d-flex justify-content-between mb-4">
-    <ngb-datepicker #dp [(ngModel)]="model" (navigate)="date = $event.next" (dateSelect)="onDateSelection($event)" [dayTemplate]="datepicker" class="bg-white w-auto"></ngb-datepicker>
-    <div *ngIf="selectedReservationsForUsersAdvertisements.length != 0 || selectedUsersReservations.length != 0 " class="day-detail ms-3 col-8">
+  <div class="d-lg-flex text-center justify-content-lg-between mb-4">
+    <ngb-datepicker #dp [(ngModel)]="model" (navigate)="date = $event.next" (dateSelect)="onDateSelection($event)" [dayTemplate]="datepicker" class="bg-white w-auto col-12 col-lg-8"></ngb-datepicker>
+    <div *ngIf="selectedReservationsForUsersAdvertisements.length != 0 || selectedUsersReservations.length != 0 " class="day-detail col-12 col-lg-8">
       <div class="d-flex justify-content-between">
         <p class="date-tag p-2 mt-2 mb-2 me-2 col-2"
            [ngClass]="{active: showMyReservations}"
@@ -133,40 +133,55 @@
     </div>
   </div>
   <div *ngIf="!loadingReservationsForUser && showReservationsForUser" class="card-container d-flex flex-wrap justify-content-between" >
-    <div *ngFor="let res of reservationsForUsersAdvertisements" class="w-100 d-flex justify-content-between align-items-center m-2"
+    <div *ngFor="let res of reservationsForUsersAdvertisements" class="d-lg-flex justify-content-lg-between align-items-lg-center w-100 m-2"
          [ngClass]="{closed: res.reservationState === 'Closed', declined: res.reservationState === 'Declined'}">
-      <div class="date-text col-1">{{res.dateFromString}}<br>-<br>{{res.dateToString}}</div>
-
-      <div class="conversation-ad-section d-flex justify-content-between align-items-center w-100 pe-2 h-100"
-           (click)="reservationClicked(res)">
-        <img src="{{baseUrl}}images{{res.advertisement.imageLocation}}" class="img-ad m-1" alt="...">
-        <div class="w-100 ps-4 pe-4">
-          <h5 class="title pt-2 mb-2">{{res.advertisement.title}}</h5>
-          <div class="d-flex justify-content-between">
-            <p class="ad-details">{{res.advertisement.location}}</p>
-            <p class="ad-details">{{res.advertisement.price}} Ft</p>
+      <div class="date-text d-flex d-lg-block justify-content-center col-12 col-lg-1">
+        <span class="d-inline d-lg-block">{{res.dateFromString}}</span>
+        <span class="d-inline d-lg-block">-</span>
+        <span class="d-inline d-lg-block">{{res.dateToString}}</span>
+      </div>
+      <div class="col-12 col-lg-10">
+        <div class="conversation-ad-section d-flex justify-content-between align-items-center w-100 pe-2"
+             (click)="reservationClicked(res)">
+          <img src="{{baseUrl}}images{{res.advertisement.imageLocation}}" class="img-ad m-1" alt="...">
+          <div class="w-100 ps-4 pe-4">
+            <h5 class="title pt-2 mb-2">{{res.advertisement.title}}</h5>
+            <div class="d-flex justify-content-between">
+              <p class="ad-details">{{res.advertisement.location}}</p>
+              <p class="ad-details">{{res.advertisement.price}} Ft</p>
+            </div>
           </div>
-        </div>
-        <div class="d-flex profile-info-sm align-items-center col-lg-4 ps-2"
-             (click)="userClicked(res.user)">
-          <div class="vertical-line"></div>
-          <div class="me-4">
-            <img class="img-profile-sm" src="{{baseUrl}}images/profile/{{res.user.image}}">
-          </div>
-          <div>
-            <p class="user-name">{{res.user.name}}</p>
-            <p><i class="fa fa-star me-2"></i>as advertiser: {{res.user.evaluationAsAdvertiser}} ({{res.user.evaluationAsAdvertiserCount}} vote)</p>
-            <p><i class="fa fa-star me-2"></i>as lender: {{res.user.evaluationAsLender}} ({{res.user.evaluationAsLenderCount}} vote)</p>
+          <div class="d-flex profile-info-sm align-items-center col-lg-4 ps-2"
+               (click)="userClicked(res.user)">
+            <div class="vertical-line"></div>
+            <div class="me-md-4">
+              <img class="img-profile-sm" src="{{baseUrl}}images/profile/{{res.user.image}}">
+            </div>
+            <div class="d-none d-md-block">
+              <p class="user-name">{{res.user.name}}</p>
+              <p>
+                <i class="fa fa-star me-2"></i>
+                <span class="d-none d-xxl-inline">as advertiser:</span>
+                {{res.user.evaluationAsAdvertiser}}
+                <span class="d-none d-lg-inline">({{res.user.evaluationAsAdvertiserCount}} vote)</span>
+              </p>
+              <p>
+                <i class="fa fa-star me-2"></i>
+                <span class="d-none d-xxl-inline">as lender:</span>
+                {{res.user.evaluationAsLender}}
+                <span class="d-none d-lg-inline">({{res.user.evaluationAsLenderCount}} vote)</span>
+              </p>
+            </div>
           </div>
         </div>
       </div>
-      <div class="col-1 actions text-center">
-        <div *ngIf="res.reservationState === 'Created'">
-          <button class="btn btn-success btn-sm m-1 w-100" (click)="accept(res.id)">Accept</button>
-          <button class="btn btn-info btn-sm m-1 w-100" (click)="decline(res.id)">Decline</button>
+      <div class="col-12 col-lg-1 actions text-center">
+        <div *ngIf="res.reservationState === 'Created'" class="d-flex justify-content-center d-lg-block">
+          <button class="btn btn-success btn-sm w-auto m-1 col-6 col-lg-12" (click)="accept(res.id)">Accept</button>
+          <button class="btn btn-info btn-sm w-auto m-1 col-6 col-lg-12" (click)="decline(res.id)">Decline</button>
         </div>
         <div *ngIf="res.reservationState === 'Accepted'">
-          <button class="btn btn-success btn-sm m-1 w-100" (click)="open(evaluationPopUp, res)">Close</button>
+          <button class="btn btn-success btn-sm m-1 w-auto m-1 col-6 col-lg-12" (click)="open(evaluationPopUp, res)">Close</button>
           <div>
             <ng-template #evaluationPopUp let-modal>
               <div class="modal-header">
@@ -203,33 +218,38 @@
     <i [hidden]="showUsers" class="fa fa-angle-right m-1 fa-lg"></i>
     <i [hidden]="!showUsers" class="fa fa-angle-down m-1 fa-lg"></i>
   </button>
-
   <div *ngIf="loadingUsersReservations && showUsers" class="d-flex justify-content-center">
     <div class="spinner-border m-2" role="status">
       <span class="sr-only">Loading...</span>
     </div>
   </div>
   <div *ngIf="!loadingUsersReservations && showUsers" class="card-container d-flex flex-wrap justify-content-between" >
-    <div *ngFor="let res of usersReservations" class="w-100 d-flex justify-content-between align-items-center m-2"
+    <div *ngFor="let res of usersReservations" class="d-lg-flex justify-content-lg-between align-items-lg-center w-100 m-2"
          [ngClass]="{closed: res.reservationState === 'Closed', declined: res.reservationState === 'Declined'}">
-      <div class="date-text col-1">{{res.dateFromString}}<br>-<br>{{res.dateToString}}</div>
-      <div class="conversation-ad-section d-flex justify-content-between align-items-center w-100 pe-2"
-           (click)="reservationClicked(res)">
-        <img src="{{baseUrl}}images{{res.advertisement.imageLocation}}" class="img-ad m-1" alt="...">
-        <div class="w-100 ps-4 pe-4">
-          <h5 class="title pt-2 mb-2">{{res.advertisement.title}}</h5>
-          <div class="d-flex justify-content-between">
-            <p class="ad-details">{{res.advertisement.location}}</p>
-            <p class="ad-details">{{res.advertisement.price}} Ft</p>
+      <div class="date-text d-flex d-lg-block justify-content-center col-12 col-lg-1">
+        <span class="d-inline d-lg-block">{{res.dateFromString}}</span>
+        <span class="d-inline d-lg-block">-</span>
+        <span class="d-inline d-lg-block">{{res.dateToString}}</span>
+      </div>
+      <div class="col-12 col-lg-10">
+        <div class="conversation-ad-section d-flex justify-content-between align-items-center w-100 pe-2"
+             (click)="reservationClicked(res)">
+          <img src="{{baseUrl}}images{{res.advertisement.imageLocation}}" class="img-ad m-1" alt="...">
+          <div class="w-100 ps-4 pe-4">
+            <h5 class="title pt-2 mb-2">{{res.advertisement.title}}</h5>
+            <div class="d-flex justify-content-between">
+              <p class="ad-details">{{res.advertisement.location}}</p>
+              <p class="ad-details">{{res.advertisement.price}} Ft</p>
+            </div>
           </div>
         </div>
       </div>
-      <div class="col-1 actions text-center">
-        <div *ngIf="res.reservationState === 'Created'">
-          <button class="btn btn-info btn-sm m-1 w-100" (click)="resign(res.id)">Resign</button>
+      <div class="col-12 col-lg-1 actions text-center">
+        <div *ngIf="res.reservationState === 'Created'" class="d-flex justify-content-center d-lg-block">
+          <button class="btn btn-info btn-sm w-auto m-1 col-6 col-lg-12" (click)="resign(res.id)">Resign</button>
         </div>
-        <div *ngIf="res.reservationState === 'Accepted'">
-          <button class="btn btn-success btn-sm m-1 w-100" (click)="open(evaluationPopUp, res)">Close</button>
+        <div *ngIf="res.reservationState === 'Accepted' || res.reservationState === 'Ongoing'">
+          <button class="btn btn-success btn-sm m-1 w-auto m-1 col-6 col-lg-12" (click)="open(evaluationPopUp, res)">Close</button>
           <div>
             <ng-template #evaluationPopUp let-modal>
               <div class="modal-header">
@@ -237,10 +257,10 @@
               </div>
               <div class="modal-body d-flex justify-content-center">
                 <app-evaluation-popup class="w-100"
-                                      [userTo] = res.advertisement.user
+                                      [userTo] = res.user
                                       [advertisementId] = res.advertisement.id
                                       [reservationId] = res.id
-                                      [isLender] = false
+                                      [isLender] = true
                                       (evaluationAdvertiser)="submitEvaluationAdvertiser($event)"
                                       (evaluationLender)="submitEvaluationLender($event)">
                 </app-evaluation-popup>
@@ -261,10 +281,7 @@
     </div>
   </div>
 
-
-
 </div>
-
 
 <ng-template #datepicker let-date let-focused="focused" let-disabled="disabled">
 

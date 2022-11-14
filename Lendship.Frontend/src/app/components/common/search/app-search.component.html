@@ -1,0 +1,61 @@
+<nav class="navbar navbar-expand-xxl search rounded" >
+  <div class="container-fluid justify-content-end">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#searchbar" aria-controls="searchbar" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fa-solid fa-magnifying-glass"></i>
+    </button>
+    <div class="collapse navbar-collapse form col-10" [formGroup]="searchForm" id="searchbar">
+      <div class="row align-items-center justify-content-center justify-content-md-between">
+        <div class="d-flex justify-content-center col-10 col-md-3 col-xxl-2">
+          <button class="btn btn-primary" [ngClass]="{'btn-primary': isProperty(), 'btn-disabled': !isProperty()}"  (click)="changeAdvertisementType(property)">Property</button>
+          <button class="btn" [ngClass]="{'btn-primary': isService(), 'btn-disabled': !isService()}" (click)="changeAdvertisementType(service)">Service</button>
+        </div>
+        <div class="col-4 col-md-1 col-xxl-1" >
+          <div class="d-flex">
+            <input formControlName="credit" id="credit" type="checkbox" class="me-2 ms-0 w-auto filled-in">
+            <label for="credit">Credit</label>
+          </div>
+          <div class="d-flex">
+            <input formControlName="cash" id="cash" type="checkbox" class="me-2 ms-0 w-auto filled-in">
+            <label for="cash">Cash</label>
+          </div>
+        </div>
+        <div class="d-flex align-items-center col-6 col-md-6 col-xxl-2" >
+          <ng-autocomplete
+            id="category" type="text" formControlName="category" placeholder="Category"
+            [data]="categories"
+            [searchKeyword]="categoryKeyword"
+            [itemTemplate]="itemTemplate"
+            [notFoundTemplate]="notFoundTemplate">
+          </ng-autocomplete>
+
+          <ng-template #itemTemplate let-item>
+            <a [innerHTML]="item.name"></a>
+          </ng-template>
+
+          <ng-template #notFoundTemplate let-notFound>
+            <div [innerHTML]="notFound"></div>
+          </ng-template>
+        </div>
+        <div class="d-flex justify-content-center align-items-center col-10 col-md-5 col-xl-3" >
+          <input id="city" type="text" formControlName="city" placeholder="City" class="col-9">
+          <input id="distance" type="text" formControlName="distance" class="col-2 me-1" >
+          <label for="distance" class="col-1">km</label>
+        </div>
+        <div class="d-flex justify-content-center col-5 col-md-4 col-xxl-2">
+          <input id="word" type="text" formControlName="word" placeholder="Text">
+        </div>
+        <div class="d-flex justify-content-center col-5 col-md-2 col-xxl-1">
+          <select id="sortBy">
+            <option value="Default">Default</option>
+            <option value="Price">Price</option>
+            <option value="Credit">Credit</option>
+            <option value="Creation">Creation</option>
+          </select>
+        </div>
+        <div class="d-flex justify-content-center col-10 col-md-1 col-xxl-1" >
+          <button class="btn btn-primary" (click)="searchSubmit()" data-bs-toggle="collapse" data-bs-target="#searchbar.show"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
