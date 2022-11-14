@@ -1,9 +1,7 @@
 ﻿using Lendship.Backend.Authentication;
 using Lendship.Backend.DTO.Authentication;
 using Lendship.Backend.DTO.Authentication.Authentication;
-using Lendship.Backend.Exceptions;
 using Lendship.Backend.Interfaces.Services;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +12,6 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Lendship.Backend.Controllers
@@ -50,7 +47,7 @@ namespace Lendship.Backend.Controllers
             var userExists = await _userManager.FindByEmailAsync(model.Email);
 
             if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
+                return StatusCode(StatusCodes.Status406NotAcceptable, new Response { Status = "Error", Message = "User already exists!" });
 
             ApplicationUser user = new ApplicationUser()
             {
@@ -61,15 +58,38 @@ namespace Lendship.Backend.Controllers
                 EmailNotificationsEnabled = true,
                 Latitude = model.Latitude,
                 Longitude = model.Longitude,
+                Location = model.Location,
                 Registration = DateTime.Now
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
             
             if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again. Error: " + result.Errors.FirstOrDefault().Description });
-            
-            return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+                return StatusCode(StatusCodes.Status406NotAcceptable, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again. Error: " + result.Errors.FirstOrDefault().Description });
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var authClaims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, user.Id),
+                        new Claim(ClaimTypes.Name, user.UserName),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    };
+
+            foreach (var userRole in userRoles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+            }
+
+            var token = _tokenService.GenerateNewToken(authClaims, false);
+            var refreshToken = _tokenService.GenerateNewToken(authClaims, true);
+
+            return Ok(new
+            {
+                token = new JwtSecurityTokenHandler().WriteToken(token),
+                expiration = token.ValidTo,
+                refreshToken = new JwtSecurityTokenHandler().WriteToken(refreshToken),
+                image = user.ImageLocation
+            });
         }
 
         [HttpPost]
@@ -77,6 +97,11 @@ namespace Lendship.Backend.Controllers
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if (user == null)
+            {
+                return StatusCode(StatusCodes.Status406NotAcceptable, new Response { Status = "Error", Message = "User not exists!" });
+            }
 
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
@@ -104,7 +129,7 @@ namespace Lendship.Backend.Controllers
                     image = user.ImageLocation
                 });
             }
-            return Unauthorized();
+            return StatusCode(StatusCodes.Status406NotAcceptable, new Response { Status = "Error", Message = "Wrong password!" });
         }
 
         [HttpPost]

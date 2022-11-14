@@ -15,6 +15,8 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Lendship.Backend.Interfaces.Services;
+using Newtonsoft.Json.Linq;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Lendship.Backend.Controllers
 {
@@ -46,8 +48,11 @@ namespace Lendship.Backend.Controllers
             try
             {
                 IFormFile file = Request.Form.Files[0];
-                _imgService.UploadProfileImage(file);
-                return StatusCode(201);
+                var path = _imgService.UploadProfileImage(file);
+                return Ok(new
+                {
+                    path = path
+                });
             }
             catch (Exception e)
             {

@@ -70,7 +70,8 @@ namespace Lendship.Backend.Services
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var reservations = _reservationRepository.GetByUser(signedInUserId)
-                .Select(x => _reservationConverter.ConvertToDetailDto(x));
+                .Select(x => _reservationConverter.ConvertToDetailDto(x))
+                .OrderByDescending(x => x.DateFrom);
 
             return reservations;
         }
@@ -79,7 +80,8 @@ namespace Lendship.Backend.Services
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var reservations = _reservationRepository.GetByUser(signedInUserId)
-                                .Select(r => _reservationConverter.ConvertToDetailDto(r));
+                                .Select(r => _reservationConverter.ConvertToDetailDto(r))
+                                .OrderByDescending(x => x.DateFrom);
 
             return reservations;
         }
@@ -204,6 +206,8 @@ namespace Lendship.Backend.Services
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var reservations = _reservationRepository.GetRecentReservations(signedInUserId)
+                                .Where(x => x.ReservationState != ReservationState.Closed)
+                                .OrderByDescending(x => x.DateFrom)
                                 .Select(r => _reservationConverter.ConvertToReservationForAdvertisementDto(r, true))
                                 .ToList();
 
@@ -266,13 +270,10 @@ namespace Lendship.Backend.Services
             var reservationId = int.Parse(reservationToken.Substring(1, indexFirst-1));
             var userId = reservationToken.Substring(indexFirst + 1, indexLast - indexFirst-1);
             var time = long.Parse(reservationToken.Substring(indexLast + 1 , reservationToken.Length - indexLast - 1));
-            var nowInTicks = DateTime.UtcNow.Ticks;
 
-            //TODO close-dok szűrése
             var reservation = _reservationRepository.GetReservation(userId, signedInUserId, reservationId);
 
-            //if (reservation == null || !(time >= DateTime.UtcNow.AddMinutes(-5).Ticks && time < DateTime.UtcNow.Ticks))
-            if (reservation == null)
+            if (reservation == null || !(time >= DateTime.UtcNow.AddMinutes(-5).Ticks && time < DateTime.UtcNow.Ticks))
             {
                 return result;
             }
