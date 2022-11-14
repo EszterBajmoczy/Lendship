@@ -14,6 +14,7 @@ import {Router} from "@angular/router";
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
+  private shouldLogout = false;
   private isRefreshing = false;
   private token: BehaviorSubject<any> = new BehaviorSubject<any>(
     null
@@ -39,6 +40,8 @@ export class TokenInterceptor implements HttpInterceptor {
           return throwError(error);
         } else if (error instanceof HttpErrorResponse && error.status === 401) {
           return this.handle401Error(request, next);
+        } else if (error instanceof HttpErrorResponse && (error.status === 406)) {
+          return throwError(error);
         } else {
           this.errorService.setError(error);
           this.router.navigateByUrl('error');
@@ -61,6 +64,13 @@ export class TokenInterceptor implements HttpInterceptor {
   }
 
   private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
+    if(this.shouldLogout){
+      this.authService.logout();
+      this.shouldLogout = false;
+    } else {
+      this.shouldLogout = true;
+
+    }
     if (!this.isRefreshing) {
       this.isRefreshing = true;
       this.token.next(null);

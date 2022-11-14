@@ -1,9 +1,9 @@
 import {IAvailability} from "./availability";
 import {User} from "./user";
-import {Advertisement} from "./advertisement";
+import {AdvertisementList} from "./advertisementList";
 import {Category} from "./category";
 
-export interface AdvertisementDetail extends Advertisement {
+export interface AdvertisementDetail extends AdvertisementList {
   user: User,
   description: string,
   instructionManual: string,

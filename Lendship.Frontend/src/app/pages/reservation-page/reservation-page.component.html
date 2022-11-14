@@ -206,9 +206,6 @@
         <div *ngIf="res.reservationState === 'Resigned'">
           <p>Resigned</p>
         </div>
-        <div *ngIf="res.reservationState === 'Ongoing'">
-          <p>Lending is in process</p>
-        </div>
         <div *ngIf="res.reservationState === 'Closed'">
           <p>Closed</p>
         </div>
@@ -251,7 +248,7 @@
         <div *ngIf="res.reservationState === 'Created'" class="d-flex justify-content-center d-lg-block">
           <button class="btn btn-info btn-sm w-auto m-1 col-6 col-lg-12" (click)="resign(res.id)">Resign</button>
         </div>
-        <div *ngIf="res.reservationState === 'Accepted'">
+        <div *ngIf="res.reservationState === 'Accepted' || res.reservationState === 'Ongoing'">
           <button class="btn btn-success btn-sm m-1 w-auto m-1 col-6 col-lg-12" (click)="open(evaluationPopUp, res)">Close</button>
           <div>
             <ng-template #evaluationPopUp let-modal>
@@ -276,9 +273,6 @@
         </div>
         <div *ngIf="res.reservationState === 'Resigned'">
           <p>Resigned</p>
-        </div>
-        <div *ngIf="res.reservationState === 'Ongoing'">
-          <p>Lending is in process</p>
         </div>
         <div *ngIf="res.reservationState === 'Closed'">
           <p>Closed</p>

@@ -1,23 +1,24 @@
 <div class="container">
   <div class="d-flex justify-content-end mb-lg-4">
-    <button class="btn btn-success align-self-end" [routerLink]="['new']">New Advertisement</button>
+    <button class="btn btn-success align-self-end" [routerLink]="['new']">New AdvertisementList</button>
   </div>
   <button class="btn btn-success-long d-flex mt-2 mb-2" (click)="showOwn = !showOwn">
     <p class="m-1">Own advertisements</p>
     <i [hidden]="showOwn" class="fa fa-angle-right m-1 fa-lg"></i>
     <i [hidden]="!showOwn" class="fa fa-angle-down m-1 fa-lg"></i>
   </button>
-  <app-search *ngIf="showOwn && ownAds === undefined" class="w-100"
-              [mode] = modeOwn
-              (advertisements)="searchOwnAdvertisements($event)">
-  </app-search>
-  <div *ngIf="showOwn && ownAds === undefined" class="d-flex justify-content-center">
+  <div *ngIf="showOwn && ownAdsLoading" class="d-flex justify-content-center">
     <div class="spinner-border m-2" role="status">
       <span class="sr-only">Loading...</span>
     </div>
   </div>
-  <div *ngIf="showOwn && ownAds !== undefined" class="card-container">
-    <div *ngFor="let ad of ownAds" class="card m-3" style="width: 18rem; height: 22rem" (click)="cardClicked(ad.id)">
+  <app-search *ngIf="showOwn && !ownAdsLoading" class="w-100"
+              [mode] = modeOwn
+              (advertisements)="searchOwnAdvertisements($event)"
+              (searchWithOutPaging)="updateOwnSearchWithOutPaging($event)">
+  </app-search>
+  <div *ngIf="showOwn && !ownAdsLoading" class="card-container">
+    <div *ngFor="let ad of ownAds?.advertisements" class="card m-3" style="width: 18rem; height: 22rem" (click)="cardClicked(ad.id)">
       <img src="{{baseUrl}}images{{ad.imageLocation}}" class="card-img-top" alt="...">
       <div class="card-body">
         <h5 class="card-title">{{ad.title}}</h5>
@@ -28,23 +29,30 @@
       </div>
     </div>
   </div>
+  <app-paging *ngIf="showOwn && !ownAdsLoading && ownAds !== undefined " class="w-100"
+              [mode] = modeOwn
+              [pages] = ownAds?.pages
+              [search] = searchOwnWithOutPaging
+              (advertisements)="searchOwnAdvertisements($event)">
+  </app-paging>
 
   <button class="btn btn-success-long d-flex mt-2 mb-2" (click)="loadSavedAdvertisements()">
     <p class="m-1">Saved advertisements</p>
     <i [hidden]="showSaved" class="fa fa-angle-right m-1 fa-lg"></i>
     <i [hidden]="!showSaved" class="fa fa-angle-down m-1 fa-lg"></i>
   </button>
-  <app-search *ngIf="showSaved && savedAds === undefined" class="w-100"
-              [mode] = modeSaved
-              (advertisements)="searchSavedAdvertisements($event)">
-  </app-search>
-  <div *ngIf="showSaved && savedAds === undefined" class="d-flex justify-content-center">
+  <div *ngIf="showSaved && savedAdsLoading" class="d-flex justify-content-center">
     <div class="spinner-border m-2" role="status">
       <span class="sr-only">Loading...</span>
     </div>
   </div>
-  <div *ngIf="showSaved && showSaved !== undefined" class="card-container d-flex flex-wrap justify-content-between">
-    <div *ngFor="let ad of savedAds" class="card m-3" style="width: 18rem; height: 22rem" (click)="cardClicked(ad.id)">
+  <app-search *ngIf="showSaved && !savedAdsLoading" class="w-100"
+              [mode] = modeSaved
+              (advertisements)="searchSavedAdvertisements($event)"
+              (searchWithOutPaging)="updateSavedSearchWithOutPaging($event)">
+  </app-search>
+  <div *ngIf="showSaved && !savedAdsLoading" class="card-container d-flex flex-wrap justify-content-between">
+    <div *ngFor="let ad of savedAds?.advertisements" class="card m-3" style="width: 18rem; height: 22rem" (click)="cardClicked(ad.id)">
       <img src="{{baseUrl}}images{{ad.imageLocation}}" class="card-img-top" alt="...">
       <div class="card-body">
         <h5 class="card-title">{{ad.title}}</h5>
@@ -55,5 +63,11 @@
       </div>
     </div>
   </div>
+  <app-paging *ngIf="showSaved && !savedAdsLoading && savedAds !== undefined " class="w-100"
+              [mode] = modeSaved
+              [pages] = savedAds?.pages
+              [search] = searchSavedWithOutPaging
+              (advertisements)="searchSavedAdvertisements($event)">
+  </app-paging>
 </div>
 

@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {UntypedFormBuilder, UntypedFormGroup} from "@angular/forms";
-import {Advertisement} from "../../../models/advertisement";
+import {AdvertisementList} from "../../../models/advertisementList";
 import {AdvertisementService} from "../../../services/advertisement/advertisement.service";
 import {Category} from "../../../models/category";
 import {GeocodingService} from "../../../services/geocoding/geocoding.service";
@@ -13,7 +13,8 @@ import {GeocodingService} from "../../../services/geocoding/geocoding.service";
 
 export class AppSearchComponent {
   @Input() mode: String = "";
-  @Output() advertisements = new EventEmitter<Advertisement[]>();
+  @Output() advertisements = new EventEmitter<AdvertisementList>();
+  @Output() searchWithOutPaging = new EventEmitter<string>();
 
   searchForm: UntypedFormGroup;
   property = "Property";
@@ -70,6 +71,7 @@ export class AppSearchComponent {
 
   searchSubmit() {
     let search = this.getBasicSearchString();
+    this.searchWithOutPaging.emit(search);
     console.log(this.searchForm.value);
 
     if (this.searchForm.get("city")?.value !== "") {
@@ -97,7 +99,6 @@ export class AppSearchComponent {
     let result = "?advertisementType=" + this.searchForm.get("advertisementType")?.value;
     result += "&credit=" + this.searchForm.get("credit")?.value;
     result += "&cash=" + this.searchForm.get("cash")?.value;
-    result += "&sortBy=" + (<HTMLInputElement>document.getElementById('sortBy')).value;
 
     let category = this.category?.value.name;
     let word = this.word?.value;

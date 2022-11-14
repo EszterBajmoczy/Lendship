@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService} from "../../services/auth/auth.service";
 import { AdvertisementService} from "../../services/advertisement/advertisement.service";
-import { Advertisement } from "../../models/advertisement";
+import { AdvertisementList } from "../../models/advertisementList";
 import { Router } from "@angular/router";
 import {environment} from "../../../environments/environment";
-import {UntypedFormBuilder, UntypedFormGroup, Validators} from "@angular/forms";
+import {UntypedFormBuilder} from "@angular/forms";
 import {LocationValidator} from "../../shared/valid-location";
 import {GeocodingService} from "../../services/geocoding/geocoding.service";
-import {Category} from "../../models/category";
 
 @Component({
   templateUrl: './home-page.component.html',
@@ -18,8 +17,9 @@ export class HomePageComponent implements OnInit {
   baseUrl = environment.baseUrl
   isLoggedIn: boolean;
   mode = "GetAll";
+  searchWithOutPaging = "";
 
-  ads: Advertisement[] | undefined;
+  adList: AdvertisementList | undefined;
 
   constructor(
     private adService: AdvertisementService,
@@ -32,7 +32,7 @@ export class HomePageComponent implements OnInit {
     if(this.isLoggedIn) {
       this.adService.getAdvertisements("")
         .subscribe(data => {
-          this.ads = data;
+          this.adList = data;
           console.log(data)
         });
     }
@@ -45,7 +45,11 @@ export class HomePageComponent implements OnInit {
     this.router.navigate(['advertisement', id]);
   }
 
-  searchAdvertisements(advertisements: Advertisement[]) {
-    this.ads = advertisements;
+  searchAdvertisements(advertisements: AdvertisementList) {
+    this.adList = advertisements;
+  }
+
+  updateSearchWithOutPaging(search: string) {
+    this.searchWithOutPaging = search;
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {AfterContentInit, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import { AdvertisementService } from "../../services/advertisement/advertisement.service";
 import { AdvertisementDetail } from "../../models/advertisement-detail";
@@ -16,7 +16,7 @@ import {environment} from "../../../environments/environment";
   templateUrl: './advertisement-info.component.html',
   styleUrls: ['./advertisement-info.component.scss']
 })
-export class AdvertisementInfoComponent implements OnInit {
+export class AdvertisementInfoComponent implements OnInit, AfterContentInit {
   baseUrl = environment.baseUrl
   id: number = -1;
   ad: AdvertisementDetail | undefined;
@@ -30,6 +30,8 @@ export class AdvertisementInfoComponent implements OnInit {
   hoveredDate: NgbDate | null = null;
   reserveFrom: NgbDate | undefined;
   reserveTo: NgbDate | undefined;
+
+  imgIndex = 0;
 
   constructor(
     private adService: AdvertisementService,
@@ -59,6 +61,12 @@ export class AdvertisementInfoComponent implements OnInit {
           this.isSaved = response;
         })
     });
+  }
+
+  ngAfterContentInit(): void {
+    if (this.ad !== undefined) {
+      this.modifySelectedImg(this.ad.imageLocations[0]);
+    }
   }
 
   ngOnInit(): void {
@@ -91,7 +99,6 @@ export class AdvertisementInfoComponent implements OnInit {
     return this.reserveFrom && !this.reserveTo && this.hoveredDate && date.after(this.reserveFrom) &&
       date.before(this.hoveredDate);
   }
-
 
   reserveDateFrom(from: NgbDate) {
     this.reserveFrom = from;
@@ -160,5 +167,29 @@ export class AdvertisementInfoComponent implements OnInit {
 
   goToProfile(id: string) {
     this.router.navigateByUrl('profile/' + id);
+  }
+
+  modifySelectedImg(image: string) {
+    let element = document.getElementById("selected-img") as HTMLImageElement;
+    console.log(element);
+    element.src = this.baseUrl + "images/" + image;
+  }
+
+  imgRight() {
+    if (this.ad != undefined){
+      this.imgIndex++;
+      let element = document.getElementById("selected-img") as HTMLImageElement;
+      console.log(element);
+      element.src = this.baseUrl + "images/" + this.ad.imageLocations[this.imgIndex];
+    }
+  }
+
+  imgLeft() {
+    if (this.ad != undefined){
+      this.imgIndex--;
+      let element = document.getElementById("selected-img") as HTMLImageElement;
+      console.log(element);
+      element.src = this.baseUrl + "images/" + this.ad.imageLocations[this.imgIndex];
+    }
   }
 }

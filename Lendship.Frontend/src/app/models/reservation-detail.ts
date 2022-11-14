@@ -1,5 +1,5 @@
 import {NgbDate} from "@ng-bootstrap/ng-bootstrap";
-import {Advertisement} from "./advertisement";
+import {Advertisement, AdvertisementList} from "./advertisementList";
 import {User} from "./user";
 
 export interface IReservationDetail {
@@ -20,7 +20,7 @@ export interface IReservationDetail {
 
 export class ReservationDetail {
   id: number;
-  advertisement: Advertisement;
+  advertisement: AdvertisementList;
   reservationState: string;
   comment: string;
   admittedByAdvertiser: boolean;
@@ -28,7 +28,7 @@ export class ReservationDetail {
   dateFrom: string;
   dateTo: string;
 
-  constructor(id: number, ad: Advertisement, reservationsState: string, comment: string, admittedByAdvertiser: boolean, admittedByLender: boolean, dateFrom: NgbDate, dateTo: NgbDate) {
+  constructor(id: number, ad: AdvertisementList, reservationsState: string, comment: string, admittedByAdvertiser: boolean, admittedByLender: boolean, dateFrom: NgbDate, dateTo: NgbDate) {
     this.id = id;
     this.advertisement = ad;
     this.reservationState = reservationsState;

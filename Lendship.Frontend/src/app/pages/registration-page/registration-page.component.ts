@@ -6,6 +6,7 @@ import { LocationValidator} from "../../shared/valid-location";
 import { GeocodingService} from "../../services/geocoding/geocoding.service";
 import {FileUploadService} from "../../services/file-upload/file-upload.service";
 import {Router} from "@angular/router";
+import {catchError} from "rxjs/operators";
 
 @Component({
   selector: 'app-registration-page',
@@ -17,6 +18,7 @@ export class RegistrationPageComponent implements OnInit {
   submitting = false;
   newImageName = "";
   newImage: File | undefined;
+  error = "";
 
   constructor(
     private formBuilder: UntypedFormBuilder,
@@ -35,8 +37,8 @@ export class RegistrationPageComponent implements OnInit {
     location: ['', [Validators.required], [this.locationValidator.exists.bind(this.locationValidator)]],
     latitude: [],
     longitude: [],
-    password: ['', [Validators.required, Validators.minLength(6), Validators.pattern(new RegExp(/^(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&+="!_()']).*$/i))]],
-    confirmPassword: ['', [Validators.required, Validators.minLength(6), Validators.pattern(new RegExp(/^(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&+="!_()']).*$/i))]],
+    password: ['', [Validators.required, Validators.minLength(6), Validators.pattern(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])"))]],
+    confirmPassword: ['', [Validators.required, Validators.minLength(6), Validators.pattern(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])"))]],
   }, { validators: PasswordMatchingValidator });
 
   get name() {
@@ -78,6 +80,14 @@ export class RegistrationPageComponent implements OnInit {
         this.longitude = data.results[0].geometry.location.lng;
 
         this.authService.register(this.registrationForm.value)
+          .pipe(
+            catchError(error => {
+              console.log(error.error.message);
+              this.error = error.error.message;
+              this.submitting = false;
+              throw(error);
+            })
+          )
           .subscribe(response => {
             if (this.newImage !== undefined){
               this.fileUploadService.uploadProfile(response.token, this.newImage)
@@ -89,7 +99,7 @@ export class RegistrationPageComponent implements OnInit {
             } else {
               this.authService.loginData(response)
             }
-          });
+        });
         this.submitting = true;
       })
   }

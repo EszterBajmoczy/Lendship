@@ -1,9 +1,10 @@
 <app-search *ngIf="isLoggedIn" class="w-100"
   [mode] = mode
-  (advertisements)="searchAdvertisements($event)">
+  (advertisements)="searchAdvertisements($event)"
+  (searchWithOutPaging)="updateSearchWithOutPaging($event)">
 </app-search>
 <div *ngIf="isLoggedIn" class="card-container container col-lg-10 ">
-  <div *ngFor="let ad of ads" class=" card m-3" style="width: 18rem; height: 22rem" (click)="cardClicked(ad.id)">
+  <div *ngFor="let ad of adList?.advertisements" class=" card m-3" style="width: 18rem; height: 22rem" (click)="cardClicked(ad.id)">
     <img src="{{baseUrl}}images{{ad.imageLocation}}" class="card-img-top" alt="...">
     <div class="card-body">
       <h5 class="card-title">{{ad.title}}</h5>
@@ -14,3 +15,9 @@
     </div>
   </div>
 </div>
+<app-paging *ngIf="isLoggedIn && adList !== undefined" class="w-100"
+            [mode] = mode
+            [pages] = adList.pages
+            [search] = searchWithOutPaging
+            (advertisements)="searchAdvertisements($event)">
+</app-paging>

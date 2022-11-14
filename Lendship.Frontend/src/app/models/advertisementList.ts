@@ -1,5 +1,10 @@
 import {User} from "./user";
 
+export interface AdvertisementList {
+  pages: number,
+  advertisements: Advertisement[]
+}
+
 export interface Advertisement {
   id: number,
   title: string,

@@ -29,16 +29,7 @@ export class AuthService {
   }
 
   public login(userData: LoginUser) {
-    const loginCall = this.http.post<LoginResponse>(this.baseUrl + "/login",userData);
-
-    loginCall.subscribe(response => {
-      this.saveLoginData(response)
-
-      this.router.navigate(['home'])
-        .then(() => {
-          window.location.reload();
-        });
-    });
+    return this.http.post<LoginResponse>(this.baseUrl + "/login",userData);
   }
 
   public register(userData: RegisterUser) {
@@ -47,7 +38,8 @@ export class AuthService {
 
   public loginData(userData: LoginResponse) {
     this.saveLoginData(userData);
-    this.router.navigate(['home'])
+
+    this.router.navigateByUrl('home')
       .then(() => {
         window.location.reload();
       });
