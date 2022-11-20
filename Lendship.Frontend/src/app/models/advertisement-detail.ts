@@ -5,6 +5,7 @@ import {Category} from "./category";
 
 export interface AdvertisementDetail extends AdvertisementList {
   user: User,
+  isService: boolean,
   description: string,
   instructionManual: string,
   deposit: number,

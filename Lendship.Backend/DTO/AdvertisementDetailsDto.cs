@@ -37,31 +37,12 @@ namespace Lendship.Backend.DTO
         public int? Id { get; set; }
 
         /// <summary>
-        /// Gets or Sets AdvertisementType
-        /// </summary>
-        [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public enum AdvertisementTypeEnum
-        {
-            /// <summary>
-            /// Enum CreatedEnum for Property
-            /// </summary>
-            [EnumMember(Value = "Property")]
-            PropertyEnum = 1,
-
-            /// <summary>
-            /// Enum AcceptedEnum for Service
-            /// </summary>
-            [EnumMember(Value = "Service")]
-            ServiceEnum = 2
-        }
-
-        /// <summary>
-        /// Gets or Sets AdvertisementType
+        /// Gets or Sets IsService
         /// </summary>
         [Required]
 
-        [DataMember(Name = "advertisementType")]
-        public AdvertisementTypeEnum? AdvertisementType { get; set; }
+        [DataMember(Name = "isService")]
+        public bool IsService { get; set; }
 
         /// <summary>
         /// Gets or Sets User
@@ -190,6 +171,7 @@ namespace Lendship.Backend.DTO
             var sb = new StringBuilder();
             sb.Append("class Advertisement {\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
+            sb.Append("  IsService: ").Append(IsService).Append("\n");
             sb.Append("  User: ").Append(User).Append("\n");
             sb.Append("  Title: ").Append(Title).Append("\n");
             sb.Append("  Description: ").Append(Description).Append("\n");
@@ -245,6 +227,11 @@ namespace Lendship.Backend.DTO
                     Id == other.Id ||
                     Id != null &&
                     Id.Equals(other.Id)
+                ) &&
+                (
+                    IsService == other.IsService ||
+                    IsService != null &&
+                    IsService.Equals(other.IsService)
                 ) &&
                 (
                     User == other.User ||
@@ -336,6 +323,7 @@ namespace Lendship.Backend.DTO
                 // Suitable nullity checks etc, of course :)
                     if (Id != null)
                     hashCode = hashCode * 59 + Id.GetHashCode();
+                    hashCode = hashCode * 59 + IsService.GetHashCode();
                     if (User != null)
                     hashCode = hashCode * 59 + User.GetHashCode();
                     if (Title != null)

@@ -58,7 +58,7 @@ namespace Lendship.Backend.Converters
             return new AdvertisementDetailsDto
             {
                 Id = ad.Id,
-                AdvertisementType = GetAdvertisementTypeEnumState(ad.AdvertisementType),
+                IsService = GetIsService(ad.AdvertisementType),
                 User = userDTO,
                 Title = ad.Title,
                 Description = ad.Description,
@@ -85,7 +85,7 @@ namespace Lendship.Backend.Converters
             var newAd = new Advertisement
             {
                 Id = ad.Id ?? 0,
-                AdvertisementType = GetAdvertisementTypeState(ad.AdvertisementType),
+                AdvertisementType = GetAdvertisementType(ad.IsService),
                 User = user,
                 Title = ad.Title,
                 Description = ad.Description,
@@ -104,23 +104,22 @@ namespace Lendship.Backend.Converters
             return newAd;
         }
 
-        private AdvertisementTypeEnum GetAdvertisementTypeEnumState(AdvertisementType state)
+        private bool GetIsService(AdvertisementType state)
         {
             return state switch
             {
-                AdvertisementType.Property => AdvertisementTypeEnum.PropertyEnum,
-                AdvertisementType.Service => AdvertisementTypeEnum.ServiceEnum,
-                _ => AdvertisementTypeEnum.PropertyEnum,
+                AdvertisementType.Property => false,
+                AdvertisementType.Service => true,
+                _ => false,
             };
         }
 
-        private AdvertisementType GetAdvertisementTypeState(AdvertisementTypeEnum? state)
+        private AdvertisementType GetAdvertisementType(bool isService)
         {
-            return state switch
+            return isService switch
             {
-                AdvertisementTypeEnum.PropertyEnum => AdvertisementType.Property,
-                AdvertisementTypeEnum.ServiceEnum => AdvertisementType.Service,
-                _ => AdvertisementType.Property,
+                true => AdvertisementType.Property,
+                false => AdvertisementType.Service
             };
         }
     }
