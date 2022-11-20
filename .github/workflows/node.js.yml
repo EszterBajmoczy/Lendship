@@ -28,7 +28,7 @@ jobs:
         cache: 'npm'
     - run: npm install
       working-directory: Lendship.Frontend
-    - run: npm run build
+    - run: ng serve
       working-directory: Lendship.Frontend
 #    - run: npm test
 #      working-directory: Lendship.Frontend
