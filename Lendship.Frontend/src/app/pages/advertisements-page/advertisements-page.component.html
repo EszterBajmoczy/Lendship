@@ -31,7 +31,7 @@
   </div>
   <app-paging *ngIf="showOwn && !ownAdsLoading && ownAds !== undefined " class="w-100"
               [mode] = modeOwn
-              [pages] = ownAds?.pages
+              [pages] = ownAds.pages
               [search] = searchOwnWithOutPaging
               (advertisements)="searchOwnAdvertisements($event)">
   </app-paging>
@@ -65,7 +65,7 @@
   </div>
   <app-paging *ngIf="showSaved && !savedAdsLoading && savedAds !== undefined " class="w-100"
               [mode] = modeSaved
-              [pages] = savedAds?.pages
+              [pages] = savedAds.pages
               [search] = searchSavedWithOutPaging
               (advertisements)="searchSavedAdvertisements($event)">
   </app-paging>
