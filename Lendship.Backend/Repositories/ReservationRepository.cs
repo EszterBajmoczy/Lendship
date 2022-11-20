@@ -24,6 +24,7 @@ namespace Lendship.Backend.Repositories
                             .AsNoTracking()
                             .Include(r => r.User)
                             .Include(r => r.Advertisement)
+                            .Include(r => r.Advertisement.User)
                             .Where(r => r.Id == id)
                             .FirstOrDefault();
         }
