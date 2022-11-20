@@ -40,7 +40,7 @@ export class AdvertisementInfoComponent implements OnInit, AfterContentInit {
     private conService: ConversationService,
     private modalService: NgbModal,
     private calendar: NgbCalendar,
-    public formatter: NgbDateParserFormatter,
+    private formatter: NgbDateParserFormatter,
     private router: Router,
     activatedRoute: ActivatedRoute)
   {
@@ -81,7 +81,8 @@ export class AdvertisementInfoComponent implements OnInit, AfterContentInit {
 
         if(this.reserveTo !== undefined && this.reserveFrom !== undefined) {
           let res = new Reservation(0, 1, this.reserveFrom, this.reserveTo);
-
+          console.log("!");
+          console.log(res);
           this.reservationService.reserve(this.id, res)
             .subscribe(response => {
               console.log(response);

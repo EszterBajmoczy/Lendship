@@ -49,7 +49,7 @@ namespace Lendship.Backend.Services
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var user = _userRepository.GetById(signedInUserId);
-            var advertisement = _advertisementRepository.GetById(advertisementId, signedInUserId);
+            var advertisement = _advertisementRepository.GetPlainById(advertisementId, signedInUserId);
 
             if (advertisement == null)
             {

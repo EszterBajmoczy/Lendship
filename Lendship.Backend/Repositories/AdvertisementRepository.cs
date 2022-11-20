@@ -42,6 +42,14 @@ namespace Lendship.Backend.Repositories
                 .FirstOrDefault();
         }
 
+        public Advertisement GetPlainById(int? id, string signedInUserId)
+        {
+            return _dbContext.Advertisements
+                .Include(a => a.User)
+                .Where(a => a.Id == id && (a.IsPublic || a.User.Id == signedInUserId || a.PrivateUsers.Any(p => p.UserId == signedInUserId)))
+                .FirstOrDefault();
+        }
+
         public void Create(Advertisement ad)
         {
             _dbContext.Advertisements.Add(ad);
