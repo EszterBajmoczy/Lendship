@@ -9,6 +9,8 @@ namespace Lendship.Backend.Interfaces.Repositories
 
         Advertisement GetById(int? id, string signedInUserId);
 
+        Advertisement GetPlainById(int? id, string signedInUserId);
+
         void Create(Advertisement ad);
 
         void Update(Advertisement ad);

@@ -49,7 +49,7 @@ namespace Lendship.Backend.Services
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var user = _userRepository.GetById(signedInUserId);
-            var advertisement = _advertisementRepository.GetById(advertisementId, signedInUserId);
+            var advertisement = _advertisementRepository.GetPlainById(advertisementId, signedInUserId);
 
             if (advertisement == null)
             {
@@ -79,7 +79,7 @@ namespace Lendship.Backend.Services
         public IEnumerable<ReservationDetailDto> GetReservationsForUser()
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var reservations = _reservationRepository.GetByUser(signedInUserId)
+            var reservations = _reservationRepository.GetForUserAdvertisement(signedInUserId)
                                 .Select(r => _reservationConverter.ConvertToDetailDto(r))
                                 .OrderByDescending(x => x.DateFrom);
 
@@ -284,7 +284,7 @@ namespace Lendship.Backend.Services
                 UpdateReservationState(reservation, "Closed", signedInUserId);
             } else
             {
-                ReserveToken(reservation.User, reservation.Advertisement.Credit, result);
+                ReserveCredit(reservation.User, reservation.Advertisement.Credit, result);
                 UpdateReservationState(reservation, "Ongoing", signedInUserId);
             }
 
@@ -342,7 +342,7 @@ namespace Lendship.Backend.Services
             _userRepository.Update(advertiser);
         }
 
-        private void ReserveToken(ApplicationUser lender, int? credit, TransactionOperationDto result)
+        private void ReserveCredit(ApplicationUser lender, int? credit, TransactionOperationDto result)
         {
             result.Operation = "Reserve";
 

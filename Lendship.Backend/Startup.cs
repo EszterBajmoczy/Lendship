@@ -50,8 +50,6 @@ namespace Lendship.Backend
             // For Identity
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
-                options.User.AllowedUserNameCharacters = "aábcdeéfghiíjklmnoóöőpqrstuúüűvwxyzAÁBCDEÉFGHIÍJKLMNOÓÖŐPQRSTUÚÜŰVWXYZ0123456789-._@+";
-
                 options.Password.RequireDigit = true;
                 options.Password.RequireLowercase = true;
                 options.Password.RequireNonAlphanumeric = true;
