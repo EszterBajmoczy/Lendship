@@ -14,9 +14,9 @@ namespace Lendship.Backend.Converters
                 Id = new Guid(user.Id),
                 Name = user.UserName,
                 Email = user.Email,
-                EvaluationAsAdvertiser = user.EvaluationAsAdvertiser,
+                EvaluationAsAdvertiser = Math.Round(user.EvaluationAsAdvertiser, 1),
                 EvaluationAsAdvertiserCount = user.EvaluationAsAdvertiserCount,
-                EvaluationAsLender = user.EvaluationAsLender,
+                EvaluationAsLender = Math.Round(user.EvaluationAsLender, 1),
                 EvaluationAsLenderCount = user.EvaluationAsLenderCount,
                 Image = user.ImageLocation
             };
@@ -34,9 +34,9 @@ namespace Lendship.Backend.Converters
                 Latitude = user.Latitude,
                 Longitude = user.Longitude,
                 Location = user.Location,
-                EvaluationAsAdvertiser = user.EvaluationAsAdvertiser,
+                EvaluationAsAdvertiser = Math.Round(user.EvaluationAsAdvertiser, 1),
                 EvaluationAsAdvertiserCount = user.EvaluationAsAdvertiserCount,
-                EvaluationAsLender = user.EvaluationAsLender,
+                EvaluationAsLender = Math.Round(user.EvaluationAsLender, 1),
                 EvaluationAsLenderCount = user.EvaluationAsLenderCount,
                 Registration = user.Registration,
                 Image = user.ImageLocation
