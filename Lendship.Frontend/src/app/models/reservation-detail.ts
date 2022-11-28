@@ -1,6 +1,7 @@
 import {NgbDate} from "@ng-bootstrap/ng-bootstrap";
 import {Advertisement, AdvertisementList} from "./advertisementList";
 import {User} from "./user";
+import {DateHandlerService} from "../services/date-handler/date-handler.service";
 
 export interface IReservationDetail {
   id: number;
@@ -29,25 +30,16 @@ export class ReservationDetail {
   dateTo: string;
 
   constructor(id: number, ad: AdvertisementList, reservationsState: string, comment: string, admittedByAdvertiser: boolean, admittedByLender: boolean, dateFrom: NgbDate, dateTo: NgbDate) {
+    let dateHandler = new DateHandlerService();
+
     this.id = id;
     this.advertisement = ad;
     this.reservationState = reservationsState;
     this.comment = comment;
     this.admittedByAdvertiser = admittedByAdvertiser;
     this.admittedByLender = admittedByLender;
-    this.dateFrom = this.dateToString(dateFrom);
-    this.dateTo = this.dateToString(dateTo);
-  }
-
-  dateToString(date: NgbDate) {
-    if (date.month < 10 && date.day < 10) {
-      return `${date.year}-0${date.month}-0${date.day}`;
-    } else if (date.month < 10) {
-      return `${date?.year}-0${date?.month}-${date?.day}`;
-    } else if (date.day < 10) {
-      return `${date?.year}-${date?.month}-0${date?.day}`;
-    }
-    return `${date?.year}-${date?.month}-0${date?.day}`;
+    this.dateFrom = dateHandler.convertNgbDateToString(dateFrom);
+    this.dateTo = dateHandler.convertNgbDateToString(dateTo);
   }
 }
 
