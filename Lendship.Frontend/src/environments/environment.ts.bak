@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  baseUrl: "https://seven-hands-exist-176-63-31-20.loca.lt/",
+  baseUrl: "https://localhost:5001/",
   geocodingBaseUrl: "https://maps.googleapis.com/maps/api/geocode/json",
   geocodingApiKey: "AIzaSyA6IWSb32vNokzBHBMHnl-LanAa9fU56Yc"
 };
