@@ -1,6 +1,5 @@
 <h2>{{message}}</h2>
-<h2 class="text-center" *ngIf="!isClosed">The reservation is not closed yet, <br>evaluation is not possible.</h2>
-<form *ngIf="isClosed" [formGroup]="evaluationForm">
+<form [formGroup]="evaluationForm">
   <div id="flexibility" class="d-flex justify-content-between">
     <p>Flexibility</p>
     <div class="d-flex">
@@ -52,7 +51,7 @@
   </div>
 
   <p class="d-flex justify-content-center mt-4">
-    <button class="btn btn-info" type="submit" (click)="onSubmit()" [disabled]="!(flexibility != 0 && reliability != 0 && (qualityOfProduct != 0 || qualityAtReturn != 0) && isClosed)">
+    <button class="btn btn-info" type="submit" (click)="onSubmit()" [disabled]="!(flexibility != 0 && reliability != 0 && (qualityOfProduct != 0 || qualityAtReturn != 0))">
       Send evaluation and close transaction.
     </button>
   </p>

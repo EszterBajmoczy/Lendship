@@ -9,6 +9,7 @@ import {IReservationDetail} from "../../models/reservation-detail";
 import {IReservationBasic} from "../../models/reservation-basic";
 import {ITransactionOperation} from "../../models/transaction-operation";
 import {IReservationToken, QRToken} from "../../models/reservation-token";
+import {DateHandlerService} from "../date-handler/date-handler.service";
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,10 @@ export class ReservationService {
   private readonly baseUrl: string;
   private readonly headers: HttpHeaders;
 
-  constructor(private http: HttpClient, private authService: AuthService) {
+  constructor(
+    private http: HttpClient,
+    private dateHandler: DateHandlerService,
+    private authService: AuthService) {
     this.baseUrl = environment.baseUrl + "Reservation/";
     this.headers = authService.getHeaders();
   }
@@ -74,24 +78,14 @@ export class ReservationService {
 
   private convertReservationDateFormats(res: IReservationDetail[]){
     res.forEach(r => {
-      r.dateTo = new Date(r.dateTo ?? '');
       r.dateFrom = new Date(r.dateFrom ?? '');
-      r.dateToString = this.dateToString(r.dateTo);
-      r.dateFromString = this.dateToString(r.dateFrom);
-
+      r.dateTo = new Date(r.dateTo ?? '');
+      r.dateFromString = this.dateHandler.convertDateToString(r.dateFrom);
+      r.dateToString = this.dateHandler.convertDateToString(r.dateTo);
+      r.dateFromNgbDate = this.dateHandler.convertDateToNgbDate(r.dateFrom, true);
+      r.dateToNgbDate = this.dateHandler.convertDateToNgbDate(r.dateTo, false);
     })
     return res;
-  }
-
-  private dateToString(date: Date): string {
-    if (date.getUTCMonth() + 1 < 10 && date.getUTCDate() + 1 < 10) {
-      return `${date.getUTCFullYear()}-0${date.getUTCMonth() + 1}-0${date.getUTCDate() + 1}`;
-    } else if (date.getUTCMonth() + 1 < 10) {
-      return `${date?.getUTCFullYear()}-0${date?.getUTCMonth() + 1}-${date?.getUTCDate() + 1}`;
-    } else if (date.getUTCDate() + 1 < 10) {
-      return `${date?.getUTCFullYear()}-${date?.getUTCMonth() + 1}-0${date?.getUTCDate() + 1}`;
-    }
-    return `${date?.getUTCFullYear()}-${date?.getUTCMonth() + 1}-0${date?.getUTCDate() + 1}`;
   }
 
   private convertAvailabilityDateFormats(ads: IAvailability[]){
