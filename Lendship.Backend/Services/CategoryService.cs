@@ -1,9 +1,8 @@
-﻿using Lendship.Backend.Converters;
-using Lendship.Backend.DTO;
+﻿using Lendship.Backend.DTO;
 using Lendship.Backend.Interfaces.Converters;
+using Lendship.Backend.Interfaces.Repositories;
 using Lendship.Backend.Interfaces.Services;
 using Lendship.Backend.Models;
-using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,33 +10,39 @@ namespace Lendship.Backend.Services
 {
     public class CategoryService : ICategoryService
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly LendshipDbContext _dbContext;
-
+        private readonly ICategoryRepository _categoryRepository;
         private readonly ICategoryConverter _categoryConverter;
 
-        public CategoryService(IHttpContextAccessor httpContextAccessor, LendshipDbContext dbContext)
+        public CategoryService(ICategoryRepository categoryRepository, ICategoryConverter categoryConverter)
         {
-            _httpContextAccessor = httpContextAccessor;
-            _dbContext = dbContext;
-
-            _categoryConverter = new CategoryConverter();
+            _categoryRepository = categoryRepository;
+            _categoryConverter = categoryConverter;
         }
 
         public Category AddCategory(string category)
         {
             var newCategory = new Category() { Name = category };
-            _dbContext.Categories.Add(newCategory);
-            _dbContext.SaveChanges();
+            _categoryRepository.Create(newCategory);
             return newCategory;
         }
 
         public List<CategoryDto> GetCategories()
         {
-            var categories = _dbContext.Categories.ToList();
+            var categories = _categoryRepository.GetAll();
 
             return categories.Select(c => _categoryConverter.ConvertToDto(c)).ToList();
         }
 
+        public Category GetOrCreateCategoryByName(string name)
+        {
+            var category = _categoryRepository.GetByName(name);
+
+            if (category == null)
+            {
+                category = AddCategory(name.ToLower());
+            }
+
+            return category;
+        }
     }
 }

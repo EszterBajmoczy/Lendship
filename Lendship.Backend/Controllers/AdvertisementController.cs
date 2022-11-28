@@ -45,14 +45,16 @@ namespace Lendship.Backend.Controllers
         [Route("{advertisementId}")]
         public virtual IActionResult GetAdvertisement([FromRoute][Required] int advertisementId)
         {
-            var advertisement = _adService.GetAdvertisement(advertisementId);
-
-            if (advertisement != null)
+            try
             {
+                var advertisement = _adService.GetAdvertisement(advertisementId);
                 return new ObjectResult(advertisement.ToJson());
             }
-
-            return this.BadRequest("Advertisement not found.");
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception at creating advertisement: " + e.Message);
+                return this.BadRequest("Exception at getting advertisement: " + e.Message);
+            }
         }
 
         /// <summary>
@@ -73,7 +75,7 @@ namespace Lendship.Backend.Controllers
             } catch (Exception e)
             {
                 Console.WriteLine("Exception at creating advertisement: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at creating advertisement: " + e.Message);
             }
         }
 
@@ -96,7 +98,7 @@ namespace Lendship.Backend.Controllers
             catch (Exception e)
             {
                 Console.WriteLine("Exception at updating advertisement: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at updating advertisement: " + e.Message);
             }
         }
 
@@ -119,7 +121,7 @@ namespace Lendship.Backend.Controllers
             } catch(Exception e)
             {
                 Console.WriteLine("Exception at deleting advertisement: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at deleting advertisement: " + e.Message);
             }
         }
 
@@ -139,9 +141,9 @@ namespace Lendship.Backend.Controllers
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpGet]
-        public virtual IActionResult GetAdvertisements([FromQuery]string advertisementType, [FromQuery]bool credit, [FromQuery]bool cash, [FromQuery]string category, [FromQuery]string city, [FromQuery]int distance, [FromQuery] string word, [FromQuery]string sortBy)
+        public virtual IActionResult GetAdvertisements([FromQuery]string advertisementType, [FromQuery]bool credit, [FromQuery]bool cash, [FromQuery]string category, [FromQuery] double latitude, [FromQuery] double longitude, [FromQuery] int distance, [FromQuery]string word, [FromQuery] string sortBy, [FromQuery]int page)
         {
-            var advertisements = _adService.GetAdvertisements(advertisementType, credit, cash, category, city, distance, word, sortBy);
+            var advertisements = _adService.GetAdvertisements(advertisementType, credit, cash, category, latitude, longitude, distance, word, sortBy, page);
             return new ObjectResult(JsonConvert.SerializeObject(advertisements));
         }
 
@@ -162,17 +164,17 @@ namespace Lendship.Backend.Controllers
         /// <response code="401"></response>
         [HttpGet]
         [Route("own")]
-        public virtual IActionResult GetOwnAdvertisements([FromQuery]string advertisementType, [FromQuery]bool credit, [FromQuery]bool cash, [FromQuery]string category, [FromQuery]string city, [FromQuery]int distance, [FromQuery] string word, [FromQuery]string sortBy)
+        public virtual IActionResult GetOwnAdvertisements([FromQuery]string advertisementType, [FromQuery]bool credit, [FromQuery]bool cash, [FromQuery]string category, [FromQuery] double latitude, [FromQuery] double longitude, [FromQuery] int distance, [FromQuery] string word, [FromQuery]string sortBy, [FromQuery]int page)
         {
             try
             {
-                var advertisements = _adService.GetUsersAdvertisements(advertisementType, credit, cash, category, city, distance, word, sortBy);
+                var advertisements = _adService.GetUsersAdvertisements(advertisementType, credit, cash, category, latitude, longitude, distance, word, sortBy, page);
                 return new ObjectResult(JsonConvert.SerializeObject(advertisements));
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exception at getting saving advertisements: " + e.Message);
-                return this.BadRequest(e.Message);
+                Console.WriteLine("Exception at getting own advertisements: " + e.Message);
+                return this.BadRequest("Exception at getting own advertisements: " + e.Message);
             }
         }
 
@@ -193,17 +195,17 @@ namespace Lendship.Backend.Controllers
         /// <response code="401"></response>
         [HttpGet]
         [Route("saved")]
-        public virtual IActionResult GetSavedAdvertisements([FromQuery]string advertisementType, [FromQuery]bool credit, [FromQuery]bool cash, [FromQuery]string category, [FromQuery]string city, [FromQuery]int distance, [FromQuery] string word, [FromQuery]string sortBy)
+        public virtual IActionResult GetSavedAdvertisements([FromQuery]string advertisementType, [FromQuery]bool credit, [FromQuery]bool cash, [FromQuery]string category, [FromQuery] double latitude, [FromQuery] double longitude, [FromQuery]int distance, [FromQuery] string word, [FromQuery]string sortBy, [FromQuery]int page)
         {
             try
             {
-                var advertisements = _adService.GetSavedAdvertisements(advertisementType, credit, cash, category, city, distance, word, sortBy);
+                var advertisements = _adService.GetSavedAdvertisements(advertisementType, credit, cash, category, latitude, longitude, distance, word, sortBy, page);
                 return new ObjectResult(JsonConvert.SerializeObject(advertisements));
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exception at getting saving advertisements: " + e.Message);
-                return this.BadRequest(e.Message);
+                Console.WriteLine("Exception at getting saved advertisements: " + e.Message);
+                return this.BadRequest("Exception at getting saved advertisements: " + e.Message);
             }
         }
 
@@ -226,7 +228,7 @@ namespace Lendship.Backend.Controllers
             } catch (Exception e)
             {
                 Console.WriteLine("Exception at saving advertisement: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at saving advertisement: " + e.Message);
             }
         }
 
@@ -265,8 +267,8 @@ namespace Lendship.Backend.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exception at saving advertisement: " + e.Message);
-                return this.BadRequest(e.Message);
+                Console.WriteLine("Exception at getting advertisement: " + e.Message);
+                return this.BadRequest("Exception at getting advertisement: " + e.Message);
             }
         }
     }

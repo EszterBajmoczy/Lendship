@@ -66,7 +66,13 @@ namespace Lendship.Backend.DTO
             /// </summary>
             [EnumMember(Value = "Resigned")]
             ResignedEnum = 4,
-            
+
+            /// <summary>
+            /// Enum ResignedEnum for Resigned
+            /// </summary>
+            [EnumMember(Value = "Ongoing")]
+            OngoingEnum = 4,
+
             /// <summary>
             /// Enum ClosedEnum for Closed
             /// </summary>

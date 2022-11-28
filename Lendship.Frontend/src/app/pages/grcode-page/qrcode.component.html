@@ -1,0 +1,77 @@
+<div *ngIf="!scannerEnabled && reservations.length > 0" class="container col-lg-10 d-flex justify-content-end mb-lg-5">
+  <button class="btn btn-success" (click)="setScanner(true)">Scan QR Code</button>
+</div>
+<div *ngIf="scannerEnabled" class="container col-lg-10 d-flex justify-content-end mb-lg-5">
+  <button class="btn btn-success" (click)="setScanner(false)">Cancel</button>
+</div>
+
+<div *ngIf="loading" class="d-flex justify-content-center">
+  <div class="spinner-border m-2" role="status">
+    <span class="sr-only">Loading...</span>
+  </div>
+</div>
+<div>
+  <div *ngIf="scannerEnabled">
+    <zxing-scanner #scanner (scanSuccess)="scanSuccessHandler($event)">
+    </zxing-scanner>
+  </div>
+
+  <div *ngIf="!scannerEnabled && token !== undefined" class="text-center">
+    <h3 *ngIf="!closing; else closing_content" >Your lender or advertiser should scan this QR code to verify the begin of lending.</h3>
+    <ng-template #closing_content>
+      <h3 *ngIf="closing" class="text-center mb-2">Your lender or advertiser should scan this QR code to close the lending transaction.</h3>
+    </ng-template>
+
+    <qrcode [qrdata]="token" [width]="400" [errorCorrectionLevel]="'M'"  class="d-flex justify-content-center"></qrcode>
+    <button *ngIf="closing" class="btn btn-success" (click)="openEvaluation(evaluationPopUp)">Create evaluation</button>
+  </div>
+
+  <div *ngIf="!scannerEnabled && token === undefined">
+    <div *ngIf="!loading && !scannerEnabled" class="container-fluid form-container text-center col-lg-10">
+      <span *ngIf="reservations.length == 0; else selectReservation">You don't have reservations in the next days</span>
+      <ng-template #selectReservation>
+        <div>
+          <h3 class="text-center">Select reservation to get QR Code for it!</h3>
+          <h6 class="text-center">Choose if you are start lending or closing the transaction</h6>
+          <div  *ngIf="reservations.length != 0" class="d-flex align-items-center justify-content-center">
+            <input id="isClosing" type="checkbox" (click)="setClosing()" [value]=closing class="m-4 w-auto filled-in" checked>
+            <label for="isClosing">Closing transaction</label>
+          </div>
+          <div *ngFor="let res of reservations" (click)="getReservationToken(res)" [ngClass]="res.isOwn ? 'own' : 'notOwn' " class="reservation-section d-flex justify-content-between align-items-center mb-4 p-3">
+            <div class="conversation-name me-4">{{res.advertisementName}}</div>
+            <div class="conversation-name me-4">{{res.dates}}</div>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<ng-template #evaluationPopUp let-modal>
+  <div class="modal-header">
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body d-flex justify-content-center">
+    <app-evaluation-popup *ngIf="evaluationBasic !== undefined && operationClose" class="w-100"
+                          [userTo] = "evaluationBasic.userTo"
+                          [advertisementId] = "evaluationBasic.advertisementId"
+                          [reservationId] = "evaluationBasic.reservationId"
+                          [isLender] = "evaluationBasic.isLender"
+                          [message] = "evaluationBasic.message"
+                          (evaluationAdvertiser)="submitEvaluationAdvertiser($event)"
+                          (evaluationLender)="submitEvaluationLender($event)">
+    </app-evaluation-popup>
+  </div>
+</ng-template>
+
+<ng-template #infoPopup let-modal>
+  <div class="modal-header">
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body d-flex justify-content-center">
+    <app-info-popup  class="w-100"*ngIf="evaluationBasic !== undefined && isMessage"
+                     [information] = "evaluationBasic.message">
+    </app-info-popup>
+  </div>
+  <button type="button" class="btn btn-outline-dark" (click)="modal.close('Ok')">Ok</button>
+</ng-template>

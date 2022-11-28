@@ -1,0 +1,10 @@
+@import "src/styles/cards.scss";
+@import "src/styles/buttons.scss";
+
+.advertisementType {
+  background-color: $color-info;
+}
+
+.disabled {
+  background-color: dimgrey;
+}

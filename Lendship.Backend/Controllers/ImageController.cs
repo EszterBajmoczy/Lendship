@@ -15,6 +15,8 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Lendship.Backend.Interfaces.Services;
+using Newtonsoft.Json.Linq;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Lendship.Backend.Controllers
 {
@@ -46,13 +48,16 @@ namespace Lendship.Backend.Controllers
             try
             {
                 IFormFile file = Request.Form.Files[0];
-                _imgService.UploadProfileImage(file);
-                return StatusCode(201);
+                var path = _imgService.UploadProfileImage(file);
+                return Ok(new
+                {
+                    path = path
+                });
             }
             catch (Exception e)
             {
                 Console.WriteLine("Exception at uploading profile image: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at uploading profile image: " + e.Message);
             }
         }
 
@@ -76,8 +81,8 @@ namespace Lendship.Backend.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine("Exception at uploading profile image: " + e.Message);
-                return this.BadRequest(e.Message);
+                Console.WriteLine("Exception at uploading images: " + e.Message);
+                return this.BadRequest("Exception at uploading images: " + e.Message);
             }
 
             throw new NotImplementedException();
@@ -148,7 +153,7 @@ namespace Lendship.Backend.Controllers
             catch (Exception e)
             {
                 Console.WriteLine("Exception at fetching profile image: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at fetching profile image: " + e.Message);
             }
         }
 
@@ -172,7 +177,7 @@ namespace Lendship.Backend.Controllers
             catch (Exception e)
             {
                 Console.WriteLine("Exception at fetching images: " + e.Message);
-                return this.BadRequest(e.Message);
+                return this.BadRequest("Exception at fetching images: " + e.Message);
             }
         }
     }

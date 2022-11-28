@@ -7,7 +7,8 @@ export interface EvaluationAdvertiser {
   reliability: number,
   qualityOfProduct: number,
   comment: string,
-  creation: string
+  creation: Date,
+  creationFormatted: string
 }
 
 export interface EvaluationLender {
@@ -15,7 +16,8 @@ export interface EvaluationLender {
   advertisementId: string,
   flexibility: number,
   reliability: number,
-  qualityOfProduct: number,
+  qualityAtReturn: number,
   comment: string,
-  creation: string
+  creation: Date,
+  creationFormatted: string
 }

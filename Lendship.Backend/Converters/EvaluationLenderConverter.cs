@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Lendship.Backend.Converters
 {
-    public class EvaulationLenderConverter : IEvaluationLenderConverter
+    public class EvaluationLenderConverter : IEvaluationLenderConverter
     {
         private readonly IUserConverter _userConverter;
 
-        public EvaulationLenderConverter(IUserConverter userConverter)
+        public EvaluationLenderConverter(IUserConverter userConverter)
         {
             _userConverter = userConverter;
         }

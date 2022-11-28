@@ -1,11 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Net;
 
 namespace Lendship.Backend
 {
@@ -16,11 +11,26 @@ namespace Lendship.Backend
             CreateHostBuilder(args).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    //webBuilder.UseUrls("http://0.0.0.0:5000");
                     webBuilder.UseStartup<Startup>();
+                    /*webBuilder.UseKestrel((hostingContext, options) =>
+                    {
+                        if (hostingContext.HostingEnvironment.IsDevelopment())
+                        {
+                            options.Listen(IPAddress.Loopback, 9001);
+                            options.Listen(IPAddress.Loopback, 9002, listenOptions =>
+                            {
+                                listenOptions.UseHttps("certificate.pfx", "LendshipCertPassword");
+                            });
+                        }
+
+                    });*/
                 });
+        }
     }
 }

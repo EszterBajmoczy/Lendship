@@ -1,0 +1,24 @@
+@import "src/styles/forms";
+
+h3 {
+  color: $color-success;
+}
+
+.notOwn {
+  opacity: 90%;
+}
+
+.reservation-section {
+  background-color: $color-info;
+  border-radius: 0.5rem;
+  color: white;
+}
+
+:host zxing-scanner::ng-deep video {
+  max-height: 50vh;
+  object-fit: contain;
+}
+:host zxing-scanner::ng-deep {
+  border-style: solid;
+  border-color: #5d78ff;
+}

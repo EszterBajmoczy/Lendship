@@ -45,7 +45,7 @@ namespace Lendship.Backend.DTO
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class Advertisement {\n");
+            sb.Append("class Category {\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  Name: ").Append(Name).Append("\n");
             sb.Append("}\n");

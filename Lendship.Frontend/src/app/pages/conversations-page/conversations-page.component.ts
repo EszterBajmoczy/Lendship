@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {IConversation} from "../../models/conversation";
 import {ConversationService} from "../../services/conversation/conversation.service";
 import {Router} from "@angular/router";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-conversations-page',
@@ -9,6 +10,7 @@ import {Router} from "@angular/router";
   styleUrls: ['./conversations-page.component.scss']
 })
 export class ConversationsPageComponent implements OnInit {
+  baseUrl = environment.baseUrl;
   conversations = new Array<IConversation>();
   loading = true;
 
@@ -16,6 +18,12 @@ export class ConversationsPageComponent implements OnInit {
     conversationService.getAllConversation()
       .subscribe((cons) => {
         console.log(cons);
+        console.log(cons[0].users[0].image);
+        cons.map(con => {
+          if (con.users[0].image === undefined || con.users[0].image.length === 0){
+            con.users[0].image = environment.baseImage;
+          }
+        })
         this.conversations = cons;
         this.loading = false;
       });

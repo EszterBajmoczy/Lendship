@@ -33,16 +33,23 @@ namespace Lendship.Backend.DTO
         /// Gets or Sets Name
         /// </summary>
         [Required]
-        
-        [DataMember(Name="name")]
+
+        [DataMember(Name = "name")]
         public string Name { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Email
+        /// </summary>
+
+        [DataMember(Name = "email")]
+        public string Email { get; set; }
 
         /// <summary>
         /// Gets or Sets EvaluationAsAdvertiser
         /// </summary>
 
         [DataMember(Name="evaluationAsAdvertiser")]
-        public decimal? EvaluationAsAdvertiser { get; set; }
+        public double? EvaluationAsAdvertiser { get; set; }
 
 
         /// <summary>
@@ -57,7 +64,7 @@ namespace Lendship.Backend.DTO
         /// </summary>
 
         [DataMember(Name="evaluationAsLender")]
-        public decimal? EvaluationAsLender { get; set; }
+        public double? EvaluationAsLender { get; set; }
 
         /// <summary>
         /// Gets or Sets EvaluationAsLenderCount
@@ -83,6 +90,7 @@ namespace Lendship.Backend.DTO
             sb.Append("class User {\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  Name: ").Append(Name).Append("\n");
+            sb.Append("  Email: ").Append(Email).Append("\n");
             sb.Append("  EvaluationAsAdvertiser: ").Append(EvaluationAsAdvertiser).Append("\n");
             sb.Append("  EvaluationAsLender: ").Append(EvaluationAsLender).Append("\n");
             sb.Append("  Image: ").Append(Image).Append("\n");
@@ -126,12 +134,17 @@ namespace Lendship.Backend.DTO
                     Id == other.Id ||
                     Id != null &&
                     Id.Equals(other.Id)
-                ) && 
+                ) &&
                 (
                     Name == other.Name ||
                     Name != null &&
                     Name.Equals(other.Name)
-                ) && 
+                ) &&
+                (
+                    Email == other.Email ||
+                    Email != null &&
+                    Email.Equals(other.Email)
+                ) &&
                 (
                     EvaluationAsAdvertiser == other.EvaluationAsAdvertiser ||
                     EvaluationAsAdvertiser != null &&
@@ -163,6 +176,8 @@ namespace Lendship.Backend.DTO
                     hashCode = hashCode * 59 + Id.GetHashCode();
                     if (Name != null)
                     hashCode = hashCode * 59 + Name.GetHashCode();
+                    if (Email != null)
+                    hashCode = hashCode * 59 + Email.GetHashCode();
                     if (EvaluationAsAdvertiser != null)
                     hashCode = hashCode * 59 + EvaluationAsAdvertiser.GetHashCode();
                     if (EvaluationAsLender != null)

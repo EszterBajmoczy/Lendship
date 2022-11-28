@@ -9,5 +9,7 @@ namespace Lendship.Backend.Interfaces.Services
         List<CategoryDto> GetCategories();
 
         Category AddCategory(string category);
+
+        Category GetOrCreateCategoryByName(string name);
     }
 }

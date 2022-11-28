@@ -22,9 +22,7 @@ namespace Lendship.Backend.Models
 
         public DbSet<EvaluationLender> EvaluationLenders { get; set; }
 
-        public DbSet<ClosedGroup> ClosedGroups { get; set; }
-
-        public DbSet<UsersAndClosedGroups> UsersAndClosedGroups { get; set; }
+        public DbSet<PrivateUser> PrivateUsers { get; set; }
 
         public DbSet<Message> Messages { get; set; }
 
@@ -41,6 +39,9 @@ namespace Lendship.Backend.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<ApplicationUser>().Property(p => p.Latitude).HasColumnType("decimal(8,6)").HasPrecision(8);
+            modelBuilder.Entity<ApplicationUser>().Property(p => p.Longitude).HasColumnType("decimal(9,6)").HasPrecision(9);
+
         }
     }
 }

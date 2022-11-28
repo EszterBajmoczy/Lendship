@@ -17,7 +17,17 @@ namespace Lendship.Backend.Interfaces.Services
 
         void AdmitReservation(int reservationId);
 
+        bool IsReservationClosed(int reservationId);
+
         IEnumerable<ReservationDto> GetReservationsForAdvertisement(int advertisementId);
+
+        void RemoveUpcommingReservations(int advertisementId);
+
+        IEnumerable<ReservationForAdvertisementDto> GetRecentReservations();
+
+        ReservationTokenDto GetReservationToken(int reservationId, bool closing);
+
+        TransactionOperationDto ValidateReservationToken(string reservationToken);
 
     }
 }

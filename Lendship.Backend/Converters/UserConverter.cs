@@ -13,6 +13,7 @@ namespace Lendship.Backend.Converters
             {
                 Id = new Guid(user.Id),
                 Name = user.UserName,
+                Email = user.Email,
                 EvaluationAsAdvertiser = user.EvaluationAsAdvertiser,
                 EvaluationAsAdvertiserCount = user.EvaluationAsAdvertiserCount,
                 EvaluationAsLender = user.EvaluationAsLender,

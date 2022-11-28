@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { NgbCalendar, NgbDate } from "@ng-bootstrap/ng-bootstrap";
 import { ReservationService} from "../../../services/reservation/reservation.service";
 import {IAvailability} from "../../../models/availability";
-import {NgbDateHandlerService} from "../../../services/date-handler/ngb-date-handler.service";
+import {DateHandlerService} from "../../../services/date-handler/date-handler.service";
 
 @Component({
   selector: 'app-reservation-popup',
@@ -23,7 +23,7 @@ export class ReservationPopupComponent implements OnInit {
   @Output() reserveFrom = new EventEmitter<NgbDate>();
   @Output() reserveTo = new EventEmitter<NgbDate>();
 
-  constructor(private calendar: NgbCalendar, private reservationService: ReservationService, private ngbDateHandlerService: NgbDateHandlerService) {
+  constructor(private calendar: NgbCalendar, private reservationService: ReservationService, private ngbDateHandlerService: DateHandlerService) {
   }
 
   ngOnInit(): void {

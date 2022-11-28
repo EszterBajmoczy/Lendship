@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators} from "@angular/forms";
+import { UntypedFormBuilder, Validators} from "@angular/forms";
 import { Router } from '@angular/router';
 import { AuthService} from "../../services/auth/auth.service";
+import {catchError} from "rxjs/operators";
 
 //https://medium.com/techiediaries-com/angular-9-8-authentication-form-angular-formbuilder-formgroup-and-validators-example-with-node-f91729db006f
 //authgard
@@ -13,8 +14,9 @@ import { AuthService} from "../../services/auth/auth.service";
 })
 export class LoginComponent implements OnInit {
   submitting = false;
+  error = "";
 
-  constructor(private formBuilder: FormBuilder, private authService: AuthService, private router: Router ) {
+  constructor(private formBuilder: UntypedFormBuilder, private authService: AuthService, private router: Router ) {
   }
 
   ngOnInit(): void {
@@ -34,10 +36,24 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(){
+    console.log("onSubmit")
+
     if(this.loginForm.invalid){
       return;
     }
-    this.authService.login(this.loginForm.value);
+    this.authService.login(this.loginForm.value)
+      .pipe(
+        catchError(error => {
+          console.log(error.error.message);
+          this.error = error.error.message;
+          this.submitting = false;
+          throw(error);
+        })
+      )
+      .subscribe(data => {
+        this.authService.loginData(data)
+        this.submitting = false;
+    });
     this.submitting = true;
   }
 

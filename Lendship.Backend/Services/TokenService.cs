@@ -32,29 +32,29 @@ namespace Lendship.Backend.Services
             _logger = new Logger.Logger(_configuration);
         }
 
-        public bool IsCurrentTokenValid()
+        public bool IsCurrentTokenDeactivated()
         {
             var currentToken = GetCurrentToken();
             try
             {
-                return _redisCache.GetString(currentToken) == null;
+                return _redisCache.GetString(currentToken) != null;
             } catch (Exception e)
             {
                 _logger.Error("Error validating token: " + e.Message);
-                return true;
+                return false;
             };
         }
 
-        public bool IsRefreshTokenValid(string refreshToken)
+        public bool IsRefreshTokenDeactivated(string refreshToken)
         {
             try
             {
-                return _redisCache.GetString($"ref_{refreshToken}") == null;
+                return _redisCache.GetString($"ref_{refreshToken}") != null;
             }
             catch (Exception e)
             {
                 _logger.Error("Error validating refresh token: " + e.Message);
-                return true;
+                return false;
             };
         }
 

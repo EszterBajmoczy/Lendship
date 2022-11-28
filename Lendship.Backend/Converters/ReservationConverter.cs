@@ -46,6 +46,17 @@ namespace Lendship.Backend.Converters
             };
         }
 
+        public ReservationForAdvertisementDto ConvertToReservationForAdvertisementDto(Reservation reservation, bool isOwn)
+        {
+            return new ReservationForAdvertisementDto
+            {
+                ReservationId = reservation.Id,
+                AdvertisementName = reservation.Advertisement.Title,
+                IsOwn = isOwn,
+                Dates = reservation.DateFrom.ToShortDateString() + "-" + reservation.DateTo.ToShortDateString()
+            };
+        }
+
         public Reservation ConvertToEntity(ReservationDetailDto reservationDto, ApplicationUser user, Advertisement advertisement)
         {
             var reservation = new Reservation

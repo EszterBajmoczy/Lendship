@@ -8,9 +8,17 @@
     <h1 class="text-center mb-5 mt-2">{{mode}}</h1>
     <form class="align-items-start m-4" [formGroup]="advertisementForm" (ngSubmit)="onSubmit()">
 
-      <div class="d-flex justify-content-between mt-4">
-        <label class="col-lg-4" for="title">Title:</label>
-        <input id="title" type="text" formControlName="title" placeholder="Title">
+      <div class="d-flex align-items-center">
+        <input formControlName="isService" id="isService" type="checkbox" class="me-2 ms-0 w-auto filled-in">
+        <label for="isService">Service</label>
+      </div>
+
+      <div class="d-md-flex justify-content-md-between mt-4">
+        <label class="col-12 col-md-4" for="title">Title:</label>
+
+        <span class="col-12 col-md-8">
+          <input id="title" type="text" formControlName="title" placeholder="Title" class="w-100">
+        </span>
       </div>
       <div class="error mb-4">
         <div class="d-flex justify-content-end" *ngIf="!title?.valid && (title?.dirty || title?.touched)">
@@ -21,7 +29,7 @@
       </div>
 
       <div class="d-flex justify-content-between mt-4">
-        <label class="col-lg-4" for="price">Price:</label>
+        <label class="col-4" for="price">Price:</label>
         <input id="price" type="number" formControlName="price" placeholder="1000">
       </div>
       <div class="error mb-4">
@@ -33,7 +41,7 @@
       </div>
 
       <div class="d-flex justify-content-between mt-4">
-        <label class="col-lg-4" for="credit">Credit:</label>
+        <label class="col-4" for="credit">Credit:</label>
         <input id="credit" type="number" formControlName="credit" placeholder="1000">
       </div>
       <div class="error mb-4">
@@ -45,7 +53,7 @@
       </div>
 
       <div class="d-flex justify-content-between mt-4">
-        <label class="col-lg-4" for="deposit">Deposit:</label>
+        <label class="col-4" for="deposit">Deposit:</label>
         <input id="deposit" type="number" formControlName="deposit" placeholder="1000">
       </div>
       <div class="error mb-4">
@@ -56,9 +64,9 @@
         </div>
       </div>
 
-      <div class="d-flex justify-content-between mt-4">
-        <label class="col-lg-4" for="description">Description:</label>
-        <textarea class="col-lg-8" rows="3" id="description"  type="text" formControlName="description" placeholder="Description"></textarea>
+      <div class="d-md-flex justify-content-md-between mt-4">
+        <label class="col-12 col-md-4" for="description">Description:</label>
+        <textarea class="col-12 col-md-8" rows="3" id="description"  type="text" formControlName="description" placeholder="Description"></textarea>
       </div>
       <div class="error mb-4">
         <div class="d-flex justify-content-end" *ngIf="!description?.valid && (description?.dirty || description?.touched)">
@@ -68,14 +76,16 @@
         </div>
       </div>
 
-      <div class="d-flex justify-content-between mt-4">
-        <label class="col-lg-4" for="instructionManual">Instruction manual:</label>
-        <textarea class="col-lg-8" rows="3" id="instructionManual" type="text" formControlName="instructionManual" placeholder="Instruction manual"></textarea>
+      <div class="d-md-flex justify-content-md-between mt-4">
+        <label class="col-12 col-md-4" for="instructionManual">Instruction manual:</label>
+        <textarea class="col-12 col-md-8" rows="3" id="instructionManual" type="text" formControlName="instructionManual" placeholder="Instruction manual"></textarea>
       </div>
 
-      <div class="d-flex justify-content-between mt-4">
-        <label class="col-lg-4" for="location">Location:</label>
-        <input id="location" type="text" formControlName="location" placeholder="Location">
+      <div class="d-md-flex justify-content-md-between mt-4">
+        <label class="col-12 col-md-4" for="location">Location:</label>
+        <span class="col-12 col-md-8">
+          <input id="location" type="text" formControlName="location" placeholder="Location" class="w-100">
+        </span>
       </div>
       <div class="error mb-4">
         <div class="d-flex justify-content-end">
@@ -91,11 +101,11 @@
         </div>
       </div>
 
-      <div class="d-flex justify-content-between mt-4">
-        <label class="col-lg-4" for="category">Category:</label>
+      <div class="d-md-flex justify-content-md-between mt-4">
+        <label class="col-12 col-md-4" for="category">Category:</label>
 
         <ng-autocomplete
-          id="category" type="text" formControlName="category" placeholder="Category"
+          id="category" type="text" formControlName="category" placeholder="Category" class="w-100"
           [data]="categories"
           [searchKeyword]="categoryKeyword"
           [itemTemplate]="itemTemplate"
@@ -120,14 +130,26 @@
       </div>
 
       <div class="d-flex align-items-center">
-        <input formControlName="isPublic" id="isPublic" type="checkbox"  class="me-2 ms-0 w-auto filled-in">
+        <input formControlName="isPublic" id="isPublic" type="checkbox" (click)="showPrivateWindow()" class="me-2 ms-0 w-auto filled-in">
         <label for="isPublic">Public</label>
+      </div>
+      <div *ngIf="isPrivate" class="availability-section mt-4">
+        <div class="d-flex align-items-center justify-content-between ps-4 pe-4 pt-2 pb-2">
+          <p class="form-info m-0">Add users who can see the advertisement</p>
+          <button class="btn btn-primary" type='button' (click)="open(privatePopup)"><i class="fa-solid fa-plus"></i></button>
+        </div>
+        <div class="d-flex">
+          <div *ngFor="let user of privateUserList; let i = index" class="date-section d-flex align-items-center">
+            <p class="form-info m-0 p-2">{{user.name}}</p>
+            <button class="btn btn-primary m-0" (click)="removePrivateUser(i)"><i class="fa-solid fa-circle-minus"></i></button>
+          </div>
+        </div>
       </div>
 
       <div class="availability-section mt-4">
         <div class="d-flex align-items-center justify-content-between ps-4 pe-4 pt-2 pb-2">
           <p class="form-info m-0">Add availabilities</p>
-          <button class="btn btn-primary" type='button' (click)="open(reservePopup)"><i class="fa-solid fa-calendar-plus"></i></button>
+          <button class="btn btn-primary" type='button' (click)="open(availabilityPopup)"><i class="fa-solid fa-calendar-plus"></i></button>
         </div>
 
         <div *ngFor="let av of availabilities; let i = index" class="date-section d-flex align-items-center align-items-center justify-content-between">
@@ -142,7 +164,7 @@
         <button class="btn btn-primary m-0" (click)="removeNewImage(i)"><i class="fa-solid fa-circle-minus"></i></button>
       </div>
       <div *ngFor="let file of advertisement?.imageLocations; let i = index" class="date-section d-flex align-items-center align-items-center justify-content-between">
-        <img src="https://localhost:44377/images{{file}}" class="col-2">
+        <img src="{{baseUrl}}images{{file}}" class="col-2">
         <button class="btn btn-primary m-0" (click)="removeImage(i)"><i class="fa-solid fa-circle-minus"></i></button>
       </div>
 
@@ -156,9 +178,9 @@
   </div>
 </div>
 
-<ng-template #reservePopup let-modal>
+<ng-template #availabilityPopup let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Select availability interval</h4>
+    <h4 class="modal-title" >Select availability interval</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body d-flex justify-content-center">
@@ -171,4 +193,20 @@
     <button type="button" class="btn btn-outline-dark" (click)="modal.close('Cancel')">Cancel</button>
     <button type="button" class="btn btn-outline-dark" (click)="modal.close('Add')">Add</button>
   </div>
+</ng-template>
+
+<ng-template #privatePopup let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Add user by email</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body d-flex justify-content-center">
+    <app-private-popup class="w-100"
+                       [addedUsers]="privateUserList"
+                       (user)="addPrivateUser($event)">
+
+    </app-private-popup>
+  </div>
+
+  <button type="button" [disabled]="privateUserToBe === undefined" class="btn btn-outline-dark" (click)="modal.close('AddPrivateUser')">Add user</button>
 </ng-template>

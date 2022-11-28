@@ -2,20 +2,20 @@ import { Injectable } from '@angular/core';
 import { LoginUser} from "../../models/login-user";
 import { RegisterUser} from "../../models/registration-user";
 import { LoginResponse} from "../../models/response-login";
-import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
-import {of, tap, throwError} from 'rxjs';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import { of, tap} from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { LocalStorageService} from "../localstorage/localstorage.service";
 import { JWTTokenService} from "../jwttoken/jwttoken.service";
 import { Router } from '@angular/router';
 import {environment} from "../../../environments/environment";
-import {Advertisement} from "../../models/advertisement";
+import {FileUploadService} from "../file-upload/file-upload.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private baseUrl: string;
+  private readonly baseUrl: string;
   private readonly JWT_TOKEN = "JWT_TOKEN";
   private readonly REFRESH_TOKEN = "REFRESH_TOKEN";
 
@@ -29,30 +29,22 @@ export class AuthService {
   }
 
   public login(userData: LoginUser) {
-    const loginCall = this.http.post<LoginResponse>(this.baseUrl + "/login",userData)
-      .pipe(
-        catchError(this.handleError));
-
-    loginCall.subscribe(response => {
-      this.saveLoginData(response)
-
-      this.router.navigate(['home'])
-        .then(() => {
-          window.location.reload();
-        });
-    });
+    return this.http.post<LoginResponse>(this.baseUrl + "/login",userData);
   }
 
   public register(userData: RegisterUser) {
-    const registerCall = this.http.post<LoginResponse>(this.baseUrl + "/register",userData)
-      .pipe(
-        catchError(this.handleError));
-
-    registerCall.subscribe(response => {
-      this.saveLoginData(response)
-      this.login(userData);
-    });
+    return this.http.post<LoginResponse>(this.baseUrl + "/register", userData);
   }
+
+  public loginData(userData: LoginResponse) {
+    this.saveLoginData(userData);
+
+    this.router.navigateByUrl('home')
+      .then(() => {
+        window.location.reload();
+      });
+  }
+
 
   private saveLoginData(resp: LoginResponse) {
     this.localstorageService.set("ACCESS_TOKEN", resp.token);
@@ -91,8 +83,13 @@ export class AuthService {
   public logout() {
     localStorage.removeItem('ACCESS_TOKEN');
     localStorage.removeItem('REFRESH_TOKEN');
+    localStorage.removeItem('PROFILE_IMG');
     this.tokenService.removeToken();
-    this.router.navigateByUrl('home');
+    if (this.router.url === "/home"){
+      location.reload();
+    } else {
+      this.router.navigateByUrl('home');
+    }
   }
 
   refreshToken() {
@@ -115,20 +112,5 @@ export class AuthService {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${this.getAccessToken()}`
     });
-  }
-
-  private handleError(error: HttpErrorResponse) {
-    console.log("Error auth");
-    if (error.status === 0) {
-      // A client-side or network error occurred. Handle it accordingly.
-      console.error('An error occurred:', error.error);
-    } else {
-      // The backend returned an unsuccessful response code.
-      // The response body may contain clues as to what went wrong.
-      console.error(
-        `Backend returned code ${error.status}, body was: `, error.error);
-    }
-    // Return an observable with a user-facing error message.
-    return throwError(() => new Error('Something bad happened; please try again later.'));
   }
 }

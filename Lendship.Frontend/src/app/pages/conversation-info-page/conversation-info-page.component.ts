@@ -6,7 +6,8 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {AdvertisementDetail} from "../../models/advertisement-detail";
 import {AuthService} from "../../services/auth/auth.service";
 import { DatePipe } from '@angular/common'
-import {FormBuilder, Validators} from "@angular/forms";
+import {UntypedFormBuilder, Validators} from "@angular/forms";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-conversation-info-page',
@@ -15,6 +16,8 @@ import {FormBuilder, Validators} from "@angular/forms";
   providers: [DatePipe]
 })
 export class ConversationInfoPageComponent implements OnInit {
+  baseUrl = environment.baseUrl;
+  baseImage = environment.baseImage;
   userId: string;
   loadingMessages = true;
 
@@ -37,7 +40,7 @@ export class ConversationInfoPageComponent implements OnInit {
     private adService: AdvertisementService,
     private authService: AuthService,
     private datePipe: DatePipe,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private router: Router,
     activatedRoute: ActivatedRoute)
   {
@@ -63,7 +66,7 @@ export class ConversationInfoPageComponent implements OnInit {
       this.adService.getAdvertisementDetailById(this.advertisementId)
         .subscribe((ad) => {
           this.advertisement = ad;
-          this.adImgLocation = "https://localhost:44377/images" + ad.imageLocations.pop();
+          this.adImgLocation = this.baseUrl + "images" + ad.imageLocations.pop();
         })
     });
   }
@@ -108,12 +111,12 @@ export class ConversationInfoPageComponent implements OnInit {
     this.conId = this.conversationId;
     this.id = 0;
 
-    console.log(this.sendMsgForm.value);
     this.conService.sendMessage(this.sendMsgForm.value)
       .subscribe((response) => {
         this.conService.getMessagesForConversation(this.conversationId)
           .subscribe((msgs) => {
             this.messages = this.categorizeMessages(msgs);
+            this.sendMsgForm.reset();
           })
       });
   }
