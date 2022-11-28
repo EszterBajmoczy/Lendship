@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using static Lendship.Backend.DTO.ReservationDetailDto;
 
 namespace Lendship.Backend.Services
 {
@@ -107,6 +108,11 @@ namespace Lendship.Backend.Services
                 throw new UpdateNotAllowedException("Update not allowed.");
             }
 
+            if (reservationDto.ReservationState == ReservationStateEnum.ClosedEnum)
+            {
+                throw new UpdateNotAllowedException("Not correct method to close the conversation.");
+            }
+
             var reservation = _reservationConverter.ConvertToEntity(reservationDto, oldRes.User, oldRes.Advertisement);
             _reservationRepository.Update(reservation);
         }
@@ -160,6 +166,11 @@ namespace Lendship.Backend.Services
             if (reservation.Advertisement == null)
             {
                 throw new AdvertisementNotFoundException("Advertisement not found.");
+            }
+
+            if (GetReservationState(state) == ReservationState.Closed)
+            {
+                throw new UpdateNotAllowedException("Not correct method to close the conversation.");
             }
 
             if (signedInUserId != reservation.User.Id && signedInUserId != reservation.Advertisement.User.Id)

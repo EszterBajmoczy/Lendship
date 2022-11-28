@@ -26,7 +26,9 @@ namespace Lendship.Backend.Repositories
 
         public ApplicationUser GetById(string id)
         {
-            return _dbContext.Users.Where(x => x.Id == id).FirstOrDefault();
+            return _dbContext.Users
+                .Where(x => x.Id == id)
+                .FirstOrDefault();
         }
 
         public void Update(ApplicationUser user)
