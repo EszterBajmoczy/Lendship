@@ -170,18 +170,6 @@ export class ReservationPageComponent implements OnInit {
     this.userService.createEvaluationAdvertiser(evaluation)
       .subscribe(result => {
         this.admitReservation(evaluation.reservationId);
-/*
-        this.reservationService.updateReservationsState(evaluation.reservationId, "Closed")
-          .subscribe(res => {
-            this.usersReservations.forEach(res => {
-              if(res.id == evaluation.reservationId){
-                res.reservationState= "Closed";
-                return;
-              }
-            });
-          });
-
- */
       });
   }
 
@@ -197,18 +185,6 @@ export class ReservationPageComponent implements OnInit {
     this.userService.createEvaluationLender(evaluation)
       .subscribe(result => {
         this.admitReservation(evaluation.reservationId);
-        /*
-        this.reservationService.updateReservationsState(evaluation.reservationId, "Closed")
-          .subscribe(res => {
-            this.reservationsForUsersAdvertisements.forEach(res => {
-              if(res.id == evaluation.reservationId){
-                res.reservationState= "Closed";
-                return;
-              }
-            });
-          });
-          S
-         */
       });
   }
 
