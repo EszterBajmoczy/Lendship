@@ -229,7 +229,6 @@ namespace Lendship.Backend.Services
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var reservations = _reservationRepository.GetRecentReservations(signedInUserId)
-                                .Where(x => x.ReservationState != ReservationState.Closed)
                                 .OrderByDescending(x => x.DateFrom)
                                 .Select(r => _reservationConverter.ConvertToReservationForAdvertisementDto(r, true))
                                 .ToList();
