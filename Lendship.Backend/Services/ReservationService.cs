@@ -187,17 +187,19 @@ namespace Lendship.Backend.Services
         {
             var reservationState = GetReservationState(state);
 
-            _notificationService.CreateNotification("Reservation state changed: " + reservationState, reservation, signedInUserId == reservation.User.Id ? signedInUserId : reservation.Advertisement.User.Id);
+            
 
-            reservation.ReservationState = reservationState;
-
-
-            if (reservation.ReservationState == ReservationState.Resigned || reservation.ReservationState == ReservationState.Declined)
+            if (reservationState == ReservationState.Resigned || reservationState == ReservationState.Declined)
             {
+                _notificationService.CreateNotification("Reservation was deleted, because it was " + reservationState, reservation, signedInUserId == reservation.User.Id ? signedInUserId : reservation.Advertisement.User.Id);
+                
                 _reservationRepository.Delete(reservation);
             }
             else
             {
+                _notificationService.CreateNotification("Reservation state changed: " + reservationState, reservation, signedInUserId == reservation.User.Id ? signedInUserId : reservation.Advertisement.User.Id);
+
+                reservation.ReservationState = reservationState;
                 _reservationRepository.Update(reservation);
             }
         }
