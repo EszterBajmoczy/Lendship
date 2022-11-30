@@ -42,25 +42,16 @@ export class ReservationPageComponent implements OnInit {
     reservationService.getUsersReservations()
       .subscribe(res => {
         console.log(res)
-        this.usersReservations = this.initializeNgbDateFields(res);
+        this.usersReservations = res;
         this.loadingUsersReservations = false;
       });
 
     reservationService.getReservationsForUsersAdvertisement()
       .subscribe(res => {
         console.log(res)
-        this.reservationsForUsersAdvertisements = this.initializeNgbDateFields(res);
+        this.reservationsForUsersAdvertisements = res;
         this.loadingReservationsForUser = false;
       });
-  }
-
-  initializeNgbDateFields(res: IReservationDetail[]){
-    res.forEach(r => {
-      r.dateFromNgbDate = this.ngbDateHandler.convertDateToNgbDate(r.dateFrom, true);
-      r.dateToNgbDate = this.ngbDateHandler.convertDateToNgbDate(r.dateTo, false)
-    });
-
-    return res;
   }
 
   ngOnInit(): void {
@@ -178,31 +169,22 @@ export class ReservationPageComponent implements OnInit {
     this.modalService.dismissAll()
     this.userService.createEvaluationAdvertiser(evaluation)
       .subscribe(result => {
-        this.reservationService.updateReservationsState(evaluation.reservationId, "Closed")
-          .subscribe(res => {
-            this.usersReservations.forEach(res => {
-              if(res.id == evaluation.reservationId){
-                res.reservationState= "Closed";
-                return;
-              }
-            });
-          });
+        this.admitReservation(evaluation.reservationId);
       });
+  }
+
+  admitReservation(resId: number) {
+    this.reservationService.admitReservation(resId)
+      .subscribe(res => {
+        location.reload();
+      })
   }
 
   submitEvaluationLender(evaluation: EvaluationLender) {
     this.modalService.dismissAll()
     this.userService.createEvaluationLender(evaluation)
       .subscribe(result => {
-        this.reservationService.updateReservationsState(evaluation.reservationId, "Closed")
-          .subscribe(res => {
-            this.reservationsForUsersAdvertisements.forEach(res => {
-              if(res.id == evaluation.reservationId){
-                res.reservationState= "Closed";
-                return;
-              }
-            });
-          });
+        this.admitReservation(evaluation.reservationId);
       });
   }
 

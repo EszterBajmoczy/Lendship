@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {NotificationService} from "../../services/notification/notification.service";
 import {INotification} from "../../models/notification";
 import {Router} from "@angular/router";
+import {DateHandlerService} from "../../services/date-handler/date-handler.service";
 
 @Component({
   selector: 'app-notifications-page',
@@ -12,12 +13,15 @@ export class NotificationsPageComponent implements OnInit {
   loading = true;
   notifications = new Array<INotification>()
 
-  constructor(private notificationService: NotificationService, private router: Router) {
+  constructor(
+    private notificationService: NotificationService,
+    private dateHandlerService: DateHandlerService,
+    private router: Router) {
     notificationService.getAllNotifications()
       .subscribe((notifications) => {
         notifications.forEach(noti => {
-          noti.reservationDateFromString = this.formatDate(noti.reservationDateFrom);
-          noti.reservationDateToString = this.formatDate(noti.reservationDateTo);
+          noti.reservationDateFromString = this.dateHandlerService.convertDateToString(noti.reservationDateFrom);
+          noti.reservationDateToString = this.dateHandlerService.convertDateToString(noti.reservationDateTo);
         })
         this.notifications = notifications;
         this.loading = false;
@@ -31,22 +35,6 @@ export class NotificationsPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-  }
-
-  formatDate(d: Date): string {
-    let date = new Date(d);
-    let result = `${date.getFullYear()}-`;
-    if((date.getUTCMonth() + 1) < 10) {
-      result += `0${(date.getUTCMonth() + 1)}-`;
-    } else {
-      result += `${(date.getUTCMonth() + 1)}-`;
-    }
-    if(date.getUTCDate() < 10){
-      result += `0${date.getUTCDate()}`;
-    } else {
-      result += `${date.getUTCDate()}`;
-    }
-    return result;
   }
 
   notificationClicked() {

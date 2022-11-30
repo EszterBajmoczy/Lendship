@@ -9,6 +9,7 @@ export class DateHandlerService {
   constructor() { }
 
   convertDateToString(date: Date): string {
+    date = new Date(date);
     date.setDate(date.getDate() + 1);
     let result = `${date.getFullYear()}-`;
     if((date.getUTCMonth() + 1) < 10) {

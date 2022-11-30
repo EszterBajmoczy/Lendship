@@ -85,8 +85,10 @@ namespace Lendship.Backend.Repositories
             return _dbContext.Reservations
                                 .AsNoTracking()
                                 .Include(r => r.User)
+                                .Include(r => r.User.ReservedCredits)
                                 .Include(r => r.Advertisement)
                                 .Include(r => r.Advertisement.User)
+                                .Include(r => r.Advertisement.User.ReservedCredits)
                                 .Where(r => r.Id == reservationId
                                     && (r.User.Id == userId || r.Advertisement.User.Id == userId)
                                     && (r.User.Id == signedInUserId || r.Advertisement.User.Id == signedInUserId))
@@ -110,6 +112,12 @@ namespace Lendship.Backend.Repositories
         public void Update(Reservation reservation)
         {
             _dbContext.Update(reservation);
+            _dbContext.SaveChanges();
+        }
+
+        public void Delete(Reservation reservation)
+        {
+            _dbContext.Reservations.Remove(reservation);
             _dbContext.SaveChanges();
         }
     }

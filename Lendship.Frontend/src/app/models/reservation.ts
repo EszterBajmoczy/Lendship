@@ -22,17 +22,6 @@ export class Reservation implements IReservation {
     this.dateFrom = dateHandler.convertNgbDateToString(dateFrom);
     this.dateTo = dateHandler.convertNgbDateToString(dateTo);
   }
-
-  dateToString(date: NgbDate) {
-    if (date.month < 10 && date.day < 10) {
-      return `${date.year}-0${date.month}-0${date.day}`;
-    } else if (date.month < 10) {
-      return `${date?.year}-0${date?.month}-${date?.day}`;
-    } else if (date.day < 10) {
-      return `${date?.year}-${date?.month}-0${date?.day}`;
-    }
-    return `${date?.year}-${date?.month}-0${date?.day}`;
-  }
 }
 
 

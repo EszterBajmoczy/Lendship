@@ -28,7 +28,7 @@ namespace Lendship.Backend.Converters
                 ReservationState = GetReservationEnumState(reservation.ReservationState),
                 Comment = reservation.Comment,
                 AdmittedByAdvertiser = reservation.admittedByAdvertiser,
-                AdmittedByLender = reservation.admittedByAdvertiser,
+                AdmittedByLender = reservation.admittedByLender,
                 User = reservation.User != null ? _userConverter.ConvertToDto(reservation.User) : null,
                 DateFrom = reservation.DateFrom,
                 DateTo = reservation.DateTo,
@@ -83,6 +83,7 @@ namespace Lendship.Backend.Converters
                 ReservationState.Accepted => ReservationStateEnum.AcceptedEnum,
                 ReservationState.Declined => ReservationStateEnum.DeclinedEnum,
                 ReservationState.Resigned => ReservationStateEnum.ResignedEnum,
+                ReservationState.Ongoing => ReservationStateEnum.OngoingEnum,
                 ReservationState.Closed => ReservationStateEnum.ClosedEnum,
                 _ => ReservationStateEnum.CreatedEnum,
             };
@@ -96,6 +97,7 @@ namespace Lendship.Backend.Converters
                 ReservationStateEnum.AcceptedEnum => ReservationState.Accepted,
                 ReservationStateEnum.DeclinedEnum => ReservationState.Declined,
                 ReservationStateEnum.ResignedEnum => ReservationState.Resigned,
+                ReservationStateEnum.OngoingEnum => ReservationState.Ongoing,
                 ReservationStateEnum.ClosedEnum => ReservationState.Closed,
                 _ => ReservationState.Created,
             };

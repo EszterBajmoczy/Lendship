@@ -54,7 +54,9 @@ namespace Lendship.Backend.Repositories
 
         public IEnumerable<EvaluationLender> GetLenderEvaluationsByUser(string userId)
         {
-            throw new System.NotImplementedException();
+            return _dbContext.EvaluationLenders
+                        .Include(e => e.UserTo)
+                        .Where(e => e.UserTo.Id == userId);
         }
     }
 }

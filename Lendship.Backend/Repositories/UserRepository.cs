@@ -1,9 +1,6 @@
 ﻿using Lendship.Backend.Authentication;
-using Lendship.Backend.Exceptions;
 using Lendship.Backend.Interfaces.Repositories;
 using Lendship.Backend.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -26,7 +23,9 @@ namespace Lendship.Backend.Repositories
 
         public ApplicationUser GetById(string id)
         {
-            return _dbContext.Users.Where(x => x.Id == id).FirstOrDefault();
+            return _dbContext.Users
+                .Where(x => x.Id == id)
+                .FirstOrDefault();
         }
 
         public void Update(ApplicationUser user)
