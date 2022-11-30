@@ -191,7 +191,15 @@ namespace Lendship.Backend.Services
 
             reservation.ReservationState = reservationState;
 
-            _reservationRepository.Update(reservation);
+
+            if (reservation.ReservationState == ReservationState.Resigned || reservation.ReservationState == ReservationState.Declined)
+            {
+                _reservationRepository.Delete(reservation);
+            }
+            else
+            {
+                _reservationRepository.Update(reservation);
+            }
         }
 
         public IEnumerable<ReservationDto> GetReservationsForAdvertisement(int advertisementId)

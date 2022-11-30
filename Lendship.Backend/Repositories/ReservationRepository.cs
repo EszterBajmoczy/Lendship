@@ -114,5 +114,11 @@ namespace Lendship.Backend.Repositories
             _dbContext.Update(reservation);
             _dbContext.SaveChanges();
         }
+
+        public void Delete(Reservation reservation)
+        {
+            _dbContext.Reservations.Remove(reservation);
+            _dbContext.SaveChanges();
+        }
     }
 }
