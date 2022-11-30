@@ -228,19 +228,21 @@ export class AdvertisementCreateComponent implements OnInit {
   }
 
   open(content: any) {
-    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
-      if(result == "Add" && this.reserveFrom !== undefined && this.reserveTo !== undefined){
-        let dateFrom = this.ngbDateHandlerService.convertNgbDateToString(this.reserveFrom);
-        let dateTo = this.ngbDateHandlerService.convertNgbDateToString(this.reserveTo);
-        this.availabilities.push(new Availability(0, dateFrom, dateTo));
-        this.error = "";
-      } else if(result == "AddPrivateUser" && this.privateUserToBe !== undefined){
-        console.log("AddPrivateUser");
-        this.privateUserList.push(this.privateUserToBe);
-        this.privateUserToBe = undefined;
-        console.log(this.privateUserList)
-      }
-    });
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result
+      .then((result) => {
+        if(result == "Add" && this.reserveFrom !== undefined && this.reserveTo !== undefined){
+          let dateFrom = this.ngbDateHandlerService.convertNgbDateToString(this.reserveFrom);
+          let dateTo = this.ngbDateHandlerService.convertNgbDateToString(this.reserveTo);
+          this.availabilities.push(new Availability(0, dateFrom, dateTo));
+          this.error = "";
+        } else if(result == "AddPrivateUser" && this.privateUserToBe !== undefined){
+          console.log("AddPrivateUser");
+          this.privateUserList.push(this.privateUserToBe);
+          this.privateUserToBe = undefined;
+          console.log(this.privateUserList)
+        }
+      })
+      .catch((res) => {});
   }
 
   reserveDateFrom(from: NgbDate) {
