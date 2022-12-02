@@ -58,9 +58,6 @@ export class ConversationInfoPageComponent implements OnInit {
           this.loadingMessages = false;
 
           this.conService.setMessagesSeen(this.conversationId)
-            .subscribe((response) =>{
-              console.log(response)
-            });
         })
 
       this.adService.getAdvertisementDetailById(this.advertisementId)

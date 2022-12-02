@@ -4,6 +4,9 @@ import { Router} from "@angular/router";
 import {NotificationService} from "../../../services/notification/notification.service";
 import {INotification} from "../../../models/notification";
 import {environment} from "../../../../environments/environment";
+import {Conversation} from "../../../models/conversation";
+import {ConversationService} from "../../../services/conversation/conversation.service";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'app-header',
@@ -17,10 +20,14 @@ export class AppHeaderComponent {
   nameUrl: string = "login";
   image: string = "";
   isLoggedIn: boolean = false;
+  messagesCount: Observable<number | null>;
   notificationCount: number = 0;
-  notifications = new Array<INotification>();
 
-  constructor(private authService: AuthService, private notificationService: NotificationService, private router: Router) {
+  constructor(
+    private authService: AuthService,
+    private conversationService: ConversationService,
+    private notificationService: NotificationService,
+    private router: Router) {
     let user = this.authService.getUserName();
     let img = this.authService.getProfileImage();
 
@@ -30,17 +37,16 @@ export class AppHeaderComponent {
       this.image = img;
       this.isLoggedIn = true;
     }
+    this.messagesCount = this.conversationService.newMessageCount();
 
-    if(this.isLoggedIn){
+    if(this.isLoggedIn) {
       notificationService.getNewNotifications().subscribe((notifications) => {
         this.notificationCount = notifications.length;
-        this.notifications = notifications;
       });
     }
   }
 
   ngOnInit(): void {
-
   }
 
   logout() {

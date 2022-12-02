@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {AuthService} from "../auth/auth.service";
 import {environment} from "../../../environments/environment";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {map, Observable } from "rxjs";
+import {BehaviorSubject, map, Observable} from "rxjs";
 import {Conversation, IConversation} from "../../models/conversation";
 import {Message} from "../../models/message";
 
@@ -13,9 +13,17 @@ export class ConversationService {
   private readonly baseUrl: string;
   private readonly headers: HttpHeaders;
 
+  newMsgCount = new BehaviorSubject<number | null>(null);
+
   constructor(private http: HttpClient, private authService: AuthService) {
     this.baseUrl = environment.baseUrl + "Conversation/";
     this.headers = authService.getHeaders();
+
+    this.getNewMessageCount();
+  }
+
+  newMessageCount(): Observable<number | null> {
+    return this.newMsgCount.asObservable();
   }
 
   getAllConversation(): Observable<IConversation[]>{
@@ -41,6 +49,18 @@ export class ConversationService {
     return this.http.get<Message[]>(this.baseUrl + conversationId, { headers: this.headers});
   }
 
+  getNewMessageCount() {
+    return this.http.get<number>(this.baseUrl + "new", { headers: this.headers})
+      .subscribe(count => {
+        if (count > 0)
+        {
+          this.newMsgCount.next(count);
+        } else {
+          this.newMsgCount.next(null);
+        }
+      });
+  }
+
   sendMessage(msg: Message) {
     return this.http.post<Message>(this.baseUrl + "msg", msg, { headers: this.headers });
   }
@@ -49,7 +69,10 @@ export class ConversationService {
     return this.http.post<number>(this.baseUrl, con, { headers: this.headers });
   }
 
-  setMessagesSeen(conversationId: number): Observable<any> {
-    return this.http.post<number>(this.baseUrl + "msg/" + conversationId, { headers: this.headers });
+  setMessagesSeen(conversationId: number) {
+    this.http.post<number>(this.baseUrl + "msg/" + conversationId, { headers: this.headers })
+      .subscribe((response) =>{
+        this.getNewMessageCount();
+      });
   }
 }
