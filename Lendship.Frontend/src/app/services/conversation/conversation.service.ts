@@ -19,7 +19,11 @@ export class ConversationService {
     this.baseUrl = environment.baseUrl + "Conversation/";
     this.headers = authService.getHeaders();
 
-    this.getNewMessageCount();
+    if (authService.isLoggedIn()){
+      this.getNewMessageCount();
+    } else {
+      this.newMsgCount.next(null);
+    }
   }
 
   newMessageCount(): Observable<number | null> {

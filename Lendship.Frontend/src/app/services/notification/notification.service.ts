@@ -18,7 +18,11 @@ export class NotificationService {
     this.baseUrl = environment.baseUrl + "Notification/";
     this.headers = authService.getHeaders();
 
-    this.getNewNotificationCount();
+    if (authService.isLoggedIn()){
+      this.getNewNotificationCount();
+    } else {
+      this.newNotiCount.next(null);
+    }
   }
 
   newNotificationCount(): Observable<number | null> {

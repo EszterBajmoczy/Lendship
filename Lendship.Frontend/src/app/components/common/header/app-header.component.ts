@@ -38,13 +38,8 @@ export class AppHeaderComponent {
       this.isLoggedIn = true;
     }
 
-    if (this.isLoggedIn) {
-      this.messagesCount = conversationService.newMessageCount();
-      this.notificationCount = notificationService.newNotificationCount();
-    } else {
-      this.messagesCount = new BehaviorSubject<number | null>(null);
-      this.notificationCount = new BehaviorSubject<number | null>(null);
-    }
+    this.messagesCount = conversationService.newMessageCount();
+    this.notificationCount = notificationService.newNotificationCount();
   }
 
   ngOnInit(): void {
