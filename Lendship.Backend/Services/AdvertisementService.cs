@@ -157,7 +157,7 @@ namespace Lendship.Backend.Services
 
             if (sortBy == null)
             {
-                advertisements = advertisements.OrderByDescending(x => userLocation.GetDistanceTo(new GeoCoordinate((double)x.Latitude, (double)x.Longitude)));
+                advertisements = advertisements.OrderBy(x => userLocation.GetDistanceTo(new GeoCoordinate((double)x.Latitude, (double)x.Longitude)));
             }
 
             var result = Paging(advertisements, page)
