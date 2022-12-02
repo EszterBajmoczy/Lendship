@@ -88,7 +88,6 @@ namespace Lendship.Backend.Repositories
                                 .Include(r => r.User.ReservedCredits)
                                 .Include(r => r.Advertisement)
                                 .Include(r => r.Advertisement.User)
-                                .Include(r => r.Advertisement.User.ReservedCredits)
                                 .Where(r => r.Id == reservationId
                                     && (r.User.Id == userId || r.Advertisement.User.Id == userId)
                                     && (r.User.Id == signedInUserId || r.Advertisement.User.Id == signedInUserId))

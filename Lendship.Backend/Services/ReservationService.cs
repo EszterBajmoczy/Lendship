@@ -138,13 +138,13 @@ namespace Lendship.Backend.Services
             if (signedInUserId == reservation.User.Id)
             {
                 reservation.admittedByLender = true;
-                _notificationService.CreateNotification("Reservation was admitted by the Lender", reservation, reservation.Advertisement.User.Id);
+                _notificationService.CreateNotification("Reservation was evaluated by the Lender", reservation, reservation.Advertisement.User.Id);
             }
 
             if (signedInUserId == reservation.Advertisement.User.Id)
             {
                 reservation.admittedByAdvertiser = true;
-                _notificationService.CreateNotification("Reservation was admitted by the Advertiser", reservation, reservation.User.Id);
+                _notificationService.CreateNotification("Reservation was evaluated by the Advertiser", reservation, reservation.User.Id);
             }
 
             if (reservation.admittedByAdvertiser && reservation.admittedByLender)
@@ -191,13 +191,13 @@ namespace Lendship.Backend.Services
 
             if (reservationState == ReservationState.Resigned || reservationState == ReservationState.Declined)
             {
-                _notificationService.CreateNotification("Reservation was deleted, because it was " + reservationState, reservation, signedInUserId == reservation.User.Id ? signedInUserId : reservation.Advertisement.User.Id);
+                _notificationService.CreateNotification("Reservation was deleted, because it was " + reservationState, reservation, signedInUserId == reservation.User.Id ?  reservation.Advertisement.User.Id : reservation.User.Id);
                 
                 _reservationRepository.Delete(reservation);
             }
             else
             {
-                _notificationService.CreateNotification("Reservation state changed: " + reservationState, reservation, signedInUserId == reservation.User.Id ? signedInUserId : reservation.Advertisement.User.Id);
+                _notificationService.CreateNotification("Reservation state changed: " + reservationState, reservation, signedInUserId == reservation.User.Id ? reservation.Advertisement.User.Id : reservation.User.Id);
 
                 reservation.ReservationState = reservationState;
                 _reservationRepository.Update(reservation);
@@ -214,7 +214,7 @@ namespace Lendship.Backend.Services
 
         public void RemoveUpcommingReservations(int advertisementId)
         {
-            var reservations = _reservationRepository.GetByAdvertisement(advertisementId);
+            var reservations = _reservationRepository.GetByAdvertisement(advertisementId).ToList();
             foreach (var res in reservations)
             {
                 _notificationService.CreateNotification("Advertisement was deleted", res, res.User.Id);
