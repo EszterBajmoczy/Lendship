@@ -106,7 +106,7 @@
     </button>
 
     <div *ngIf="showLenderEvaluations" class="evaluationSection pb-2">
-      <p class="text-center sum p-2">{{user.evaluationAsLender}} (from {{user.evaluationAsLender}} vote)</p>
+      <p class="text-center sum p-2">{{user.evaluationAsLender}} (from {{user.evaluationAsLenderCount}} vote)</p>
 
       <div *ngFor="let ev of evaluationsLender" class="evSection p-2 m-4">
         <div>
