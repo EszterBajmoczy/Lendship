@@ -26,7 +26,7 @@ namespace Lendship.Backend.Converters
             {
                 Id = evaluation.Id,
                 UserFrom = evaluation.IsAnonymous ? null : _userConverter.ConvertToDto(evaluation.UserFrom),
-                AdvertisementId = evaluation.Advertisement.Id,
+                AdvertisementId = evaluation.AdvertisementId,
                 Flexibility = evaluation.Flexibility,
                 Reliability = evaluation.Reliability,
                 QualityAtReturn = evaluation.QualityAtReturn,
@@ -43,7 +43,7 @@ namespace Lendship.Backend.Converters
                 Id = evaluation.Id ?? 0,
                 UserFrom = UserFrom,
                 UserTo = UserTo,
-                Advertisement = advertisement,
+                AdvertisementId = advertisement.Id,
                 Flexibility = evaluation.Flexibility,
                 Reliability = evaluation.Reliability,
                 QualityAtReturn = evaluation.QualityAtReturn,
