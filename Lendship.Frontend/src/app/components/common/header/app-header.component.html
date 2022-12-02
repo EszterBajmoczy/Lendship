@@ -27,7 +27,7 @@
         <li *ngIf="isLoggedIn" class="nav-item" >
           <a class="nav-link news-button" [routerLinkActive]="['active']" [routerLink]="['notifications']" (click)="removeNewNotifications()" data-bs-toggle="collapse" data-bs-target="#navbarNav.show">
             <i class="fa-solid fa-bell" ></i>
-            <span *ngIf="notificationCount > 0" class="badge rounded-pill badge-notification bg-danger" style="margin: -5px; position: absolute">{{notificationCount}}</span>
+            <span *ngIf="(notificationCount | async) != null" class="badge rounded-pill badge-notification bg-danger" style="margin: -5px; position: absolute">{{notificationCount | async}}</span>
           </a>
         </li>
         <li *ngIf="isLoggedIn" class="nav-item" >

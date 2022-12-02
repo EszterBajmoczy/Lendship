@@ -6,7 +6,7 @@ import {INotification} from "../../../models/notification";
 import {environment} from "../../../../environments/environment";
 import {Conversation} from "../../../models/conversation";
 import {ConversationService} from "../../../services/conversation/conversation.service";
-import {Observable} from "rxjs";
+import {BehaviorSubject, Observable} from "rxjs";
 
 @Component({
   selector: 'app-header',
@@ -21,7 +21,7 @@ export class AppHeaderComponent {
   image: string = "";
   isLoggedIn: boolean = false;
   messagesCount: Observable<number | null>;
-  notificationCount: number = 0;
+  notificationCount: Observable<number | null>;
 
   constructor(
     private authService: AuthService,
@@ -37,12 +37,13 @@ export class AppHeaderComponent {
       this.image = img;
       this.isLoggedIn = true;
     }
-    this.messagesCount = this.conversationService.newMessageCount();
 
-    if(this.isLoggedIn) {
-      notificationService.getNewNotifications().subscribe((notifications) => {
-        this.notificationCount = notifications.length;
-      });
+    if (this.isLoggedIn) {
+      this.messagesCount = conversationService.newMessageCount();
+      this.notificationCount = notificationService.newNotificationCount();
+    } else {
+      this.messagesCount = new BehaviorSubject<number | null>(null);
+      this.notificationCount = new BehaviorSubject<number | null>(null);
     }
   }
 
@@ -59,6 +60,6 @@ export class AppHeaderComponent {
   }
 
   removeNewNotifications() {
-    this.notificationCount = 0;
+    this.notificationService.getNewNotificationCount();
   }
 }

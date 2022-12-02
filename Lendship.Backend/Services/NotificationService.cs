@@ -35,12 +35,12 @@ namespace Lendship.Backend.Services
                         .Select(n => _notificationConverter.ConvertToDto(n));
         }
 
-        public IEnumerable<NotificationDTO> GetNewNotifications()
+        public int GetNewNotificationCount()
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             return _notificationRepository.GetAllNew(signedInUserId)
                         .Select(n => _notificationConverter.ConvertToDto(n))
-                        .ToList();
+                        .Count();
         }
 
         public void SetSeenNotifications(List<int> ids)

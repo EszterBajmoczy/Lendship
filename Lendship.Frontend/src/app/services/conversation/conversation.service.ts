@@ -50,7 +50,7 @@ export class ConversationService {
   }
 
   getNewMessageCount() {
-    return this.http.get<number>(this.baseUrl + "new", { headers: this.headers})
+    this.http.get<number>(this.baseUrl + "new", { headers: this.headers})
       .subscribe(count => {
         if (count > 0)
         {

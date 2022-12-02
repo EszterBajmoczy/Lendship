@@ -25,12 +25,8 @@ export class NotificationsPageComponent implements OnInit {
         })
         this.notifications = notifications;
         this.loading = false;
-        console.log(notifications);
 
-        this.notificationService.setSeenNotifications(notifications)
-          .subscribe((result) => {
-            console.log(result);
-          });
+        this.notificationService.setSeenNotifications(notifications);
     })
   }
 
