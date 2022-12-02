@@ -14,6 +14,7 @@ import {DateHandlerService} from "../../services/date-handler/date-handler.servi
 })
 export class ProfilePageComponent implements OnInit {
   baseUrl = environment.baseUrl;
+  baseImage = environment.baseImage;
   user: UserDetail | undefined;
   isOwn: Boolean = true;
 
@@ -37,6 +38,7 @@ export class ProfilePageComponent implements OnInit {
             console.log(user);
             this.user = user;
             this.isOwn = false;
+            this.loadAdvertiserEvaluations();
           });
       } else {
         this.userService.getUser()
@@ -44,15 +46,20 @@ export class ProfilePageComponent implements OnInit {
             console.log(user);
             this.user = user;
             this.isOwn = true;
+            this.loadAdvertiserEvaluations();
           });
       }
-      this.loadAdvertiserEvaluations();
     });
   }
 
   loadAdvertiserEvaluations(){
+    console.log("A")
+    console.log(this.evaluationsAdvertiser)
+    console.log(this.user)
     this.showAdvertiserEvaluations = !this.showAdvertiserEvaluations;
     if(this.evaluationsAdvertiser === undefined && this.user !== undefined){
+      console.log("B")
+
       this.userService.getEvaluationAdvertiserUser(this.user.id)
         .subscribe(evaluations => {
           console.log(evaluations);
