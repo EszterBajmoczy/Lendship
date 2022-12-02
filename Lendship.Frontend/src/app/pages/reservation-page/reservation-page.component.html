@@ -154,7 +154,10 @@
                (click)="userClicked(res.user)">
             <div class="vertical-line"></div>
             <div class="me-md-4">
-              <img class="img-profile-sm" src="{{baseUrl}}images/profile/{{res.user.image}}">
+              <img *ngIf="res.user.image === null; else userImg" class="rounded-circle img-profile" src="{{baseUrl}}images/profile/{{baseImage}}">
+              <ng-template #userImg>
+                <img class="rounded-circle img-profile" style="object-fit: cover" src="{{baseUrl}}images/profile{{res.user.image}}">
+              </ng-template>
             </div>
             <div class="d-none d-md-block">
               <p class="user-name">{{res.user.name}}</p>

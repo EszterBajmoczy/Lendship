@@ -16,6 +16,8 @@ import {environment} from "../../../environments/environment";
 })
 export class ReservationPageComponent implements OnInit {
   baseUrl = environment.baseUrl;
+  baseImage = environment.baseImage;
+
   loadingUsersReservations = true;
   loadingReservationsForUser = true;
 

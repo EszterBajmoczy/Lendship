@@ -16,6 +16,8 @@ import {BehaviorSubject, Observable} from "rxjs";
 
 export class AppHeaderComponent {
   baseUrl = environment.baseUrl;
+  baseImage = environment.baseImage;
+
   name: string = "Login";
   nameUrl: string = "login";
   image: string = "";

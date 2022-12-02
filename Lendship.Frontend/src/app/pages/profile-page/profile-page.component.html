@@ -6,7 +6,10 @@
 <div *ngIf="user !== undefined" class="container col-lg-10">
   <div class="d-flex profile-info align-items-center justify-content-center mt-2 mb-lg-4">
     <div class="me-4">
-      <img class="img-profile" src="{{baseUrl}}images/profile{{user.image}}" alt="">
+      <img *ngIf="user.image != null; else imgProfile" class="img-profile" src="{{baseUrl}}images/profile{{user.image}}" alt="">
+      <ng-template #imgProfile>
+        <img class="img-profile" src="{{baseUrl}}images/profile{{baseImage}}">
+      </ng-template>
     </div>
     <div>
       <p class="user-name">{{user.name}}</p>

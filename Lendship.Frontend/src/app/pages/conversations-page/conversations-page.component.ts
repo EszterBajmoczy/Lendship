@@ -18,7 +18,7 @@ export class ConversationsPageComponent implements OnInit {
     conversationService.getAllConversation()
       .subscribe((cons) => {
         cons.map(con => {
-          if (con.users[0].image === undefined || con.users[0].image.length === 0){
+          if (con.users[0].image === null || con.users[0].image.length === 0){
             con.users[0].image = environment.baseImage;
           }
         })

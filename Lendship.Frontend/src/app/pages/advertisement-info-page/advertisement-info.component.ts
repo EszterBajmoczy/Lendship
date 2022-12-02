@@ -17,7 +17,9 @@ import {environment} from "../../../environments/environment";
   styleUrls: ['./advertisement-info.component.scss']
 })
 export class AdvertisementInfoComponent implements OnInit, AfterContentInit {
-  baseUrl = environment.baseUrl
+  baseUrl = environment.baseUrl;
+  baseImage = environment.baseImage;
+
   id: number = -1;
   ad: AdvertisementDetail | undefined;
   isOwnAdvertisement: boolean = false;

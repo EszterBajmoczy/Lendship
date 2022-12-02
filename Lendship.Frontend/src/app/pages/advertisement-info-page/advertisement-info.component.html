@@ -7,7 +7,7 @@
   <div class="d-flex justify-content-between">
     <div class="d-flex profile-info align-items-center mt-2 mb-lg-4" (click)="goToProfile(ad.user.id)">
       <div class="me-4">
-        <img *ngIf="ad.user.image === undefined; else elseBlock" class="rounded-circle img-profile" style="object-fit: cover" src="https://localhost:44377/images/blank.jpg">
+        <img *ngIf="ad.user.image === undefined; else elseBlock" class="rounded-circle img-profile" style="object-fit: cover" src="{{baseUrl}}images/profile{{baseImage}}">
         <ng-template #elseBlock>
           <img class="rounded-circle img-profile" style="object-fit: cover" src="{{baseUrl}}images/profile{{ad.user.image}}">
         </ng-template>
