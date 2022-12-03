@@ -93,7 +93,7 @@
                                                 [userTo] = res.user
                                                 [advertisementId] = res.id
                                                 [reservationId] = res.id
-                                                [isLender] = false
+                                                [isLender] = true
                                                 (evaluationAdvertiser)="submitEvaluationAdvertiser($event)"
                                                 (evaluationLender)="submitEvaluationLender($event)">
                           </app-evaluation-popup>
@@ -194,7 +194,7 @@
                                       [userTo] = res.user
                                       [advertisementId] = res.advertisement.id
                                       [reservationId] = res.id
-                                      [isLender] = false
+                                      [isLender] = true
                                       (evaluationAdvertiser)="submitEvaluationAdvertiser($event)"
                                       (evaluationLender)="submitEvaluationLender($event)">
                 </app-evaluation-popup>
@@ -260,7 +260,7 @@
                                       [userTo] = res.advertisement.user
                                       [advertisementId] = res.advertisement.id
                                       [reservationId] = res.id
-                                      [isLender] = true
+                                      [isLender] = false
                                       (evaluationAdvertiser)="submitEvaluationAdvertiser($event)"
                                       (evaluationLender)="submitEvaluationLender($event)">
                 </app-evaluation-popup>
