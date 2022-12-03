@@ -75,13 +75,14 @@ export class AdvertisementInfoComponent implements OnInit, AfterContentInit {
   }
 
   open(content: any) {
+    this.reserveFrom = undefined;
+    this.reserveTo = undefined;
+
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
       if(result == "Reserve"){
         if(this.reserveFrom !== undefined) {
           let reserveTo = this.reserveTo === undefined ? this.reserveFrom : this.reserveTo;
           let res = new Reservation(0, 1, this.reserveFrom, reserveTo);
-          console.log("!");
-          console.log(res);
           this.reservationService.reserve(this.id, res)
             .subscribe(response => {
               console.log(response);
