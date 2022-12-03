@@ -14,7 +14,6 @@ export class EvaluationPopupComponent implements OnInit {
   @Input() advertisementId: number = 0;
   @Input() reservationId: number = 0;
   @Input() isLender = false;
-  @Input() message = "";
 
   @Output() evaluationAdvertiser = new EventEmitter<EvaluationAdvertiser>();
   @Output() evaluationLender = new EventEmitter<EvaluationLender>();

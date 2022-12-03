@@ -23,7 +23,8 @@
     </ng-template>
 
     <qrcode [qrdata]="token" [width]="400" [errorCorrectionLevel]="'M'"  class="d-flex justify-content-center"></qrcode>
-    <button *ngIf="closing" class="btn btn-success" (click)="openEvaluation(evaluationPopUp)">Create evaluation</button>
+    <button *ngIf="closing" class="btn btn-success" (click)="openEvaluation(evaluationPopUp, null)">Create evaluation</button>
+
   </div>
 
   <div *ngIf="!scannerEnabled && token === undefined">
@@ -47,17 +48,17 @@
   </div>
 </div>
 
+
 <ng-template #evaluationPopUp let-modal>
   <div class="modal-header">
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body d-flex justify-content-center">
-    <app-evaluation-popup *ngIf="evaluationBasic !== undefined && operationClose" class="w-100"
+    <app-evaluation-popup *ngIf="evaluationBasic !== undefined" class="w-100"
                           [userTo] = "evaluationBasic.userTo"
                           [advertisementId] = "evaluationBasic.advertisementId"
                           [reservationId] = "evaluationBasic.reservationId"
                           [isLender] = "evaluationBasic.isLender"
-                          [message] = "evaluationBasic.message"
                           (evaluationAdvertiser)="submitEvaluationAdvertiser($event)"
                           (evaluationLender)="submitEvaluationLender($event)">
     </app-evaluation-popup>
