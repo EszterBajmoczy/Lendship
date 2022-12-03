@@ -183,17 +183,25 @@ namespace Lendship.Backend.Services
             UpdateReservationState(reservation, state, signedInUserId);
         }
 
-        private void UpdateReservationState(Reservation reservation, string state, string signedInUserId)
+        private void UpdateReservationState(Reservation reservation, string state, string signedInUserId, string additionalMsg = "")
         {
             var reservationState = GetReservationState(state);
 
-            
+
 
             if (reservationState == ReservationState.Resigned || reservationState == ReservationState.Declined)
             {
-                _notificationService.CreateNotification("Reservation was deleted, because it was " + reservationState, reservation, signedInUserId == reservation.User.Id ?  reservation.Advertisement.User.Id : reservation.User.Id);
-                
+                _notificationService.CreateNotification("Reservation was deleted, because it was " + reservationState, reservation, signedInUserId == reservation.User.Id ? reservation.Advertisement.User.Id : reservation.User.Id);
+
                 _reservationRepository.Delete(reservation);
+            }
+            else if (reservationState == ReservationState.Ongoing || reservationState == ReservationState.Closed)
+            {
+                _notificationService.CreateNotification("Reservation state changed: " + reservationState + ". " + additionalMsg, reservation, reservation.User.Id);
+                _notificationService.CreateNotification("Reservation state changed: " + reservationState + ". " + additionalMsg, reservation, reservation.Advertisement.User.Id);
+
+                reservation.ReservationState = reservationState;
+                _reservationRepository.Update(reservation);
             }
             else
             {
@@ -268,7 +276,7 @@ namespace Lendship.Backend.Services
             return new ReservationTokenDto()
             {
                 ReservationToken = builder.ToString(),
-                OtherUser = _userConverter.ConvertToDto(reservation.User.Id == signedInUserId ? reservation.User : reservation.Advertisement.User),
+                OtherUser = _userConverter.ConvertToDto(reservation.User.Id == signedInUserId ? reservation.Advertisement.User : reservation.User),
                 ReservationId = reservation.Id,
                 AdvertisementId = reservation.Advertisement.Id,
                 IsLender = reservation.User.Id == signedInUserId ? true : false
@@ -295,7 +303,7 @@ namespace Lendship.Backend.Services
 
             var reservation = _reservationRepository.GetReservation(userId, signedInUserId, reservationId);
 
-            if (reservation == null || !(time >= DateTime.UtcNow.AddMinutes(-5).Ticks && time < DateTime.UtcNow.Ticks))
+            if (reservation == null || reservation.ReservationState == ReservationState.Closed || !(time >= DateTime.UtcNow.AddMinutes(-5).Ticks && time < DateTime.UtcNow.Ticks))
             {
                 return result;
             }
@@ -303,11 +311,11 @@ namespace Lendship.Backend.Services
             if (closing == 1)
             {
                 TransferCredit(reservation, result);
-                UpdateReservationState(reservation, "Closed", signedInUserId);
+                UpdateReservationState(reservation, "Closed", signedInUserId, result.Credit + " was transfered");
             } else
             {
                 ReserveCredit(reservation, result);
-                UpdateReservationState(reservation, "Ongoing", signedInUserId);
+                UpdateReservationState(reservation, "Ongoing", signedInUserId, result.Credit + " was reserved");
             }
 
             result.OtherUser = _userConverter.ConvertToDto(reservation.User.Id == signedInUserId ? reservation.Advertisement.User : reservation.User);
@@ -331,7 +339,7 @@ namespace Lendship.Backend.Services
             var lender = reservation.User;
             var advertiser = reservation.Advertisement.User;
 
-            if (reservation.Advertisement.Credit == null || reservation.Advertisement.Credit != 0)
+            if (reservation.Advertisement.Credit == null || reservation.Advertisement.Credit == 0)
             {
                 result.Succeeded = true;
             }
@@ -355,7 +363,7 @@ namespace Lendship.Backend.Services
                 result.Message = reservation.Advertisement.Credit + " credit has been transfered.";
             } else
             {
-                var allCredit = reservedCredits.Amount + lender.Credit;
+                var allCredit = reservedCreditAmount + lender.Credit;
 
                 lender.Credit = 0;
                 advertiser.Credit = advertiser.Credit + allCredit;
