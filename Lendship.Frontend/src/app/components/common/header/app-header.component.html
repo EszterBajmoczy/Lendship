@@ -37,9 +37,9 @@
         </li>
         <li class="nav-item" >
           <a class="nav-link login-button" [routerLinkActive]="['active']" [routerLink]="[nameUrl]" data-bs-toggle="collapse" data-bs-target="#navbarNav.show">
-            <i *ngIf="image.length == 0; else elseBlock" class="fa fa-user rounded-circle" width="30" height="30"></i>
+            <img *ngIf="image.length == 0; else elseBlock" class="rounded-circle oversize" width="30" height="30" style="object-fit: cover" src="{{baseUrl}}images/profile{{baseImage}}">
             <ng-template #elseBlock>
-              <img class="rounded-circle oversize" width="30" height="30" style="object-fit: cover" src="{{baseUrl}}images/profile{{baseImage}}">
+              <img class="rounded-circle oversize" width="30" height="30" style="object-fit: cover" src="{{baseUrl}}images/profile{{image}}">
             </ng-template>
 
             <span [textContent]="name"></span>
