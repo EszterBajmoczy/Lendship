@@ -6,7 +6,10 @@
 <div *ngIf="user !== undefined" class="container col-lg-10">
   <div class="d-flex profile-info align-items-center justify-content-center mt-2 mb-lg-4">
     <div class="me-4">
-      <img class="img-profile" src="{{baseUrl}}images/profile{{user.image}}" alt="">
+      <img *ngIf="user.image != null; else imgProfile" class="img-profile" src="{{baseUrl}}images/profile{{user.image}}" alt="">
+      <ng-template #imgProfile>
+        <img class="img-profile" src="{{baseUrl}}images/profile{{baseImage}}">
+      </ng-template>
     </div>
     <div>
       <p class="user-name">{{user.name}}</p>
@@ -41,10 +44,16 @@
         <div>
           <div class="d-flex profile-info justify-content-start align-items-center mt-2 mb-lg-4">
             <div class="me-4">
-              <img class="img-profile-sm" src="{{baseUrl}}images/profile/{{ev.userFrom.image}}" alt="">
+              <img *ngIf="!ev.isAnonymous; else anonymImgAdvertiser" class="img-profile-sm" src="{{baseUrl}}images/profile/{{ev.userFrom.image}}" alt="">
+              <ng-template #anonymImgAdvertiser>
+                <img class="img-profile-sm" src="{{baseUrl}}images/profile/{{baseImage}}" alt="">
+              </ng-template>
             </div>
             <div>
-              <p class="user-name-m">{{ev.userFrom.name}}</p>
+              <p *ngIf="!ev.isAnonymous; else anonymAdvertiser" class="user-name-m">{{ev.userFrom.name}}</p>
+              <ng-template #anonymAdvertiser>
+                <p  class="user-name-m">Anonymous</p>
+              </ng-template>
               <p>{{ev.creationFormatted}}</p>
             </div>
           </div>
@@ -100,16 +109,22 @@
     </button>
 
     <div *ngIf="showLenderEvaluations" class="evaluationSection pb-2">
-      <p class="text-center sum p-2">{{user.evaluationAsLender}} (from {{user.evaluationAsLender}} vote)</p>
+      <p class="text-center sum p-2">{{user.evaluationAsLender}} (from {{user.evaluationAsLenderCount}} vote)</p>
 
       <div *ngFor="let ev of evaluationsLender" class="evSection p-2 m-4">
         <div>
           <div class="d-flex profile-info justify-content-start align-items-center mt-2 mb-lg-4">
             <div class="me-4">
-              <img class="img-profile-sm" src="{{baseUrl}}images/profile/{{ev.userFrom.image}}" alt="">
+              <img *ngIf="!ev.isAnonymous; else anonymImgLender" class="img-profile-sm" src="{{baseUrl}}images/profile/{{ev.userFrom.image}}" alt="">
+              <ng-template #anonymImgLender>
+                <img class="img-profile-sm" src="{{baseUrl}}images/profile/{{baseImage}}" alt="">
+              </ng-template>
             </div>
             <div>
-              <p class="user-name-m">{{ev.userFrom.name}}</p>
+              <p *ngIf="!ev.isAnonymous; else anonymLender" class="user-name-m">{{ev.userFrom.name}}</p>
+              <ng-template #anonymLender>
+                <p class="user-name-m">Anonymous</p>
+              </ng-template>
               <p>{{ev.creationFormatted}}</p>
             </div>
           </div>

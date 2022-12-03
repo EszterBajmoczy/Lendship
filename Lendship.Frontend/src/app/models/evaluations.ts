@@ -8,7 +8,8 @@ export interface EvaluationAdvertiser {
   qualityOfProduct: number,
   comment: string,
   creation: Date,
-  creationFormatted: string
+  creationFormatted: string,
+  isAnonymous: boolean
 }
 
 export interface EvaluationLender {
@@ -19,5 +20,6 @@ export interface EvaluationLender {
   qualityAtReturn: number,
   comment: string,
   creation: Date,
-  creationFormatted: string
+  creationFormatted: string,
+  isAnonymous: boolean
 }

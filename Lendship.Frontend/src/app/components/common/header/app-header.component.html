@@ -18,12 +18,16 @@
           <a class="nav-link reservations-button" [routerLinkActive]="['active']" [routerLink]="['reservations']"  data-bs-toggle="collapse" data-bs-target="#navbarNav.show">Reservations</a>
         </li>
         <li *ngIf="isLoggedIn" class="nav-item" >
-          <a class="nav-link msg-button" [routerLinkActive]="['active']" [routerLink]="['conversations']" data-bs-toggle="collapse" data-bs-target="#navbarNav.show">Messages</a>
+          <a class="nav-link msg-button" [routerLinkActive]="['active']" [routerLink]="['conversations']" data-bs-toggle="collapse" data-bs-target="#navbarNav.show">
+            Messages
+            <span *ngIf="(messagesCount | async) != null" class="badge rounded-pill badge-notification bg-danger" style="margin: -5px; position: absolute">{{ messagesCount | async}}</span>
+          </a>
+
         </li>
         <li *ngIf="isLoggedIn" class="nav-item" >
           <a class="nav-link news-button" [routerLinkActive]="['active']" [routerLink]="['notifications']" (click)="removeNewNotifications()" data-bs-toggle="collapse" data-bs-target="#navbarNav.show">
             <i class="fa-solid fa-bell" ></i>
-            <span *ngIf="notificationCount > 0" class="badge rounded-pill badge-notification bg-danger" style="margin: -5px; position: absolute">{{notificationCount}}</span>
+            <span *ngIf="(notificationCount | async) != null" class="badge rounded-pill badge-notification bg-danger" style="margin: -5px; position: absolute">{{notificationCount | async}}</span>
           </a>
         </li>
         <li *ngIf="isLoggedIn" class="nav-item" >
@@ -33,7 +37,7 @@
         </li>
         <li class="nav-item" >
           <a class="nav-link login-button" [routerLinkActive]="['active']" [routerLink]="[nameUrl]" data-bs-toggle="collapse" data-bs-target="#navbarNav.show">
-            <i *ngIf="image.length == 0; else elseBlock" class="fa fa-user rounded-circle" width="30" height="30"></i>
+            <img *ngIf="image.length == 0; else elseBlock" class="rounded-circle oversize" width="30" height="30" style="object-fit: cover" src="{{baseUrl}}images/profile{{baseImage}}">
             <ng-template #elseBlock>
               <img class="rounded-circle oversize" width="30" height="30" style="object-fit: cover" src="{{baseUrl}}images/profile{{image}}">
             </ng-template>

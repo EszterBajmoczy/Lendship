@@ -16,6 +16,8 @@ import {environment} from "../../../environments/environment";
 })
 export class ReservationPageComponent implements OnInit {
   baseUrl = environment.baseUrl;
+  baseImage = environment.baseImage;
+
   loadingUsersReservations = true;
   loadingReservationsForUser = true;
 
@@ -79,7 +81,7 @@ export class ReservationPageComponent implements OnInit {
   accept(resId: number) {
     this.reservationService.updateReservationsState(resId, "Accepted")
       .subscribe(res => {
-        this.usersReservations.forEach(res => {
+        this.reservationsForUsersAdvertisements.forEach(res => {
           if(res.id == resId){
             res.reservationState= "Accepted";
           }
@@ -90,11 +92,38 @@ export class ReservationPageComponent implements OnInit {
   decline(resId: number) {
     this.reservationService.updateReservationsState(resId, "Declined")
       .subscribe(res => {
-        this.usersReservations.forEach(res => {
-          if(res.id == resId){
-            res.reservationState= "Declined";
+        let id = -1;
+        this.reservationsForUsersAdvertisements.forEach((res, idx) => {
+          if (res.id == resId){
+            id = idx;
           }
         });
+
+        if (id >= 0){
+          this.reservationsForUsersAdvertisements.splice(id, 1);
+        }
+
+        this.selectedUsersReservations = new Array<IReservationDetail>();
+        this.selectedReservationsForUsersAdvertisements = new Array<IReservationDetail>();
+      });
+  }
+
+  resign(resId: number) {
+    this.reservationService.updateReservationsState(resId, "Resigned")
+      .subscribe(res => {
+        let id = -1;
+        this.usersReservations.forEach((res, idx) => {
+          if (res.id == resId){
+            id = idx;
+          }
+        });
+
+        if (id >= 0){
+          this.usersReservations.splice(id, 1);
+        }
+
+        this.selectedUsersReservations = new Array<IReservationDetail>();
+        this.selectedReservationsForUsersAdvertisements = new Array<IReservationDetail>();
       });
   }
 
@@ -111,17 +140,6 @@ export class ReservationPageComponent implements OnInit {
           if(res.id == resId){
             res.reservationState= "Closed";
             return;
-          }
-        });
-      });
-  }
-
-  resign(resId: number) {
-    this.reservationService.updateReservationsState(resId, "Resigned")
-      .subscribe(res => {
-        this.usersReservations.forEach(res => {
-          if(res.id == resId){
-            res.reservationState= "Resigned";
           }
         });
       });

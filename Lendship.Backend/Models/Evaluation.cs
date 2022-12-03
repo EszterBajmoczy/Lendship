@@ -16,7 +16,7 @@ namespace Lendship.Backend.Models
         public  ApplicationUser UserTo { get; set; }
 
         [Required]
-        public Advertisement Advertisement { get; set; }
+        public int AdvertisementId { get; set; }
 
         [Required]
         public int Flexibility { get; set; }

@@ -35,6 +35,7 @@ namespace Lendship.Backend.Services
         public bool IsCurrentTokenDeactivated()
         {
             var currentToken = GetCurrentToken();
+
             try
             {
                 return _redisCache.GetString(currentToken) != null;
@@ -61,41 +62,30 @@ namespace Lendship.Backend.Services
         public async Task DeactivateCurrentTokenAndRefreshTokenAsync(string refreshToken)
         {
             var currentToken = GetCurrentToken();
-            var expires = new JwtSecurityToken(currentToken).ValidTo;
-            var expiresRefreshToken = new JwtSecurityToken(refreshToken).ValidTo;
+            var expires = new JwtSecurityToken(currentToken).ValidTo.AddMinutes(30);
+            var expiresRefreshToken = new JwtSecurityToken(refreshToken).ValidTo.AddMinutes(30);
+
             try
             {
                 await _redisCache.SetStringAsync(
                         currentToken,
                         "deactivated",
-                        new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromTicks(expires.Ticks - DateTime.Now.Ticks) },
+                        new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromTicks(expires.Ticks - DateTime.UtcNow.Ticks) },
                         CancellationToken.None);
 
                 await _redisCache.SetStringAsync(
                             refreshToken,
                             "deactivated",
-                            new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromTicks(expiresRefreshToken.Ticks - DateTime.Now.Ticks) },
+                            new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromTicks(expiresRefreshToken.Ticks - DateTime.UtcNow.Ticks) },
                             CancellationToken.None);
             }
             catch (Exception e)
             {
                 _logger.Error("Error deactivating tokens: " + e.Message);
             };
-            
         }
 
         public JwtSecurityToken GenerateNewToken(List<Claim> authClaims, bool isRefresh)
-        {
-            var jwtToken = generate(authClaims, isRefresh);
-            var token = isRefresh ?
-                $"ref_{new JwtSecurityTokenHandler().WriteToken(jwtToken)}" :
-                new JwtSecurityTokenHandler().WriteToken(jwtToken);
-            var expires = jwtToken.ValidTo;
-
-            return jwtToken;
-        }
-
-        private JwtSecurityToken generate(List<Claim> authClaims, bool isRefresh)
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("JWT").GetValue("Key", "defaultKey")));
             var issuer = _configuration.GetSection("JWT").GetValue("Issuer", "defaultIssuer");
@@ -106,7 +96,7 @@ namespace Lendship.Backend.Services
             return new JwtSecurityToken(
                 issuer: issuer,
                 audience: _configuration.GetSection("JWT").GetValue("Audience", "defaultAudience"),
-                expires: DateTime.Now.AddHours(expires),
+                expires: DateTime.UtcNow.AddHours(expires),
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
             );

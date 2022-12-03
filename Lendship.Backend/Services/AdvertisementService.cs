@@ -5,6 +5,7 @@ using Lendship.Backend.Interfaces.Converters;
 using Lendship.Backend.Interfaces.Repositories;
 using Lendship.Backend.Interfaces.Services;
 using Lendship.Backend.Models;
+using Lendship.Backend.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -21,6 +22,7 @@ namespace Lendship.Backend.Services
         private readonly IUserRepository _userRepository;
         private readonly ISavedAdvertisementRepository _savedAdvertisementRepository;
         private readonly IAvailabilityRepository _availabilityRepository;
+        private readonly IConversationRepository _conversationRepository;
 
         private readonly ICategoryService _categoryService;
         private readonly IReservationService _reservationService;
@@ -39,6 +41,7 @@ namespace Lendship.Backend.Services
             IUserRepository userRepository,
             ISavedAdvertisementRepository savedAdvertisementRepository,
             IAvailabilityRepository availabilityRepository,
+            IConversationRepository conversationRepository,
             ICategoryService categoryService,
             IReservationService reservationService, 
             IImageService imageService,
@@ -52,6 +55,7 @@ namespace Lendship.Backend.Services
             _userRepository = userRepository;
             _savedAdvertisementRepository = savedAdvertisementRepository;
             _availabilityRepository = availabilityRepository;
+            _conversationRepository = conversationRepository;
 
             _categoryService = categoryService;
             _reservationService = reservationService;
@@ -136,8 +140,9 @@ namespace Lendship.Backend.Services
 
             _imageService.DeleteImages(advertisementId);
 
-            _advertisementRepository.Delete(advertisementId);
+            _conversationRepository.DeleteByAdvertisementId(advertisementId);
             _reservationService.RemoveUpcommingReservations(advertisementId);
+            _advertisementRepository.Delete(advertisementId);
         }
 
         public AdvertisementListDto GetAdvertisements(string advertisementType, bool creditPayment, bool cashPayment, string category, double latitude, double longitude, int distance, string word, string sortBy, int page)
@@ -152,7 +157,7 @@ namespace Lendship.Backend.Services
 
             if (sortBy == null)
             {
-                advertisements = advertisements.OrderByDescending(x => userLocation.GetDistanceTo(new GeoCoordinate((double)x.Latitude, (double)x.Longitude)));
+                advertisements = advertisements.OrderBy(x => userLocation.GetDistanceTo(new GeoCoordinate((double)x.Latitude, (double)x.Longitude)));
             }
 
             var result = Paging(advertisements, page)

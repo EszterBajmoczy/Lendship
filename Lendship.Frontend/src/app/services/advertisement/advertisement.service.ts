@@ -48,7 +48,6 @@ export class AdvertisementService {
   }
 
   deleteAdvertisementById(id: number): Observable<number>{
-    console.log(this.baseUrl + id);
     return this.http.delete<any>(this.baseUrl + id, { headers: this.headers});
   }
 

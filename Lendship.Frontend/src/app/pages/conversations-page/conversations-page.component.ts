@@ -17,10 +17,8 @@ export class ConversationsPageComponent implements OnInit {
   constructor(private conversationService: ConversationService, private router: Router) {
     conversationService.getAllConversation()
       .subscribe((cons) => {
-        console.log(cons);
-        console.log(cons[0].users[0].image);
         cons.map(con => {
-          if (con.users[0].image === undefined || con.users[0].image.length === 0){
+          if (con.users[0].image === null || con.users[0].image.length === 0){
             con.users[0].image = environment.baseImage;
           }
         })

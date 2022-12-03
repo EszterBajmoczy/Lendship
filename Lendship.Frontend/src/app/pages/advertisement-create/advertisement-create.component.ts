@@ -112,7 +112,7 @@ export class AdvertisementCreateComponent implements OnInit {
   initializeForm(){
     this.advertisementForm = this.formBuilder.group({
       id: [this.advertisement?.id],
-      isService: [false],
+      isService: [this.advertisement?.isService],
       title: [this.advertisement?.title, [Validators.required]],
       price: [this.advertisement?.price, [Validators.pattern("^[0-9]*$")]],
       credit: [this.advertisement?.credit, [Validators.pattern("^[0-9]*$")]],

@@ -17,42 +17,44 @@
              [ngClass]="{closed: res.admittedByLender}">
           <div class="date-text col-2">{{res.dateFromString}}<br>-<br>{{res.dateToString}}</div>
 
-          <div class="conversation-ad-section d-flex justify-content-between align-items-center w-100 pe-2 h-100"
-               (click)="reservationClicked(res)">
-            <img src="{{baseUrl}}images{{res.advertisement.imageLocation}}" class="img-ad m-1" alt="...">
+          <div class="conversation-ad-section d-flex justify-content-between align-items-center w-100 pe-2 h-100">
+            <img src="{{baseUrl}}images{{res.advertisement.imageLocation}}" class="img-ad m-1" alt="..."
+                 (click)="reservationClicked(res)">
             <div class="w-100 ps-2 pe-2">
-              <div class="actions text-center d-flex justify-content-end">
-                <div *ngIf="(res.reservationState === 'Created' || res.reservationState === 'Accepted') && !res.admittedByLender" class="d-flex justify-content-center d-lg-block">
-                  <button class="btn btn-info btn-x-sm p-1 m-1" (click)="resign(res.id)">Resign</button>
-                </div>
-                <div *ngIf="(res.reservationState === 'Accepted' || res.reservationState === 'Ongoing' || res.reservationState === 'Closed') && !res.admittedByLender">
-                  <button class="btn btn-success btn-x-sm p-1 m-1" (click)="open(evaluationPopUp, res)">Close</button>
-                  <div>
-                    <ng-template #evaluationPopUp let-modal>
-                      <div class="modal-header">
-                        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-                      </div>
-                      <div class="modal-body d-flex justify-content-center">
-                        <app-evaluation-popup class="w-100"
-                                              [userTo] = res.advertisement.user
-                                              [advertisementId] = res.advertisement.id
-                                              [reservationId] = res.id
-                                              [isLender] = false
-                                              (evaluationAdvertiser)="submitEvaluationAdvertiser($event)"
-                                              (evaluationLender)="submitEvaluationLender($event)">
-                        </app-evaluation-popup>
-                      </div>
-                    </ng-template>
+              <div class="d-flex justify-content-between">
+                <h6 class="title pt-0 mb-1" (click)="reservationClicked(res)">{{res.advertisement.title}}</h6>
+                <div class="actions text-center d-flex justify-content-end">
+                  <div *ngIf="(res.reservationState === 'Created' || res.reservationState === 'Accepted') && !res.admittedByLender && !res.admittedByAdvertiser" class="d-flex justify-content-center d-lg-block">
+                    <button class="btn btn-info btn-x-sm p-1 m-1" (click)="resign(res.id)">Resign</button>
+                  </div>
+                  <div *ngIf="(res.reservationState === 'Accepted' || res.reservationState === 'Ongoing' || res.reservationState === 'Closed') && !res.admittedByLender">
+                    <button class="btn btn-success btn-x-sm p-1 m-1" (click)="open(evaluationPopUp, res)">Close</button>
+                    <div>
+                      <ng-template #evaluationPopUp let-modal>
+                        <div class="modal-header">
+                          <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+                        </div>
+                        <div class="modal-body d-flex justify-content-center">
+                          <app-evaluation-popup class="w-100"
+                                                [userTo] = res.advertisement.user
+                                                [advertisementId] = res.advertisement.id
+                                                [reservationId] = res.id
+                                                [isLender] = false
+                                                (evaluationAdvertiser)="submitEvaluationAdvertiser($event)"
+                                                (evaluationLender)="submitEvaluationLender($event)">
+                          </app-evaluation-popup>
+                        </div>
+                      </ng-template>
+                    </div>
+                  </div>
+                  <div *ngIf="res.reservationState !== 'Closed' && res.admittedByLender">
+                    <p class="small-font">Closed by you</p>
+                  </div>
+                  <div *ngIf="res.admittedByLender && res.admittedByAdvertiser">
+                    <p class="small-font">Closed</p>
                   </div>
                 </div>
-                <div *ngIf="res.reservationState !== 'Closed' && res.admittedByLender">
-                  <p class="small-font">Closed by you</p>
-                </div>
-                <div *ngIf="res.admittedByLender && res.admittedByAdvertiser">
-                  <p class="small-font">Closed</p>
-                </div>
               </div>
-              <h6 class="title pt-0 mb-1">{{res.advertisement.title}}</h6>
               <div class="d-flex justify-content-between">
                 <p class="ad-details">{{res.advertisement.location}}</p>
                 <p class="ad-details">{{res.advertisement.price}} Ft</p>
@@ -68,43 +70,45 @@
              [ngClass]="{closed: res.admittedByAdvertiser}">
           <div class="date-text col-2">{{res.dateFromString}}<br>-<br>{{res.dateToString}}</div>
 
-          <div class="conversation-ad-section d-flex justify-content-between align-items-center w-100 pe-2 h-100"
-               (click)="reservationClicked(res)">
-            <img src="{{baseUrl}}images{{res.advertisement.imageLocation}}" class="img-ad m-1" alt="...">
+          <div class="conversation-ad-section d-flex justify-content-between align-items-center w-100 pe-2 h-100">
+            <img src="{{baseUrl}}images{{res.advertisement.imageLocation}}" class="img-ad m-1" alt="..."
+                 (click)="reservationClicked(res)">
             <div class="w-100 ps-2 pe-2">
-              <div class="actions text-center d-flex justify-content-end">
-                <div *ngIf="res.reservationState === 'Created'">
-                  <button class="btn btn-success btn-x-sm p-1 m-1" (click)="accept(res.id)">Accept</button>
-                  <button class="btn btn-info btn-x-sm p-1 m-1" (click)="decline(res.id)">Decline</button>
-                </div>
-                <div *ngIf="(res.reservationState === 'Accepted' || res.reservationState === 'Ongoing' || res.reservationState === 'Closed')  && !res.admittedByAdvertiser">
-                  <button class="btn btn-success btn-x-sm p-1 m-1" (click)="open(evaluationPopUp, res)">Close</button>
-                  <div>
-                    <ng-template #evaluationPopUp let-modal>
-                      <div class="modal-header">
-                        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-                      </div>
-                      <div class="modal-body d-flex justify-content-center">
-                        <app-evaluation-popup class="w-100"
-                                              [userTo] = res.user
-                                              [advertisementId] = res.id
-                                              [reservationId] = res.id
-                                              [isLender] = false
-                                              (evaluationAdvertiser)="submitEvaluationAdvertiser($event)"
-                                              (evaluationLender)="submitEvaluationLender($event)">
-                        </app-evaluation-popup>
-                      </div>
-                    </ng-template>
+              <div class="d-flex justify-content-between">
+                <h6 class="title pt-0 mb-1" (click)="reservationClicked(res)">{{res.advertisement.title}}</h6>
+                <div class="actions text-center d-flex justify-content-end">
+                  <div *ngIf="res.reservationState === 'Created'">
+                    <button class="btn btn-success btn-x-sm p-1 m-1" (click)="accept(res.id)">Accept</button>
+                    <button class="btn btn-info btn-x-sm p-1 m-1" (click)="decline(res.id)">Decline</button>
+                  </div>
+                  <div *ngIf="(res.reservationState === 'Accepted' || res.reservationState === 'Ongoing' || res.reservationState === 'Closed')  && !res.admittedByAdvertiser">
+                    <button class="btn btn-success btn-x-sm p-1 m-1" (click)="open(evaluationPopUp, res)">Close</button>
+                    <div>
+                      <ng-template #evaluationPopUp let-modal>
+                        <div class="modal-header">
+                          <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+                        </div>
+                        <div class="modal-body d-flex justify-content-center">
+                          <app-evaluation-popup class="w-100"
+                                                [userTo] = res.user
+                                                [advertisementId] = res.id
+                                                [reservationId] = res.id
+                                                [isLender] = true
+                                                (evaluationAdvertiser)="submitEvaluationAdvertiser($event)"
+                                                (evaluationLender)="submitEvaluationLender($event)">
+                          </app-evaluation-popup>
+                        </div>
+                      </ng-template>
+                    </div>
+                  </div>
+                  <div *ngIf="res.reservationState !== 'Closed' && res.admittedByAdvertiser">
+                    <p class="small-font">Closed by you</p>
+                  </div>
+                  <div *ngIf="res.admittedByLender && res.admittedByAdvertiser">
+                    <p class="small-font">Closed</p>
                   </div>
                 </div>
-                <div *ngIf="res.reservationState !== 'Closed' && res.admittedByAdvertiser">
-                  <p class="small-font">Closed by you</p>
-                </div>
-                <div *ngIf="res.admittedByLender && res.admittedByAdvertiser">
-                  <p class="small-font">Closed</p>
-                </div>
               </div>
-              <h6 class="title pt-0 mb-1">{{res.advertisement.title}}</h6>
               <div class="d-flex justify-content-between">
                 <p class="ad-details">{{res.advertisement.location}}</p>
                 <p class="ad-details">{{res.advertisement.price}} Ft</p>
@@ -150,7 +154,10 @@
                (click)="userClicked(res.user)">
             <div class="vertical-line"></div>
             <div class="me-md-4">
-              <img class="img-profile-sm" src="{{baseUrl}}images/profile/{{res.user.image}}">
+              <img *ngIf="res.user.image === null; else userImg" class="rounded-circle img-profile" src="{{baseUrl}}images/profile/{{baseImage}}">
+              <ng-template #userImg>
+                <img class="rounded-circle img-profile" style="object-fit: cover" src="{{baseUrl}}images/profile{{res.user.image}}">
+              </ng-template>
             </div>
             <div class="d-none d-md-block">
               <p class="user-name">{{res.user.name}}</p>
@@ -187,7 +194,7 @@
                                       [userTo] = res.user
                                       [advertisementId] = res.advertisement.id
                                       [reservationId] = res.id
-                                      [isLender] = false
+                                      [isLender] = true
                                       (evaluationAdvertiser)="submitEvaluationAdvertiser($event)"
                                       (evaluationLender)="submitEvaluationLender($event)">
                 </app-evaluation-popup>
@@ -238,7 +245,7 @@
         </div>
       </div>
       <div class="col-12 col-lg-1 actions text-center">
-        <div *ngIf="(res.reservationState === 'Created' || res.reservationState === 'Accepted') && !res.admittedByLender" class="d-flex justify-content-center d-lg-block">
+        <div *ngIf="(res.reservationState === 'Created' || res.reservationState === 'Accepted') && !res.admittedByLender && !res.admittedByAdvertiser" class="d-flex justify-content-center d-lg-block">
           <button class="btn btn-info btn-sm w-auto m-1 col-6 col-lg-12" (click)="resign(res.id)">Resign</button>
         </div>
         <div *ngIf="(res.reservationState === 'Accepted' || res.reservationState === 'Ongoing' || res.reservationState === 'Closed') && !res.admittedByLender">
@@ -253,7 +260,7 @@
                                       [userTo] = res.advertisement.user
                                       [advertisementId] = res.advertisement.id
                                       [reservationId] = res.id
-                                      [isLender] = true
+                                      [isLender] = false
                                       (evaluationAdvertiser)="submitEvaluationAdvertiser($event)"
                                       (evaluationLender)="submitEvaluationLender($event)">
                 </app-evaluation-popup>
