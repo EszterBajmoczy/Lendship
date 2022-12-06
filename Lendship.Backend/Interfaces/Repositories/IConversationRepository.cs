@@ -1,5 +1,4 @@
 ﻿using Lendship.Backend.Models;
-using System.Collections.Generic;
 
 namespace Lendship.Backend.Interfaces.Repositories
 {
@@ -8,5 +7,7 @@ namespace Lendship.Backend.Interfaces.Repositories
         Conversation GetById(int id);
 
         void Create(Conversation conversation);
+
+        void DeleteByAdvertisementId(int advertisementId);
     }
 }

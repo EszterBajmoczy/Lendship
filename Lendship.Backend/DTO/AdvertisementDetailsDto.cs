@@ -19,6 +19,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using Lendship.Backend.Models;
+using static Lendship.Backend.DTO.ReservationDetailDto;
 
 namespace Lendship.Backend.DTO
 { 
@@ -34,6 +35,14 @@ namespace Lendship.Backend.DTO
 
         [DataMember(Name="id")]
         public int? Id { get; set; }
+
+        /// <summary>
+        /// Gets or Sets IsService
+        /// </summary>
+        [Required]
+
+        [DataMember(Name = "isService")]
+        public bool IsService { get; set; }
 
         /// <summary>
         /// Gets or Sets User
@@ -123,7 +132,7 @@ namespace Lendship.Backend.DTO
         [Required]
         
         [DataMember(Name="category")]
-        public Category Category { get; set; }
+        public CategoryDto Category { get; set; }
 
         /// <summary>
         /// Gets or Sets Availabilities
@@ -140,9 +149,16 @@ namespace Lendship.Backend.DTO
         public List<string> ImageLocations { get; set; }
 
         /// <summary>
+        /// Gets or Sets PrivateUsers
+        /// </summary>
+
+        [DataMember(Name = "privateUsers")]
+        public List<UserDto> PrivateUsers { get; set; }
+
+        /// <summary>
         /// Gets or Sets Creation
         /// </summary>
-        
+
         [DataMember(Name="creation")]
         public DateTime? Creation { get; set; }
 
@@ -155,6 +171,7 @@ namespace Lendship.Backend.DTO
             var sb = new StringBuilder();
             sb.Append("class Advertisement {\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
+            sb.Append("  IsService: ").Append(IsService).Append("\n");
             sb.Append("  User: ").Append(User).Append("\n");
             sb.Append("  Title: ").Append(Title).Append("\n");
             sb.Append("  Description: ").Append(Description).Append("\n");
@@ -210,12 +227,17 @@ namespace Lendship.Backend.DTO
                     Id == other.Id ||
                     Id != null &&
                     Id.Equals(other.Id)
-                ) && 
+                ) &&
+                (
+                    IsService == other.IsService ||
+                    IsService != null &&
+                    IsService.Equals(other.IsService)
+                ) &&
                 (
                     User == other.User ||
                     User != null &&
                     User.Equals(other.User)
-                ) && 
+                ) &&
                 (
                     Title == other.Title ||
                     Title != null &&
@@ -301,6 +323,7 @@ namespace Lendship.Backend.DTO
                 // Suitable nullity checks etc, of course :)
                     if (Id != null)
                     hashCode = hashCode * 59 + Id.GetHashCode();
+                    hashCode = hashCode * 59 + IsService.GetHashCode();
                     if (User != null)
                     hashCode = hashCode * 59 + User.GetHashCode();
                     if (Title != null)
@@ -329,7 +352,7 @@ namespace Lendship.Backend.DTO
                     hashCode = hashCode * 59 + Availabilities.GetHashCode();
                     if (ImageLocations != null)
                     hashCode = hashCode * 59 + ImageLocations.GetHashCode();
-                if (Creation != null)
+                    if (Creation != null)
                     hashCode = hashCode * 59 + Creation.GetHashCode();
                 return hashCode;
             }

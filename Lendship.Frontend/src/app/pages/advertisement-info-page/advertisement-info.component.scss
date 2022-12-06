@@ -3,7 +3,6 @@
 @import "src/styles/profile-infos";
 
 .gallery {
-  max-width: 50%;
   height: auto;
 }
 
@@ -37,4 +36,18 @@ p {
 }
 .custom-day.faded {
   background-color: rgba(2, 117, 216, 0.5);
+}
+
+.private {
+  background-color: $color-info;
+  color: white;
+}
+
+.image {
+  object-fit: fill;
+  height: 5rem;
+}
+
+.imgRow {
+  background-color: lightgrey;
 }

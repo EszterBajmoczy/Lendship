@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {AfterContentInit, Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import { AdvertisementService } from "../../services/advertisement/advertisement.service";
 import { AdvertisementDetail } from "../../models/advertisement-detail";
@@ -16,8 +16,10 @@ import {environment} from "../../../environments/environment";
   templateUrl: './advertisement-info.component.html',
   styleUrls: ['./advertisement-info.component.scss']
 })
-export class AdvertisementInfoComponent implements OnInit {
-  baseUrl = environment.baseUrl
+export class AdvertisementInfoComponent implements OnInit, AfterContentInit {
+  baseUrl = environment.baseUrl;
+  baseImage = environment.baseImage;
+
   id: number = -1;
   ad: AdvertisementDetail | undefined;
   isOwnAdvertisement: boolean = false;
@@ -31,6 +33,8 @@ export class AdvertisementInfoComponent implements OnInit {
   reserveFrom: NgbDate | undefined;
   reserveTo: NgbDate | undefined;
 
+  imgIndex = 0;
+
   constructor(
     private adService: AdvertisementService,
     private reservationService: ReservationService,
@@ -38,7 +42,7 @@ export class AdvertisementInfoComponent implements OnInit {
     private conService: ConversationService,
     private modalService: NgbModal,
     private calendar: NgbCalendar,
-    public formatter: NgbDateParserFormatter,
+    private formatter: NgbDateParserFormatter,
     private router: Router,
     activatedRoute: ActivatedRoute)
   {
@@ -61,19 +65,24 @@ export class AdvertisementInfoComponent implements OnInit {
     });
   }
 
+  ngAfterContentInit(): void {
+    if (this.ad !== undefined) {
+      this.modifySelectedImg(this.ad.imageLocations[0]);
+    }
+  }
+
   ngOnInit(): void {
   }
 
   open(content: any) {
+    this.reserveFrom = undefined;
+    this.reserveTo = undefined;
+
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
-      console.log("result");
-      console.log(result);
       if(result == "Reserve"){
-        console.log("do reservation");
-
-        if(this.reserveTo !== undefined && this.reserveFrom !== undefined) {
-          let res = new Reservation(0, 1, this.reserveFrom, this.reserveTo);
-
+        if(this.reserveFrom !== undefined) {
+          let reserveTo = this.reserveTo === undefined ? this.reserveFrom : this.reserveTo;
+          let res = new Reservation(0, 1, this.reserveFrom, reserveTo);
           this.reservationService.reserve(this.id, res)
             .subscribe(response => {
               console.log(response);
@@ -91,7 +100,6 @@ export class AdvertisementInfoComponent implements OnInit {
     return this.reserveFrom && !this.reserveTo && this.hoveredDate && date.after(this.reserveFrom) &&
       date.before(this.hoveredDate);
   }
-
 
   reserveDateFrom(from: NgbDate) {
     this.reserveFrom = from;
@@ -156,5 +164,33 @@ export class AdvertisementInfoComponent implements OnInit {
       .subscribe((response) => {
         this.router.navigateByUrl('conversations/' + this.id + '/' + conId);
       });
+  }
+
+  goToProfile(id: string) {
+    this.router.navigateByUrl('profile/' + id);
+  }
+
+  modifySelectedImg(image: string) {
+    let element = document.getElementById("selected-img") as HTMLImageElement;
+    console.log(element);
+    element.src = this.baseUrl + "images/" + image;
+  }
+
+  imgRight() {
+    if (this.ad != undefined){
+      this.imgIndex++;
+      let element = document.getElementById("selected-img") as HTMLImageElement;
+      console.log(element);
+      element.src = this.baseUrl + "images/" + this.ad.imageLocations[this.imgIndex];
+    }
+  }
+
+  imgLeft() {
+    if (this.ad != undefined){
+      this.imgIndex--;
+      let element = document.getElementById("selected-img") as HTMLImageElement;
+      console.log(element);
+      element.src = this.baseUrl + "images/" + this.ad.imageLocations[this.imgIndex];
+    }
   }
 }

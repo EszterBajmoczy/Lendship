@@ -25,8 +25,8 @@ namespace Lendship.Backend.Converters
             return new EvaluationLenderDto
             {
                 Id = evaluation.Id,
-                UserFrom = _userConverter.ConvertToDto(evaluation.UserFrom),
-                AdvertisementId = evaluation.Advertisement.Id,
+                UserFrom = evaluation.IsAnonymous ? null : _userConverter.ConvertToDto(evaluation.UserFrom),
+                AdvertisementId = evaluation.AdvertisementId,
                 Flexibility = evaluation.Flexibility,
                 Reliability = evaluation.Reliability,
                 QualityAtReturn = evaluation.QualityAtReturn,
@@ -43,7 +43,7 @@ namespace Lendship.Backend.Converters
                 Id = evaluation.Id ?? 0,
                 UserFrom = UserFrom,
                 UserTo = UserTo,
-                Advertisement = advertisement,
+                AdvertisementId = advertisement.Id,
                 Flexibility = evaluation.Flexibility,
                 Reliability = evaluation.Reliability,
                 QualityAtReturn = evaluation.QualityAtReturn,

@@ -61,7 +61,7 @@ namespace Lendship.Backend.Repositories
                             .Include(u => u.Conversation)
                             .Include(u => u.Conversation.Messages)
                             .Include(u => u.Conversation.Advertisement)
-                            .Where(u => u.UserId == userId && u.Conversation.Messages.Any(m => m.New))
+                            .Where(u => u.UserId == userId && u.Conversation.Messages.Any(m => m.New && m.UserFrom.Id != userId))
                             .Count();
         }
     }

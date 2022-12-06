@@ -11,7 +11,7 @@ export class EvaluationBasic {
     this.userTo = userTo;
     this.reservationId = reservationId;
     this.advertisementId = advertisementId;
-    this.isLender = isLender;
+    this.isLender = !isLender;
     this.message = message;
   }
 }

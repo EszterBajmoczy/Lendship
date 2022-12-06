@@ -19,30 +19,32 @@
       </div>
     </div>
     <div *ngFor="let msg of messages">
-      <div *ngIf="msg.own" class="msg-section d-flex me-5">
-        <img *ngIf="msg.UserFrom" src="{{baseUrl}}images/profile{{msg.UserFrom.image}}" class="img-msg me-2" alt="...">
+      <div *ngIf="!msg.own" class="msg-section d-flex me-5">
+        <img *ngIf="msg.UserFrom !== undefined && msg.UserFrom.image !== null; else userImg" src="{{baseUrl}}images/profile{{msg.UserFrom.image}}" class="img-msg ms-2" alt="...">
+        <ng-template #userImg>
+          <img class="img-msg ms-2" style="object-fit: cover" src="{{baseUrl}}/images/profile{{baseImage}}">
+        </ng-template>
         <div>
           <p class="date p-1 mb-0">{{msg.dateString}}</p>
           <p class="msg p-3 me-5">{{msg.content}}</p>
         </div>
       </div>
 
-      <div *ngIf="!msg.own" class="msg-section d-flex justify-content-end ms-5">
+      <div *ngIf="msg.own" class="msg-section d-flex justify-content-end ms-5">
         <div>
           <p class="date p-1 mb-0 text-end">{{msg.dateString}}</p>
           <p class="msg p-3 ms-5">{{msg.content}}</p>
         </div>
-        <img *ngIf="msg.UserFrom !== undefined" src="{{baseUrl}}/images/profile{{msg.UserFrom.image}}" class="img-msg ms-2" alt="...">
+        <img *ngIf="msg.UserFrom !== undefined && msg.UserFrom.image !== null; else userOwnImg" src="{{baseUrl}}images/profile{{msg.UserFrom.image}}" class="img-msg ms-2" alt="...">
+        <ng-template #userOwnImg>
+          <img class="img-msg ms-2" style="object-fit: cover" src="{{baseUrl}}/images/profile{{baseImage}}">
+        </ng-template>
       </div>
     </div>
-
 
     <form class="d-flex align-items-center" [formGroup]="sendMsgForm" (ngSubmit)="onSubmit()">
       <input class="col-lg-11 col-sm-10" type="text" formControlName="content" placeholder="Send new message">
       <button class="btn btn-info col-lg-1 col-sm-2 ms-1" type="submit">Send</button>
     </form>
-  </div>
-
-  <div>
   </div>
 </div>

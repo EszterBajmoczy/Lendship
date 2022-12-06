@@ -25,5 +25,7 @@ namespace Lendship.Backend.Interfaces.Repositories
         void Create(Reservation reservation);
 
         void Update(Reservation reservation);
+
+        void Delete(Reservation reservation);
     }
 }

@@ -1,10 +1,11 @@
 import {IAvailability} from "./availability";
 import {User} from "./user";
-import {Advertisement} from "./advertisement";
+import {AdvertisementList} from "./advertisementList";
 import {Category} from "./category";
 
-export interface AdvertisementDetail extends Advertisement {
+export interface AdvertisementDetail extends AdvertisementList {
   user: User,
+  isService: boolean,
   description: string,
   instructionManual: string,
   deposit: number,
@@ -12,6 +13,7 @@ export interface AdvertisementDetail extends Advertisement {
   category: Category,
   availabilities: IAvailability[],
   imageLocations: string[],
+  privateUsers: User[],
   creation: string
 }
 
@@ -24,8 +26,9 @@ export class AdvertisementDetail implements AdvertisementDetail {
   location: string;
   longitude: number;
   imageLocation: string;
+  privateUsers: User[];
 
-  constructor(id: number, title: string, price: number, credit: number, latitude: number, longitude: number, location: string, imageLocation: string) {
+  constructor(id: number, title: string, price: number, credit: number, latitude: number, longitude: number, location: string, imageLocation: string, privateUsers: User[]) {
     this.id = id;
     this.title = title;
     this.price = price;
@@ -34,5 +37,6 @@ export class AdvertisementDetail implements AdvertisementDetail {
     this.longitude = longitude;
     this.location = location;
     this.imageLocation = imageLocation;
+    this.privateUsers = privateUsers;
   }
 }

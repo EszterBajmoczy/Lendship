@@ -27,6 +27,17 @@ export class FileUploadService {
     return this.http.post(this.baseUrl + advertisementId, formData, {headers: this.headers});
   }
 
+  uploadProfile(token:string, file: File):Observable<any> {
+    const formData = new FormData();
+    formData.append(file.name, file);
+
+    let headerWithFreshToken = new HttpHeaders({
+      'Authorization': `Bearer `+token,
+    });
+
+    return this.http.post(this.baseUrl + "profile", formData, {headers: headerWithFreshToken});
+  }
+
   deleteFiles(advertisementId: number, fileNames: string[]){
     fileNames.forEach(fileName => {
       console.log("!!!!!");

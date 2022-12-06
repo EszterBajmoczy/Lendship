@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { PasswordMatchingValidator} from "../../shared/password-matching";
-import { UntypedFormBuilder, Validators} from "@angular/forms";
+import { passwordMatchingValidator} from "../../shared/password-matching";
+import {FormGroup, UntypedFormBuilder, Validators} from "@angular/forms";
 import { AuthService} from "../../services/auth/auth.service";
 import { LocationValidator} from "../../shared/valid-location";
 import { GeocodingService} from "../../services/geocoding/geocoding.service";
+import {FileUploadService} from "../../services/file-upload/file-upload.service";
+import {Router} from "@angular/router";
+import {catchError} from "rxjs/operators";
 
 @Component({
   selector: 'app-registration-page',
@@ -13,21 +16,30 @@ import { GeocodingService} from "../../services/geocoding/geocoding.service";
 })
 export class RegistrationPageComponent implements OnInit {
   submitting = false;
+  newImageName = "";
+  newImage: File | undefined;
+  error = "";
 
-  constructor(private formBuilder: UntypedFormBuilder, private authService: AuthService, private locationValidator: LocationValidator, private geoCodingService: GeocodingService) { }
+  constructor(
+    private formBuilder: UntypedFormBuilder,
+    private authService: AuthService,
+    private router: Router,
+    private locationValidator: LocationValidator,
+    private geoCodingService: GeocodingService,
+    private fileUploadService: FileUploadService) { }
 
   ngOnInit(): void {
   }
 
-  registrationForm = this.formBuilder.group({
+  registrationForm: FormGroup = this.formBuilder.group({
     name: ['', [Validators.required]],
     email: ['', [Validators.required, Validators.email]],
     location: ['', [Validators.required], [this.locationValidator.exists.bind(this.locationValidator)]],
     latitude: [],
     longitude: [],
-    password: ['', [Validators.required, Validators.minLength(6), Validators.pattern(new RegExp(/^(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&+="!_()']).*$/i))]],
-    confirmPassword: ['', [Validators.required, Validators.minLength(6), Validators.pattern(new RegExp(/^(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@#$%^&+="!_()']).*$/i))]],
-  }, { validators: PasswordMatchingValidator });
+    password: ['', [Validators.required, Validators.minLength(6), Validators.pattern(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])"))]],
+    confirmPassword: ['', [Validators.required, Validators.minLength(6), Validators.pattern(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])"))]],
+  }, {validators: [passwordMatchingValidator()]});
 
   get name() {
     return this.registrationForm.get("name");
@@ -61,13 +73,44 @@ export class RegistrationPageComponent implements OnInit {
     if(this.registrationForm.invalid){
       return;
     }
+
     this.geoCodingService.getLatLong(this.registrationForm.get("location")?.value)
       .subscribe(data => {
         this.latitude = data.results[0].geometry.location.lat;
         this.longitude = data.results[0].geometry.location.lng;
 
-        this.authService.register(this.registrationForm.value);
+        this.authService.register(this.registrationForm.value)
+          .pipe(
+            catchError(error => {
+              console.log(error.error.message);
+              this.error = error.error.message;
+              this.submitting = false;
+              throw(error);
+            })
+          )
+          .subscribe(response => {
+            if (this.newImage !== undefined){
+              this.fileUploadService.uploadProfile(response.token, this.newImage)
+                .subscribe(resp => {
+                  console.log(resp);
+                  response.image = resp.path;
+                  this.authService.loginData(response)
+                });
+            } else {
+              this.authService.loginData(response)
+            }
+        });
         this.submitting = true;
       })
+  }
+
+  addFile(img: File) {
+    this.newImageName = img.name;
+    this.newImage = img;
+  }
+
+  removeNewImage() {
+    this.newImageName = "";
+    this.newImage = undefined;
   }
 }

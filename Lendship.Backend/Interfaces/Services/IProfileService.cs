@@ -15,5 +15,7 @@ namespace Lendship.Backend.Interfaces.Services
         void UpdateUserInformation(UserDetailsDto user);
 
         void DeleteUser();
+
+        UserDto GetUserByEmail(string email);
     }
 }

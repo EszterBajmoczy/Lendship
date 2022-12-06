@@ -28,11 +28,15 @@ import { MessagePopupComponent } from './pages/popup/message-popup/message-popup
 import { ReservationPageComponent } from './pages/reservation-page/reservation-page.component';
 import { NotificationsPageComponent} from "./pages/notifications-page/notifications-page.component";
 import { ErrorPageComponent} from "./pages/error-page/error-page.component";
-import {TokenInterceptor} from "./interceptors/token.interceptor";
 import {EvaluationPopupComponent} from "./pages/popup/evaluation-popup/evaluation-popup.component";
 import {QrcodeComponent} from "./pages/grcode-page/qrcode.component";
 import { QRCodeModule } from 'angularx-qrcode';
 import {InfoPopupComponent} from "./pages/popup/info-popup/info-popup.component";
+import { PrivatePopupComponent } from './pages/popup/private-popup/private-popup.component';
+import {AppSearchComponent} from "./components/common/search/app-search.component";
+import {AppPagingComponent} from "./components/common/paging/app-paging.component";
+import {TokenInterceptor} from "./interceptors/token.interceptor";
+
 
 @NgModule({
     declarations: [
@@ -58,6 +62,9 @@ import {InfoPopupComponent} from "./pages/popup/info-popup/info-popup.component"
         EvaluationPopupComponent,
         QrcodeComponent,
         InfoPopupComponent,
+        PrivatePopupComponent,
+        AppSearchComponent,
+        AppPagingComponent,
     ],
   imports: [
     BrowserModule,

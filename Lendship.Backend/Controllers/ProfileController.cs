@@ -64,7 +64,7 @@ namespace Lendship.Backend.Controllers
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpGet]
-        [Route("{userId}")]
+        [Route("user/{userId}")]
         public virtual IActionResult GetOtherUserInformation([FromRoute][Required]string userId)
         {
             try
@@ -121,6 +121,32 @@ namespace Lendship.Backend.Controllers
             {
                 Console.WriteLine("Exception at updating profile: " + e.Message);
                 return this.BadRequest("Exception at updating profile: " + e.Message);
+            }
+        }
+
+
+
+        /// <summary>
+        /// get user by email
+        /// </summary>
+        /// <remarks>Get user by email</remarks>
+        /// <param name="email">users email</param>
+        /// <response code="200">user</response>
+        /// <response code="400">bad request</response>
+        /// <response code="401"></response>
+        [HttpGet]
+        [Route("email/{email}")]
+        public virtual IActionResult GetUserByEmail([FromRoute][Required] string email)
+        {
+            try
+            {
+                var user = _profileService.GetUserByEmail(email);
+                return new ObjectResult(user != null ? user.ToJson() : null);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return this.BadRequest(e.Message);
             }
         }
     }

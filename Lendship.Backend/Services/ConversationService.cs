@@ -46,7 +46,7 @@ namespace Lendship.Backend.Services
         public int CreateConversation(ConversationDto conversationDto)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var advertisement = _advertisementRepository.GetById(conversationDto.AdvertisementId);
+            var advertisement = _advertisementRepository.GetPlainById(conversationDto.AdvertisementId, signedInUserId);
 
             if (advertisement == null)
             {
@@ -93,7 +93,7 @@ namespace Lendship.Backend.Services
                             .Select(x => x.User)
                             .ToList();
 
-                var hasNewMessage = _messageRepository.HasNewMessage(con.Id);
+                var hasNewMessage = _messageRepository.HasNewMessage(con.Id, signedInUserId);
 
                 var dto = _conversationConverter.ConvertToDto(con, users, hasNewMessage);
                 resultList.Add(dto);
@@ -123,7 +123,7 @@ namespace Lendship.Backend.Services
 
             if (connection != null)
             {
-                _messageRepository.SetMessagesSeen(conversationId);
+                _messageRepository.SetMessagesSeen(conversationId, signedInUserId);
             }
         }
     }

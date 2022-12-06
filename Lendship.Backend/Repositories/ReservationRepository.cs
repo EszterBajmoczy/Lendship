@@ -24,6 +24,7 @@ namespace Lendship.Backend.Repositories
                             .AsNoTracking()
                             .Include(r => r.User)
                             .Include(r => r.Advertisement)
+                            .Include(r => r.Advertisement.User)
                             .Where(r => r.Id == id)
                             .FirstOrDefault();
         }
@@ -84,6 +85,7 @@ namespace Lendship.Backend.Repositories
             return _dbContext.Reservations
                                 .AsNoTracking()
                                 .Include(r => r.User)
+                                .Include(r => r.User.ReservedCredits)
                                 .Include(r => r.Advertisement)
                                 .Include(r => r.Advertisement.User)
                                 .Where(r => r.Id == reservationId
@@ -109,6 +111,12 @@ namespace Lendship.Backend.Repositories
         public void Update(Reservation reservation)
         {
             _dbContext.Update(reservation);
+            _dbContext.SaveChanges();
+        }
+
+        public void Delete(Reservation reservation)
+        {
+            _dbContext.Reservations.Remove(reservation);
             _dbContext.SaveChanges();
         }
     }

@@ -2,14 +2,21 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Lendship.Backend.Models
 {
+    public enum AdvertisementType
+    {
+        Property,
+        Service
+    }
     public class Advertisement
     {
         [Key]
         public int Id { get; set; }
+
+        [Required]
+        public AdvertisementType AdvertisementType { get; set; }
 
         [Required]
         public ApplicationUser User { get; set; }
@@ -50,5 +57,6 @@ namespace Lendship.Backend.Models
 
         public ICollection<Availability> Availabilities { get; set; }
 
+        public virtual ICollection<PrivateUser> PrivateUsers { get; set; }
     }
 }

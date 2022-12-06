@@ -22,9 +22,7 @@ namespace Lendship.Backend.Models
 
         public DbSet<EvaluationLender> EvaluationLenders { get; set; }
 
-        public DbSet<ClosedGroup> ClosedGroups { get; set; }
-
-        public DbSet<UsersAndClosedGroups> UsersAndClosedGroups { get; set; }
+        public DbSet<PrivateUser> PrivateUsers { get; set; }
 
         public DbSet<Message> Messages { get; set; }
 
@@ -37,6 +35,8 @@ namespace Lendship.Backend.Models
         public DbSet<Notification> Notifications { get; set; }
 
         public DbSet<ImageLocation> ImageLocations { get; set; }
+
+        public DbSet<ReservedCredit> ReservedCredit { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

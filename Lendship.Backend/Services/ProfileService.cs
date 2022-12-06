@@ -37,6 +37,12 @@ namespace Lendship.Backend.Services
             return _userConverter.ConvertToUserDetailsDto(user);
         }
 
+        public UserDto GetUserByEmail(string email)
+        {
+            var user = _userRepository.GetByEmail(email);
+            return user != null ? _userConverter.ConvertToDto(user) : null;
+        }
+
         public UserDetailsDto GetUserInformation()
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
