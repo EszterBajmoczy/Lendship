@@ -4,7 +4,6 @@ using Lendship.Backend.Interfaces.Services;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
 using NUnit.Framework;
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 

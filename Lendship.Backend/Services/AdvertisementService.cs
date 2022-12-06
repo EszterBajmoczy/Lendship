@@ -112,8 +112,6 @@ namespace Lendship.Backend.Services
             _advertisementRepository.Update(ad);
 
             UpdateAvailabilities(ad, advertisement.Availabilities);
-
-            //_dbContext.SaveChanges();
         }
 
         public void DeleteAdvertisement(int advertisementId)
