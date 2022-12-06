@@ -6,7 +6,7 @@ namespace Lendship.Backend.Interfaces.Services
 {
     public interface IImageService
     {
-        void UploadProfileImage(IFormFile file);
+        string UploadProfileImage(IFormFile file);
 
         void UploadImages(IFormFileCollection files, int advertisementId);
 

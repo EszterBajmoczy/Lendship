@@ -53,7 +53,7 @@ namespace Lendship.Backend.Services
                 throw new UserNotFoundException("User not found.");
             }
 
-            var advertisement = _advertisementRepository.GetById(evaluationDto.AdvertisementId);
+            var advertisement = _advertisementRepository.GetPlainById(evaluationDto.AdvertisementId, signedInUserId);
             if (advertisement == null)
             {
                 throw new AdvertisementNotFoundException("Advertisement not found.");
@@ -76,7 +76,7 @@ namespace Lendship.Backend.Services
                 throw new UserNotFoundException("User not found.");
             }
 
-            var advertisement = _advertisementRepository.GetById(evaluationDto.AdvertisementId);
+            var advertisement = _advertisementRepository.GetPlainById(evaluationDto.AdvertisementId, signedInUserId);
             if (advertisement == null)
             {
                 throw new AdvertisementNotFoundException("Advertisement not found.");

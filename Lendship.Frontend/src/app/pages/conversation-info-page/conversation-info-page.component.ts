@@ -16,7 +16,8 @@ import {environment} from "../../../environments/environment";
   providers: [DatePipe]
 })
 export class ConversationInfoPageComponent implements OnInit {
-  baseUrl = environment.baseUrl
+  baseUrl = environment.baseUrl;
+  baseImage = environment.baseImage;
   userId: string;
   loadingMessages = true;
 
@@ -57,9 +58,6 @@ export class ConversationInfoPageComponent implements OnInit {
           this.loadingMessages = false;
 
           this.conService.setMessagesSeen(this.conversationId)
-            .subscribe((response) =>{
-              console.log(response)
-            });
         })
 
       this.adService.getAdvertisementDetailById(this.advertisementId)
@@ -110,12 +108,12 @@ export class ConversationInfoPageComponent implements OnInit {
     this.conId = this.conversationId;
     this.id = 0;
 
-    console.log(this.sendMsgForm.value);
     this.conService.sendMessage(this.sendMsgForm.value)
       .subscribe((response) => {
         this.conService.getMessagesForConversation(this.conversationId)
           .subscribe((msgs) => {
             this.messages = this.categorizeMessages(msgs);
+            this.sendMsgForm.reset();
           })
       });
   }

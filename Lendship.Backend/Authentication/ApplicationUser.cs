@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Lendship.Backend.Models;
+using Microsoft.AspNetCore.Identity;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -9,9 +11,6 @@ namespace Lendship.Backend.Authentication
     {
         [Required]
         public int Credit { get; set; }
-
-        [Required]
-        public int ReservedCredit { get; set; }
 
         [Required]
         public bool EmailNotificationsEnabled { get; set; }
@@ -51,5 +50,7 @@ namespace Lendship.Backend.Authentication
 
         [Required]
         public DateTime Registration { get; set; }
+
+        public virtual ICollection<ReservedCredit> ReservedCredits { get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace Lendship.Backend.Interfaces.Services
 
         IEnumerable<NotificationDTO> GetAllNotifications(string searchInAdvertisementTitle);
 
-        IEnumerable<NotificationDTO> GetNewNotifications();
+        int GetNewNotificationCount();
 
         void SetSeenNotifications(List<int> ids);
     }

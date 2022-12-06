@@ -4,7 +4,7 @@ import {IReservationDetail} from "../../models/reservation-detail";
 import {Router} from "@angular/router";
 import {User} from "../../models/user";
 import {NgbCalendar, NgbDate, NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {NgbDateHandlerService} from "../../services/date-handler/ngb-date-handler.service";
+import {DateHandlerService} from "../../services/date-handler/date-handler.service";
 import {EvaluationAdvertiser, EvaluationLender} from "../../models/evaluation";
 import {UserService} from "../../services/user/user.service";
 import {environment} from "../../../environments/environment";
@@ -16,6 +16,8 @@ import {environment} from "../../../environments/environment";
 })
 export class ReservationPageComponent implements OnInit {
   baseUrl = environment.baseUrl;
+  baseImage = environment.baseImage;
+
   loadingUsersReservations = true;
   loadingReservationsForUser = true;
 
@@ -34,7 +36,7 @@ export class ReservationPageComponent implements OnInit {
 
   constructor(private reservationService: ReservationService,
               private userService: UserService,
-              private ngbDateHandler: NgbDateHandlerService,
+              private ngbDateHandler: DateHandlerService,
               private calendar: NgbCalendar,
               private modalService: NgbModal,
               private router: Router) {
@@ -42,25 +44,16 @@ export class ReservationPageComponent implements OnInit {
     reservationService.getUsersReservations()
       .subscribe(res => {
         console.log(res)
-        this.usersReservations = this.initializeNgbDateFields(res);
+        this.usersReservations = res;
         this.loadingUsersReservations = false;
       });
 
     reservationService.getReservationsForUsersAdvertisement()
       .subscribe(res => {
         console.log(res)
-        this.reservationsForUsersAdvertisements = this.initializeNgbDateFields(res);
+        this.reservationsForUsersAdvertisements = res;
         this.loadingReservationsForUser = false;
       });
-  }
-
-  initializeNgbDateFields(res: IReservationDetail[]){
-    res.forEach(r => {
-      r.dateFromNgbDate = this.ngbDateHandler.convertDateToNgbDate(r.dateFrom, true);
-      r.dateToNgbDate = this.ngbDateHandler.convertDateToNgbDate(r.dateTo, false)
-    });
-
-    return res;
   }
 
   ngOnInit(): void {
@@ -88,7 +81,7 @@ export class ReservationPageComponent implements OnInit {
   accept(resId: number) {
     this.reservationService.updateReservationsState(resId, "Accepted")
       .subscribe(res => {
-        this.usersReservations.forEach(res => {
+        this.reservationsForUsersAdvertisements.forEach(res => {
           if(res.id == resId){
             res.reservationState= "Accepted";
           }
@@ -99,11 +92,38 @@ export class ReservationPageComponent implements OnInit {
   decline(resId: number) {
     this.reservationService.updateReservationsState(resId, "Declined")
       .subscribe(res => {
-        this.usersReservations.forEach(res => {
-          if(res.id == resId){
-            res.reservationState= "Declined";
+        let id = -1;
+        this.reservationsForUsersAdvertisements.forEach((res, idx) => {
+          if (res.id == resId){
+            id = idx;
           }
         });
+
+        if (id >= 0){
+          this.reservationsForUsersAdvertisements.splice(id, 1);
+        }
+
+        this.selectedUsersReservations = new Array<IReservationDetail>();
+        this.selectedReservationsForUsersAdvertisements = new Array<IReservationDetail>();
+      });
+  }
+
+  resign(resId: number) {
+    this.reservationService.updateReservationsState(resId, "Resigned")
+      .subscribe(res => {
+        let id = -1;
+        this.usersReservations.forEach((res, idx) => {
+          if (res.id == resId){
+            id = idx;
+          }
+        });
+
+        if (id >= 0){
+          this.usersReservations.splice(id, 1);
+        }
+
+        this.selectedUsersReservations = new Array<IReservationDetail>();
+        this.selectedReservationsForUsersAdvertisements = new Array<IReservationDetail>();
       });
   }
 
@@ -125,24 +145,13 @@ export class ReservationPageComponent implements OnInit {
       });
   }
 
-  resign(resId: number) {
-    this.reservationService.updateReservationsState(resId, "Resigned")
-      .subscribe(res => {
-        this.usersReservations.forEach(res => {
-          if(res.id == resId){
-            res.reservationState= "Resigned";
-          }
-        });
-      });
-  }
-
   reservationClicked(res: IReservationDetail) {
     this.router.navigate(['advertisement', res.advertisement.id]);
   }
 
   userClicked(user: User) {
     //TODO navigate to profil page
-    this.router.navigate(['home']);
+    this.router.navigateByUrl('profile/' + user.id);
   }
 
   reservedByUser(date: NgbDate){
@@ -178,31 +187,22 @@ export class ReservationPageComponent implements OnInit {
     this.modalService.dismissAll()
     this.userService.createEvaluationAdvertiser(evaluation)
       .subscribe(result => {
-        this.reservationService.updateReservationsState(evaluation.reservationId, "Closed")
-          .subscribe(res => {
-            this.usersReservations.forEach(res => {
-              if(res.id == evaluation.reservationId){
-                res.reservationState= "Closed";
-                return;
-              }
-            });
-          });
+        this.admitReservation(evaluation.reservationId);
       });
+  }
+
+  admitReservation(resId: number) {
+    this.reservationService.admitReservation(resId)
+      .subscribe(res => {
+        location.reload();
+      })
   }
 
   submitEvaluationLender(evaluation: EvaluationLender) {
     this.modalService.dismissAll()
     this.userService.createEvaluationLender(evaluation)
       .subscribe(result => {
-        this.reservationService.updateReservationsState(evaluation.reservationId, "Closed")
-          .subscribe(res => {
-            this.reservationsForUsersAdvertisements.forEach(res => {
-              if(res.id == evaluation.reservationId){
-                res.reservationState= "Closed";
-                return;
-              }
-            });
-          });
+        this.admitReservation(evaluation.reservationId);
       });
   }
 

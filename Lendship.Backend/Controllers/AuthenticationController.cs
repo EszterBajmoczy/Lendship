@@ -2,11 +2,11 @@
 using Lendship.Backend.DTO.Authentication;
 using Lendship.Backend.DTO.Authentication.Authentication;
 using Lendship.Backend.Interfaces.Services;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -25,12 +25,19 @@ namespace Lendship.Backend.Controllers
         private readonly ITokenService _tokenService;
         private readonly IEmailService _emailService;
 
+        private JwtSecurityTokenHandler _tokenHandler;
+
+        private readonly CustomTokenValidationParameters _validatorParameter;
+
         public AuthenticationController(UserManager<ApplicationUser> userManager, IConfiguration configuration, ITokenService tokenService, IEmailService emailService)
         {
             _userManager = userManager;
             _configuration = configuration;
             _tokenService = tokenService;
             _emailService = emailService;
+
+            _validatorParameter = new CustomTokenValidationParameters(configuration);
+            _tokenHandler = new JwtSecurityTokenHandler();
         }
 
         [HttpPost]
@@ -40,7 +47,7 @@ namespace Lendship.Backend.Controllers
             var userExists = await _userManager.FindByEmailAsync(model.Email);
 
             if (userExists != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
+                return StatusCode(StatusCodes.Status406NotAcceptable, new Response { Status = "Error", Message = "User already exists!" });
 
             ApplicationUser user = new ApplicationUser()
             {
@@ -51,15 +58,38 @@ namespace Lendship.Backend.Controllers
                 EmailNotificationsEnabled = true,
                 Latitude = model.Latitude,
                 Longitude = model.Longitude,
+                Location = model.Location,
                 Registration = DateTime.Now
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
             
             if (!result.Succeeded)
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again. Error: " + result.Errors.FirstOrDefault().Description });
-            
-            return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+                return StatusCode(StatusCodes.Status406NotAcceptable, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again. Error: " + result.Errors.FirstOrDefault().Description });
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var authClaims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, user.Id),
+                        new Claim(ClaimTypes.Name, user.UserName),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    };
+
+            foreach (var userRole in userRoles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+            }
+
+            var token = _tokenService.GenerateNewToken(authClaims, false);
+            var refreshToken = _tokenService.GenerateNewToken(authClaims, true);
+
+            return Ok(new
+            {
+                token = new JwtSecurityTokenHandler().WriteToken(token),
+                expiration = token.ValidTo,
+                refreshToken = new JwtSecurityTokenHandler().WriteToken(refreshToken),
+                image = user.ImageLocation
+            });
         }
 
         [HttpPost]
@@ -67,6 +97,11 @@ namespace Lendship.Backend.Controllers
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
+
+            if (user == null)
+            {
+                return StatusCode(StatusCodes.Status406NotAcceptable, new Response { Status = "Error", Message = "User not exists!" });
+            }
 
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
@@ -94,55 +129,67 @@ namespace Lendship.Backend.Controllers
                     image = user.ImageLocation
                 });
             }
-            return Unauthorized();
+            return StatusCode(StatusCodes.Status406NotAcceptable, new Response { Status = "Error", Message = "Wrong password!" });
         }
 
         [HttpPost]
         [Route("refresh")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenModel model)
         {
-            if (!_tokenService.IsRefreshTokenDeactivated(model.RefreshToken))
+            if (_tokenService.IsRefreshTokenDeactivated(model.RefreshToken))
             {
-                return Unauthorized();
+                return Unauthorized("Invalid refresh token");
             }
-            var refreshToken = new JwtSecurityToken(model.RefreshToken);
-            var userId = refreshToken.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault();
-            var user = await _userManager.FindByIdAsync(userId.Value);
-
-            var audience = refreshToken.Audiences.FirstOrDefault();
-            var validAudience = _configuration.GetSection("JWT").GetValue("Audience", "defaultAudience");
-
-            var issuer = refreshToken.Issuer;
-            var validIssuer = _configuration.GetSection("JWT").GetValue("Issuer", "defaultIssuer");
-
-            if (refreshToken.ValidTo < DateTime.Now 
-                || user == null
-                || audience != validAudience
-                || issuer != validIssuer)
+            
+            try
             {
-                return Unauthorized();
-            }
+                _tokenHandler.ValidateToken(model.RefreshToken, _validatorParameter.GetTokenValidationParameters(), out SecurityToken validatedToken);
 
-            var userRoles = await _userManager.GetRolesAsync(user);
-            var authClaims = new List<Claim>
+                var refreshToken = new JwtSecurityToken(model.RefreshToken);
+                var userId = refreshToken.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault();
+                var user = await _userManager.FindByIdAsync(userId.Value);
+
+                var audience = refreshToken.Audiences.FirstOrDefault();
+                var validAudience = _configuration.GetSection("JWT").GetValue("Audience", "defaultAudience");
+
+                var issuer = refreshToken.Issuer;
+                var validIssuer = _configuration.GetSection("JWT").GetValue("Issuer", "defaultIssuer");
+
+                if (refreshToken.ValidTo < DateTime.Now
+                    || user == null
+                    || audience != validAudience
+                    || issuer != validIssuer)
+                {
+                    return Unauthorized("Invalid refresh token");
+                }
+
+                var userRoles = await _userManager.GetRolesAsync(user);
+                var authClaims = new List<Claim>
                     {
                         new Claim(ClaimTypes.NameIdentifier, user.Id),
                         new Claim(ClaimTypes.Name, user.UserName),
                         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     };
 
-            foreach (var userRole in userRoles)
-            {
-                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+                foreach (var userRole in userRoles)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+                }
+
+                var token = _tokenService.GenerateNewToken(authClaims, false);
+
+                return Ok(new
+                {
+                    token = new JwtSecurityTokenHandler().WriteToken(token),
+                    expiration = token.ValidTo,
+                    image = user.ImageLocation
+                });
             }
-
-            var token = _tokenService.GenerateNewToken(authClaims, false);
-
-            return Ok(new
+            catch (Exception e)
             {
-                token = new JwtSecurityTokenHandler().WriteToken(token),
-                expiration = token.ValidTo,
-            });
+                return Unauthorized("Invalid refresh token");
+            }
+            
         }
 
         [HttpPost("logout")]

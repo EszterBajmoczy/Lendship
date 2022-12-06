@@ -45,6 +45,10 @@ const routes: Routes = [
     component: ProfilePageComponent
   },
   {
+    path: 'profile/:id',
+    component: ProfilePageComponent
+  },
+  {
     path: 'notifications',
     component: NotificationsPageComponent
   },

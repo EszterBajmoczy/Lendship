@@ -14,8 +14,6 @@ export class EvaluationPopupComponent implements OnInit {
   @Input() advertisementId: number = 0;
   @Input() reservationId: number = 0;
   @Input() isLender = false;
-  @Input() message = "";
-  isClosed = true;
 
   @Output() evaluationAdvertiser = new EventEmitter<EvaluationAdvertiser>();
   @Output() evaluationLender = new EventEmitter<EvaluationLender>();
@@ -31,8 +29,6 @@ export class EvaluationPopupComponent implements OnInit {
   });
 
   constructor(private reservationService: ReservationService, private formBuilder: UntypedFormBuilder) {
-    reservationService.isReservationClosed(this.reservationId)
-      .subscribe(result => this.isClosed = result);
   }
 
   ngOnInit(): void {

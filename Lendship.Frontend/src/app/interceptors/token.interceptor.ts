@@ -16,7 +16,7 @@ import {Router} from "@angular/router";
 export class TokenInterceptor implements HttpInterceptor {
   private shouldLogout = false;
   private isRefreshing = false;
-  private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(
+  private token: BehaviorSubject<any> = new BehaviorSubject<any>(
     null
   );
 
@@ -36,8 +36,12 @@ export class TokenInterceptor implements HttpInterceptor {
 
     return next.handle(request).pipe(
       catchError((error) => {
-        if (error instanceof HttpErrorResponse && error.status === 401) {
+        if (error instanceof HttpErrorResponse && error.error == "Invalid refresh token") {
+          return throwError(error);
+        } else if (error instanceof HttpErrorResponse && error.status === 401) {
           return this.handle401Error(request, next);
+        } else if (error instanceof HttpErrorResponse && (error.status === 406)) {
+          return throwError(error);
         } else {
           this.errorService.setError(error);
           this.router.navigateByUrl('error');
@@ -57,7 +61,6 @@ export class TokenInterceptor implements HttpInterceptor {
     } else {
       return request;
     }
-
   }
 
   private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
@@ -70,17 +73,17 @@ export class TokenInterceptor implements HttpInterceptor {
     }
     if (!this.isRefreshing) {
       this.isRefreshing = true;
-      this.refreshTokenSubject.next(null);
+      this.token.next(null);
 
       return this.authService.refreshToken().pipe(
         switchMap((token: any) => {
           this.isRefreshing = false;
-          this.refreshTokenSubject.next(token.token);
+          this.token.next(token.token);
           return next.handle(this.addToken(request, token.token));
         })
       );
     } else {
-      return this.refreshTokenSubject.pipe(
+      return this.token.pipe(
         filter((token: null) => token != null),
         take(1),
         switchMap((jwt) => {

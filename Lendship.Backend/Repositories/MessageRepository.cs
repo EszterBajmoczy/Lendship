@@ -1,6 +1,4 @@
-﻿using Lendship.Backend.Authentication;
-using Lendship.Backend.Exceptions;
-using Lendship.Backend.Interfaces.Repositories;
+﻿using Lendship.Backend.Interfaces.Repositories;
 using Lendship.Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -30,10 +28,10 @@ namespace Lendship.Backend.Repositories
                         .Include(m => m.UserFrom);
         }
 
-        public void SetMessagesSeen(int conversationId)
+        public void SetMessagesSeen(int conversationId, string signedInUserId)
         {
             var messages = _dbContext.Messages
-            .Where(m => m.ConversationId == conversationId && m.New);
+            .Where(m => m.ConversationId == conversationId && m.New && m.UserFrom.Id != signedInUserId);
 
             foreach (var msg in messages)
             {
@@ -43,10 +41,10 @@ namespace Lendship.Backend.Repositories
             _dbContext.SaveChanges();
         }
 
-        public bool HasNewMessage(int conversationId)
+        public bool HasNewMessage(int conversationId, string signedInUserId)
         {
             return _dbContext.Messages
-                    .Where(m => m.ConversationId == conversationId && m.New).Count() != 0;
+                    .Where(m => m.ConversationId == conversationId && m.New && m.UserFrom.Id != signedInUserId).Count() != 0;
         }
     }
 }

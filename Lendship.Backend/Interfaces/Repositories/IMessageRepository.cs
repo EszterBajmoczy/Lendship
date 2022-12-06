@@ -1,5 +1,4 @@
-﻿using Lendship.Backend.Authentication;
-using Lendship.Backend.Models;
+﻿using Lendship.Backend.Models;
 using System.Collections.Generic;
 
 namespace Lendship.Backend.Interfaces.Repositories
@@ -10,8 +9,8 @@ namespace Lendship.Backend.Interfaces.Repositories
 
         void Create(Message message);
 
-        bool HasNewMessage(int conversationId);
+        bool HasNewMessage(int conversationId, string signedInUserId);
 
-        void SetMessagesSeen(int conversationId);
+        void SetMessagesSeen(int conversationId, string signedInUserId);
     }
 }

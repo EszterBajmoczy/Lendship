@@ -50,8 +50,6 @@ namespace Lendship.Backend
             // For Identity
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
-                options.User.AllowedUserNameCharacters = "aábcdeéfghiíjklmnoóöőpqrstuúüűvwxyzAÁBCDEÉFGHIÍJKLMNOÓÖŐPQRSTUÚÜŰVWXYZ0123456789-._@+";
-
                 options.Password.RequireDigit = true;
                 options.Password.RequireLowercase = true;
                 options.Password.RequireNonAlphanumeric = true;
@@ -74,10 +72,9 @@ namespace Lendship.Backend
 
             //converters
             services.AddScoped<IAdvertisementConverter, AdvertisementConverter>();
-            services.AddScoped<IAdvertisementDetailsConverter, AdvertisementDetailsConverter>();
             services.AddScoped<IAvailabilityConverter, AvailabilityConverter>();
             services.AddScoped<ICategoryConverter, CategoryConverter>();
-            services.AddScoped<IClosedGroupConverter, ClosedGroupConverter>();
+            services.AddScoped<IPrivateUserConverter, PrivateUserConverter>();
             services.AddScoped<IConversationConverter, ConversationConverter>();
             services.AddScoped<IEvaluationAdvertiserConverter, EvaluationAdvertiserConverter>();
             services.AddScoped<IEvaluationLenderConverter, EvaluationLenderConverter>();
@@ -90,7 +87,6 @@ namespace Lendship.Backend
             services.AddScoped<IAdvertisementRepository, AdvertisementRepository>();
             services.AddScoped<IAvailabilityRepository, AvailabilityRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
-            services.AddScoped<IClosedGroupRepository, ClosedGroupRepository>();
             services.AddScoped<IConversationRepository, ConversationRepository>();
             services.AddScoped<IEvaluationRepository, EvaluationRepository>();
             services.AddScoped<IImageLocationRepository, ImageLocationRepository>();
@@ -99,16 +95,15 @@ namespace Lendship.Backend
             services.AddScoped<IReservationRepository, ReservationRepository>();
             services.AddScoped<ISavedAdvertisementRepository, SavedAdvertisementRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IUsersAndClosedGroupsRepository, UsersAndClosedGroupsRepository>();
-            services.AddScoped<IUsersAndClosedGroupsRepository, UsersAndClosedGroupsRepository>();
-
+            services.AddScoped<IUsersAndConversationsRepository, UsersAndConversationsRepository>();
+            services.AddScoped<IPrivateUserRepository, PrivateUsersRepository>();
 
             //services
             services.AddScoped<IAdvertisementService, AdvertisementService>();
             services.AddScoped<IReservationService, ReservationService>();
             services.AddScoped<IEvaluationService, EvaluationService>();
             services.AddScoped<IConversationService, ConversationService>();
-            services.AddScoped<IClosedGroupService, ClosedGroupService>();
+            services.AddScoped<IPrivateUserService, PrivateUserService>();
             services.AddScoped<IInformationsService, InformationsService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IEmailService, EmailService>();
@@ -135,14 +130,7 @@ namespace Lendship.Backend
                     options.SecurityTokenValidators.Add(serviceProvider.GetService<TokenValidator>());
                     options.SaveToken = true;
                     options.RequireHttpsMetadata = false;
-                    options.TokenValidationParameters = new TokenValidationParameters()
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidAudience = Configuration.GetSection("JWT").GetValue("Audience", "defaultAudience"),
-                        ValidIssuer = Configuration.GetSection("JWT").GetValue("Issuer", "defaultIssuer"),
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration.GetSection("JWT").GetValue("Key", "defaultKey")))
-                    };
+                    options.TokenValidationParameters = new CustomTokenValidationParameters(Configuration).GetTokenValidationParameters();
                 });
 
             services.AddScoped<IProfileService, ProfileService>();
