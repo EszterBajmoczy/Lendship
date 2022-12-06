@@ -67,6 +67,7 @@ namespace Lendship.Backend.Services
             var reservation = _reservationConverter.ConvertToEntity(reservationDto, user, advertisement);
 
             _reservationRepository.Create(reservation);
+            _notificationService.CreateNotification("New reservation created", reservation, advertisement.User.Id);
         }
 
         public IEnumerable<ReservationDetailDto> GetReservations()
