@@ -23,7 +23,7 @@
     </ng-template>
 
     <qrcode [qrdata]="token" [width]="400" [errorCorrectionLevel]="'M'"  class="d-flex justify-content-center"></qrcode>
-    <button *ngIf="closing & !admitted" class="btn btn-success" (click)="openEvaluation(evaluationPopUp, null)">Create evaluation</button>
+    <button *ngIf="closing && !admitted" class="btn btn-success" (click)="openEvaluation(evaluationPopUp, null)">Create evaluation</button>
 
   </div>
 
