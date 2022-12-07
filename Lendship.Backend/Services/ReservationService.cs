@@ -1,10 +1,8 @@
-﻿using Lendship.Backend.Authentication;
-using Lendship.Backend.DTO;
+﻿using Lendship.Backend.DTO;
 using Lendship.Backend.Exceptions;
 using Lendship.Backend.Interfaces.Converters;
 using Lendship.Backend.Interfaces.Repositories;
 using Lendship.Backend.Interfaces.Services;
-using Lendship.Backend.Migrations;
 using Lendship.Backend.Models;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -231,6 +229,25 @@ namespace Lendship.Backend.Services
             }
 
             _reservationRepository.RemoveUpcommingReservations(advertisementId);
+        }
+
+        public void RemoveUpcommingReservationForAvailabilities(int advertisementId, IEnumerable<Availability> availabilities)
+        {
+            var reservations = new List<Reservation>();
+
+            foreach (var a in availabilities)
+            {
+                var res = _reservationRepository.GetByAdvertisement(advertisementId).Where(x => (x.DateFrom > a.DateFrom && x.DateFrom < a.DateFrom) || (x.DateTo > a.DateTo && x.DateTo < a.DateTo));
+                reservations.AddRange(res);
+            }
+
+            foreach (var res in reservations)
+            {
+                _notificationService.CreateNotification("Availibility of the Advertisement was updated", res, res.User.Id);
+                _notificationService.CreateNotification("Reservation was deleted, because you updated the availibility", res, res.Advertisement.User.Id);
+            }
+
+            _reservationRepository.Delete(reservations);
         }
 
         public IEnumerable<ReservationForAdvertisementDto> GetRecentReservations()

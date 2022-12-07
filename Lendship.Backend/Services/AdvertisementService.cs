@@ -333,6 +333,12 @@ namespace Lendship.Backend.Services
             var toAdd = availabilities.Where(a => a.Id == 0).Select(a => _availabilityConverter.ConvertToEntity(a, ad));
             var toDelete = savedAv.Where(a => !avIds.Contains(a.Id));
 
+            var toDeleteWithReservation = toDelete.Where(x => x.DateTo > DateTime.Now);
+            if (toDeleteWithReservation.Any())
+            {
+                _reservationService.RemoveUpcommingReservationForAvailabilities(ad.Id, toDeleteWithReservation);
+            }
+
             _availabilityRepository.DeleteRange(toDelete);
             _availabilityRepository.AddRange(toAdd);
         }

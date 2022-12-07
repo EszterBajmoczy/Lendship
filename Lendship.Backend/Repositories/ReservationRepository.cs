@@ -1,9 +1,7 @@
-﻿using Lendship.Backend.DTO;
-using Lendship.Backend.Interfaces.Repositories;
+﻿using Lendship.Backend.Interfaces.Repositories;
 using Lendship.Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -117,6 +115,12 @@ namespace Lendship.Backend.Repositories
         public void Delete(Reservation reservation)
         {
             _dbContext.Reservations.Remove(reservation);
+            _dbContext.SaveChanges();
+        }
+
+        public void Delete(List<Reservation> reservations)
+        {
+            _dbContext.Reservations.RemoveRange(reservations);
             _dbContext.SaveChanges();
         }
     }
