@@ -1,6 +1,7 @@
 ﻿using Lendship.Backend.Authentication;
 using Lendship.Backend.DTO;
 using Lendship.Backend.Interfaces.Converters;
+using Lendship.Backend.Models;
 using System;
 
 namespace Lendship.Backend.Converters
@@ -39,7 +40,21 @@ namespace Lendship.Backend.Converters
                 EvaluationAsLender = Math.Round(user.Evaluation.EvaluationAsLender, 1),
                 EvaluationAsLenderCount = user.Evaluation.EvaluationAsLenderCount,
                 Registration = user.Registration,
-                Image = user.ImageLocation
+                Image = user.ImageLocation,
+                Evaluation = user.Evaluation != null ? ConvertEvaluationComputedToDto(user.Evaluation) : null
+            };
+        }
+
+        private EvaluationComputedDto ConvertEvaluationComputedToDto(EvaluationComputed evaluation)
+        {
+            return new EvaluationComputedDto()
+            {
+                AdvertiserFlexibility = evaluation.AdvertiserFlexibility,
+                AdvertiserReliability = evaluation.AdvertiserReliability,
+                AdvertiserQualityOfProduct = evaluation.AdvertiserQualityOfProduct,
+                LenderFlexibility = evaluation.LenderFlexibility,
+                LenderReliability = evaluation.LenderReliability,
+                LenderQualityAtReturn = evaluation.LenderQualityAtReturn
             };
         }
     }

@@ -83,7 +83,7 @@ namespace Lendship.Backend.Services
                 evaluationsAsAdvertiser.Where(e => e.Creation >= threeYear && e.Creation < twoYear).Select(e => e.QualityOfProduct),
                 evaluationsAsAdvertiser.Where(e => e.Creation < threeYear).Select(e => e.Reliability));
 
-            user.Evaluation.EvaluationAsAdvertiser = _evaluationCalculator.calculateAdviser(user.Evaluation.AdvertiserFlexibility, user.Evaluation.AdvertiserReliability, user.Evaluation.AdvertiserQualityOfProduct);
+            user.Evaluation.EvaluationAsAdvertiser = _evaluationCalculator.CalculateAdvertiser(user.Evaluation.AdvertiserFlexibility, user.Evaluation.AdvertiserReliability, user.Evaluation.AdvertiserQualityOfProduct);
             user.Evaluation.EvaluationAsAdvertiserCount = evaluationsAsAdvertiser.Count();
 
             _userRepository.Update(user);
@@ -110,7 +110,7 @@ namespace Lendship.Backend.Services
                 evaluationsAsLender.Where(e => e.Creation >= threeYear && e.Creation < twoYear).Select(e => e.QualityAtReturn),
                 evaluationsAsLender.Where(e => e.Creation < threeYear).Select(e => e.QualityAtReturn));
 
-            user.Evaluation.EvaluationAsLender = _evaluationCalculator.calculateLender(user.Evaluation.LenderFlexibility, user.Evaluation.LenderReliability, user.Evaluation.LenderQualityAtReturn);
+            user.Evaluation.EvaluationAsLender = _evaluationCalculator.CalculateLender(user.Evaluation.LenderFlexibility, user.Evaluation.LenderReliability, user.Evaluation.LenderQualityAtReturn);
             user.Evaluation.EvaluationAsLenderCount = evaluationsAsLender.Count();
 
             _userRepository.Update(user);
