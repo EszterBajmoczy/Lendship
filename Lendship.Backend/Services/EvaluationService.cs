@@ -14,6 +14,7 @@ namespace Lendship.Backend.Services
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEvaluationRepository _evaluationRepository;
+        private readonly IReservationRepository _reservationRepository;
         private readonly IUserRepository _userRepository;
         private readonly IAdvertisementRepository _advertisementRepository;
 
@@ -25,6 +26,7 @@ namespace Lendship.Backend.Services
         public EvaluationService(
             IHttpContextAccessor httpContextAccessor, 
             IEvaluationRepository evaluationRepository,
+            IReservationRepository reservationRepository,
             IUserRepository userRepository,
             IAdvertisementRepository advertisementRepository,
             IReputationCalculatorService reputationCalculator,
@@ -33,6 +35,7 @@ namespace Lendship.Backend.Services
         {
             _httpContextAccessor = httpContextAccessor;
             _evaluationRepository = evaluationRepository;
+            _reservationRepository = reservationRepository;
             _userRepository = userRepository;
             _advertisementRepository = advertisementRepository;
 
@@ -45,8 +48,16 @@ namespace Lendship.Backend.Services
         public void CreateAdvertiserEvaluation(EvaluationAdvertiserDto evaluationDto, string userToId)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var reservation = _reservationRepository.GetById(evaluationDto.ReservationId);
+
             var userFrom = _userRepository.GetById(signedInUserId);
             var userTo = _userRepository.GetById(userToId);
+
+            if ((reservation.User.Id == signedInUserId && reservation.AdmittedByLender) || 
+                (reservation.Advertisement.User.Id == signedInUserId && reservation.AdmittedByAdvertiser))
+            {
+                throw new EvaluationNotAllowed("Already evaluated.");
+            }
 
             if (userTo == null)
             {
@@ -68,8 +79,16 @@ namespace Lendship.Backend.Services
         public void CreateLenderEvaluation(EvaluationLenderDto evaluationDto, string userToId)
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var reservation = _reservationRepository.GetById(evaluationDto.ReservationId);
+
             var userFrom = _userRepository.GetById(signedInUserId);
             var userTo = _userRepository.GetById(userToId);
+
+            if ((reservation.User.Id == signedInUserId && reservation.AdmittedByLender) ||
+                (reservation.Advertisement.User.Id == signedInUserId && reservation.AdmittedByAdvertiser))
+            {
+                throw new EvaluationNotAllowed("Already evaluated.");
+            }
 
             if (userTo == null)
             {

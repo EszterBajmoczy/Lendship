@@ -136,17 +136,17 @@ namespace Lendship.Backend.Services
 
             if (signedInUserId == reservation.User.Id)
             {
-                reservation.admittedByLender = true;
+                reservation.AdmittedByLender = true;
                 _notificationService.CreateNotification("Reservation was evaluated by the Lender", reservation, reservation.Advertisement.User.Id);
             }
 
             if (signedInUserId == reservation.Advertisement.User.Id)
             {
-                reservation.admittedByAdvertiser = true;
+                reservation.AdmittedByAdvertiser = true;
                 _notificationService.CreateNotification("Reservation was evaluated by the Advertiser", reservation, reservation.User.Id);
             }
 
-            if (reservation.admittedByAdvertiser && reservation.admittedByLender)
+            if (reservation.AdmittedByAdvertiser && reservation.AdmittedByLender)
             {
                 reservation.ReservationState = ReservationState.Closed;
             }
