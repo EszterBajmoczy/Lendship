@@ -33,7 +33,6 @@ namespace Lendship.Backend.Services
         {
             var user = _userRepository.GetById(userId);
 
-            //TODO evaluation
             return _userConverter.ConvertToUserDetailsDto(user);
         }
 
@@ -48,7 +47,6 @@ namespace Lendship.Backend.Services
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = _userRepository.GetById(signedInUserId);
 
-            //TODO evaluation
             return _userConverter.ConvertToUserDetailsDto(user);
         }
 
