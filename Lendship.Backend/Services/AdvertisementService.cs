@@ -29,7 +29,6 @@ namespace Lendship.Backend.Services
         private readonly IImageService _imageService;
         private readonly IPrivateUserService _privateUserService;
 
-        private readonly IAdvertisementConverter _adDetailsConverter;
         private readonly IAdvertisementConverter _adConverter;
         private readonly IAvailabilityConverter _availabilityConverter;
 
@@ -46,7 +45,6 @@ namespace Lendship.Backend.Services
             IReservationService reservationService, 
             IImageService imageService,
             IPrivateUserService privateUserService,
-            IAdvertisementConverter advertisementDetailsConverter,
             IAdvertisementConverter advertisementConverter,
             IAvailabilityConverter availabilityConverter)
         {
@@ -62,7 +60,6 @@ namespace Lendship.Backend.Services
             _imageService = imageService;
             _privateUserService = privateUserService;
 
-            _adDetailsConverter = advertisementDetailsConverter;
             _adConverter = advertisementConverter;
             _availabilityConverter = availabilityConverter;
         }
@@ -77,7 +74,7 @@ namespace Lendship.Backend.Services
                 throw new AdvertisementNotFoundException("Advertisement not found.");
             }
 
-            var advertisementDto = _adDetailsConverter.ConvertToDetailsDto(advertisement);
+            var advertisementDto = _adConverter.ConvertToDetailsDto(advertisement);
             return advertisementDto;
         }
 
@@ -88,7 +85,7 @@ namespace Lendship.Backend.Services
             var category = _categoryService.GetOrCreateCategoryByName(advertisement.Category.Name);
             var user = _userRepository.GetById(signedInUserId);
 
-            var ad =_adDetailsConverter.ConvertToEntity(advertisement, user, category);
+            var ad =_adConverter.ConvertToEntity(advertisement, user, category);
 
             _advertisementRepository.Create(ad);
 
@@ -119,10 +116,9 @@ namespace Lendship.Backend.Services
             var user = _userRepository.GetById(signedInUserId);
             var privateUsers = advertisement.PrivateUsers.Select(x => _userRepository.GetById(x.Id.ToString()));
 
-            var ad = _adDetailsConverter.ConvertToEntity(advertisement, user, category);
+            var ad = _adConverter.ConvertToEntity(advertisement, user, category);
 
             _advertisementRepository.Update(ad);
-
             UpdateAvailabilities(ad, advertisement.Availabilities);
             _privateUserService.UpdatePrivateUsers(ad.Id, advertisement.PrivateUsers);
         }
@@ -264,15 +260,15 @@ namespace Lendship.Backend.Services
 
             if (creditPayment && cashPayment)
             {
-                ads = ads.Where(a => a.Credit != null || a.Price != null);
+                ads = ads.Where(a => (a.Credit != null && a.Credit != 0) || (a.Price != null && a.Price != 0));
             }
             else if (creditPayment)
             {
-                ads = ads.Where(a => a.Credit != null);
+                ads = ads.Where(a => (a.Credit != null && a.Credit != 0));
             }
             else if (cashPayment)
             {
-                ads = ads.Where(a => a.Price != null);
+                ads = ads.Where(a => (a.Price != null && a.Price != 0));
             }
 
             if (category != null && category != "")
@@ -280,9 +276,10 @@ namespace Lendship.Backend.Services
                 ads = ads.Where(a => a.Category.Name.ToLower() == category.ToLower());
             }
 
-            if (word != null)
+            if (word != null && word != "")
             {
-                ads = ads.Where(a => a.Title.Contains(word) || a.Description.Contains(word));
+                var lower = word.ToLower();
+                ads = ads.Where(a => a.Title.ToLower().Contains(lower) || a.Description.ToLower().Contains(lower));
             }
 
             if (latitude > 0 && longitude > 0 && distance > 0)

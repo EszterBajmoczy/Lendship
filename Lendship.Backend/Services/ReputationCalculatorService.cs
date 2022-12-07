@@ -15,11 +15,11 @@ namespace Lendship.Backend.Services
         private readonly IEvaluationRepository _evaluationRepository;
         private readonly IEvaluationCalculator _evaluationCalculator;
 
-        private readonly int m;
-        private readonly int c;
-        private readonly double weight1;
-        private readonly double weight2;
-        private readonly double weight3;
+        private readonly int _m;
+        private readonly int _c;
+        private readonly double _weight1;
+        private readonly double _weight2;
+        private readonly double _weight3;
 
         public ReputationCalculatorService(
             IConfiguration configuration,
@@ -32,11 +32,33 @@ namespace Lendship.Backend.Services
             _evaluationCalculator = evaluationCalculator;
 
             var config = configuration.GetSection("Reputation");
-            m = config.GetValue("m", 5);
-            c = config.GetValue("C", 5);
-            weight1 = config.GetValue("Weight1", 0.8);
-            weight2 = config.GetValue("Weight2", 0.6);
-            weight3 = config.GetValue("Weight3", 0.4);
+            _m = config.GetValue("m", 5);
+            _c = config.GetValue("C", 5);
+            _weight1 = config.GetValue("Weight1", 0.8);
+            _weight2 = config.GetValue("Weight2", 0.6);
+            _weight3 = config.GetValue("Weight3", 0.4);
+
+        }
+
+        public ReputationCalculatorService(
+            IUserRepository userRepository,
+            IEvaluationRepository evaluationRepository,
+            IEvaluationCalculator evaluationCalculator,
+            int m,
+            int c,
+            double weight1,
+            double weight2,
+            double weight3)
+        {
+            _userRepository = userRepository;
+            _evaluationRepository = evaluationRepository;
+            _evaluationCalculator = evaluationCalculator;
+
+            _m = m;
+            _c = c;
+            _weight1 = weight1;
+            _weight2 = weight2;
+            _weight3 = weight3;
 
         }
 
@@ -61,7 +83,7 @@ namespace Lendship.Backend.Services
                 evaluationsAsAdvertiser.Where(e => e.Creation >= threeYear && e.Creation < twoYear).Select(e => e.QualityOfProduct),
                 evaluationsAsAdvertiser.Where(e => e.Creation < threeYear).Select(e => e.Reliability));
 
-            user.EvaluationAsAdvertiser = _evaluationCalculator.calculateAdviser(user.AdvertiserFlexibility, user.AdvertiserReliability, user.AdvertiserQualityOfProduct);
+            user.EvaluationAsAdvertiser = _evaluationCalculator.CalculateAdvertiser(user.AdvertiserFlexibility, user.AdvertiserReliability, user.AdvertiserQualityOfProduct);
             user.EvaluationAsAdvertiserCount = evaluationsAsAdvertiser.Count();
 
             _userRepository.Update(user);
@@ -88,7 +110,7 @@ namespace Lendship.Backend.Services
                 evaluationsAsLender.Where(e => e.Creation >= threeYear && e.Creation < twoYear).Select(e => e.QualityAtReturn),
                 evaluationsAsLender.Where(e => e.Creation < threeYear).Select(e => e.QualityAtReturn));
 
-            user.EvaluationAsLender = _evaluationCalculator.calculateLender(user.LenderFlexibility, user.LenderReliability, user.LenderQualityAtReturn);
+            user.EvaluationAsLender = _evaluationCalculator.CalculateLender(user.LenderFlexibility, user.LenderReliability, user.LenderQualityAtReturn);
             user.EvaluationAsLenderCount = evaluationsAsLender.Count();
 
             _userRepository.Update(user);
@@ -96,8 +118,8 @@ namespace Lendship.Backend.Services
 
         double Calculate(IEnumerable<int> evaluationGroup1, IEnumerable<int> evaluationGroup2, IEnumerable<int> evaluationGroup3, IEnumerable<int> evaluationGroup4)
         {
-            return (c * m + evaluationGroup1.Sum() + evaluationGroup2.Sum() * weight1 + evaluationGroup3.Sum() * weight2 + evaluationGroup4.Sum() * weight3) 
-                / (c + evaluationGroup1.Count());
+            return (_c * _m + evaluationGroup1.Sum() + evaluationGroup2.Sum() * _weight1 + evaluationGroup3.Sum() * _weight2 + evaluationGroup4.Sum() * _weight3) 
+                / (_c + evaluationGroup1.Count() + evaluationGroup2.Count() * _weight1 + evaluationGroup3.Count() * _weight2 + evaluationGroup4.Count() * _weight3);
         }
     }
 }
