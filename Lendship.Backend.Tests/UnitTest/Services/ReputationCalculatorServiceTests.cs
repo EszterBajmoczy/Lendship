@@ -50,7 +50,7 @@ namespace Lendship.Backend.Tests.UnitTest.Services
         [TestCase]
         public void Recalculate_Advertiser_Should_Call_Repository_For_Evaluations()
         {
-            var user = new ApplicationUser() { Id = "userId" };
+            var user = new ApplicationUser() { Id = "userId", Evaluation = new EvaluationComputed() };
             _evaluationRepository.Setup(x => x.GetAdvertiserEvaluationsByUser(It.IsAny<string>())).Returns(new List<EvaluationAdvertiser>());
 
             _sut.RecalculateAdvertiserReputationForUser(user);
@@ -61,7 +61,7 @@ namespace Lendship.Backend.Tests.UnitTest.Services
         [TestCase]
         public void Recalculate_Lender_Should_Call_Repository_For_Evaluations()
         {
-            var user = new ApplicationUser() { Id = "userId" };
+            var user = new ApplicationUser() { Id = "userId", Evaluation = new EvaluationComputed() };
             _evaluationRepository.Setup(x => x.GetLenderEvaluationsByUser(It.IsAny<string>())).Returns(new List<EvaluationLender>());
 
             _sut.RecalculateLenderReputationForUser(user);
@@ -72,7 +72,7 @@ namespace Lendship.Backend.Tests.UnitTest.Services
         [TestCase]
         public void Recalculate_Advertiser_Should_Be_Less_Than_Normal_Average_Without_Aging()
         {
-            var user = new ApplicationUser() { Id = "userId" };
+            var user = new ApplicationUser() { Id = "userId", Evaluation = new EvaluationComputed() };
             var ev1 = new EvaluationAdvertiser() { Flexibility = 5, QualityOfProduct = 5, Reliability = 2, Creation = DateTime.Now };
             var ev2 = new EvaluationAdvertiser() { Flexibility = 5, QualityOfProduct = 3, Reliability = 5, Creation = DateTime.Now };
             var ev3 = new EvaluationAdvertiser() { Flexibility = 5, QualityOfProduct = 4, Reliability = 5, Creation = DateTime.Now };
@@ -107,7 +107,7 @@ namespace Lendship.Backend.Tests.UnitTest.Services
         [TestCase]
         public void Recalculate_Advertiser_Should_Be_More_Than_Normal_Average_Without_Aging()
         {
-            var user = new ApplicationUser() { Id = "userId" };
+            var user = new ApplicationUser() { Id = "userId", Evaluation = new EvaluationComputed() };
             var ev1 = new EvaluationAdvertiser() { Flexibility = 2, QualityOfProduct = 1, Reliability = 2, Creation = DateTime.Now };
             var ev2 = new EvaluationAdvertiser() { Flexibility = 1, QualityOfProduct = 3, Reliability = 3, Creation = DateTime.Now };
             var ev3 = new EvaluationAdvertiser() { Flexibility = 2, QualityOfProduct = 2, Reliability = 3, Creation = DateTime.Now };
@@ -142,7 +142,7 @@ namespace Lendship.Backend.Tests.UnitTest.Services
         [TestCase]
         public void Recalculate_Lender_Should_Be_Less_Than_Normal_Average_Without_Aging()
         {
-            var user = new ApplicationUser() { Id = "userId" };
+            var user = new ApplicationUser() { Id = "userId", Evaluation = new EvaluationComputed() };
             var ev1 = new EvaluationLender() { Flexibility = 5, QualityAtReturn = 5, Reliability = 2, Creation = DateTime.Now };
             var ev2 = new EvaluationLender() { Flexibility = 5, QualityAtReturn = 3, Reliability = 5, Creation = DateTime.Now };
             var ev3 = new EvaluationLender() { Flexibility = 5, QualityAtReturn = 4, Reliability = 5, Creation = DateTime.Now };
@@ -177,7 +177,7 @@ namespace Lendship.Backend.Tests.UnitTest.Services
         [TestCase]
         public void Recalculate_Lender_Should_Be_More_Than_Normal_Average_Without_Aging()
         {
-            var user = new ApplicationUser() { Id = "userId" };
+            var user = new ApplicationUser() { Id = "userId", Evaluation = new EvaluationComputed() };
             var ev1 = new EvaluationLender() { Flexibility = 2, QualityAtReturn = 1, Reliability = 2, Creation = DateTime.Now };
             var ev2 = new EvaluationLender() { Flexibility = 1, QualityAtReturn = 3, Reliability = 3, Creation = DateTime.Now };
             var ev3 = new EvaluationLender() { Flexibility = 2, QualityAtReturn = 2, Reliability = 3, Creation = DateTime.Now };
@@ -212,7 +212,7 @@ namespace Lendship.Backend.Tests.UnitTest.Services
         [TestCase]
         public void Recalculate_Advertiser_Aging()
         {
-            var user = new ApplicationUser() { Id = "userId" };
+            var user = new ApplicationUser() { Id = "userId", Evaluation = new EvaluationComputed() };
             var ev1 = new EvaluationAdvertiser() { Flexibility = 1, QualityOfProduct = 1, Reliability = 1, Creation = DateTime.Now };
             var ev2 = new EvaluationAdvertiser() { Flexibility = 5, QualityOfProduct = 5, Reliability = 5, Creation = DateTime.Now };
             var evaluations = new List<EvaluationAdvertiser>() { ev1, ev2 };
@@ -257,7 +257,7 @@ namespace Lendship.Backend.Tests.UnitTest.Services
         [TestCase]
         public void Recalculate_Lender_Aging()
         {
-            var user = new ApplicationUser() { Id = "userId" };
+            var user = new ApplicationUser() { Id = "userId", Evaluation = new EvaluationComputed() };
             var ev1 = new EvaluationLender() { Flexibility = 5, QualityAtReturn = 5, Reliability = 5, Creation = DateTime.Now };
             var ev2 = new EvaluationLender() { Flexibility = 1, QualityAtReturn = 1, Reliability = 1, Creation = DateTime.Now };
             var evaluations = new List<EvaluationLender>() { ev1, ev2 };
@@ -302,7 +302,7 @@ namespace Lendship.Backend.Tests.UnitTest.Services
         [TestCase(4.2)]
         public void Recalculate_Advertiser_Update_UserData(double expectedEvaluation)
         {
-            var user = new ApplicationUser() { Id = "userId" };
+            var user = new ApplicationUser() { Id = "userId", Evaluation = new EvaluationComputed() };
             var evaluations = new List<EvaluationAdvertiser>() { new EvaluationAdvertiser(), new EvaluationAdvertiser() };
             ApplicationUser updatedUser = null;
 
@@ -316,14 +316,14 @@ namespace Lendship.Backend.Tests.UnitTest.Services
 
             _sut.RecalculateAdvertiserReputationForUser(user);
 
-            Assert.That(updatedUser.EvaluationAsAdvertiser, Is.EqualTo(expectedEvaluation));
-            Assert.That(updatedUser.EvaluationAsAdvertiserCount, Is.EqualTo(evaluations.Count()));
+            Assert.That(updatedUser.Evaluation.EvaluationAsAdvertiser, Is.EqualTo(expectedEvaluation));
+            Assert.That(updatedUser.Evaluation.EvaluationAsAdvertiserCount, Is.EqualTo(evaluations.Count()));
         }
 
         [TestCase(4.2)]
         public void Recalculate_Lender_Update_UserData(double expectedEvaluation)
         {
-            var user = new ApplicationUser() { Id = "userId" };
+            var user = new ApplicationUser() { Id = "userId", Evaluation = new EvaluationComputed() };
             var evaluations = new List<EvaluationLender>() { new EvaluationLender(), new EvaluationLender() };
             ApplicationUser updatedUser = null;
 
@@ -337,8 +337,8 @@ namespace Lendship.Backend.Tests.UnitTest.Services
 
             _sut.RecalculateLenderReputationForUser(user);
 
-            Assert.That(updatedUser.EvaluationAsLender, Is.EqualTo(expectedEvaluation));
-            Assert.That(updatedUser.EvaluationAsLenderCount, Is.EqualTo(evaluations.Count()));
+            Assert.That(updatedUser.Evaluation.EvaluationAsLender, Is.EqualTo(expectedEvaluation));
+            Assert.That(updatedUser.Evaluation.EvaluationAsLenderCount, Is.EqualTo(evaluations.Count()));
         }
 
         private double Average(int a, int b, int c)
