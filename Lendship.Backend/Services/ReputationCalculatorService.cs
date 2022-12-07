@@ -48,21 +48,21 @@ namespace Lendship.Backend.Services
             var twoYear = DateTime.Now.AddYears(-2);
             var threeYear = DateTime.Now.AddYears(-3);
 
-            user.AdvertiserFlexibility = Calculate(evaluationsAsAdvertiser.Where(e => e.Creation >= oneYear).Select(e => e.Flexibility),
+            user.Evaluation.AdvertiserFlexibility = Calculate(evaluationsAsAdvertiser.Where(e => e.Creation >= oneYear).Select(e => e.Flexibility),
                 evaluationsAsAdvertiser.Where(e => e.Creation >= twoYear && e.Creation < oneYear).Select(e => e.Flexibility),
                 evaluationsAsAdvertiser.Where(e => e.Creation >= threeYear && e.Creation < twoYear).Select(e => e.Flexibility),
                 evaluationsAsAdvertiser.Where(e => e.Creation < threeYear).Select(e => e.Flexibility));
-            user.AdvertiserReliability = Calculate(evaluationsAsAdvertiser.Where(e => e.Creation >= oneYear).Select(e => e.Reliability),
+            user.Evaluation.AdvertiserReliability = Calculate(evaluationsAsAdvertiser.Where(e => e.Creation >= oneYear).Select(e => e.Reliability),
                 evaluationsAsAdvertiser.Where(e => e.Creation >= twoYear && e.Creation < oneYear).Select(e => e.Reliability),
                 evaluationsAsAdvertiser.Where(e => e.Creation >= threeYear && e.Creation < twoYear).Select(e => e.Reliability),
                 evaluationsAsAdvertiser.Where(e => e.Creation < threeYear).Select(e => e.Reliability));
-            user.AdvertiserQualityOfProduct = Calculate(evaluationsAsAdvertiser.Where(e => e.Creation >= oneYear).Select(e => e.QualityOfProduct),
+            user.Evaluation.AdvertiserQualityOfProduct = Calculate(evaluationsAsAdvertiser.Where(e => e.Creation >= oneYear).Select(e => e.QualityOfProduct),
                 evaluationsAsAdvertiser.Where(e => e.Creation >= twoYear && e.Creation < oneYear).Select(e => e.QualityOfProduct),
                 evaluationsAsAdvertiser.Where(e => e.Creation >= threeYear && e.Creation < twoYear).Select(e => e.QualityOfProduct),
                 evaluationsAsAdvertiser.Where(e => e.Creation < threeYear).Select(e => e.Reliability));
 
-            user.EvaluationAsAdvertiser = _evaluationCalculator.calculateAdviser(user.AdvertiserFlexibility, user.AdvertiserReliability, user.AdvertiserQualityOfProduct);
-            user.EvaluationAsAdvertiserCount = evaluationsAsAdvertiser.Count();
+            user.Evaluation.EvaluationAsAdvertiser = _evaluationCalculator.calculateAdviser(user.Evaluation.AdvertiserFlexibility, user.Evaluation.AdvertiserReliability, user.Evaluation.AdvertiserQualityOfProduct);
+            user.Evaluation.EvaluationAsAdvertiserCount = evaluationsAsAdvertiser.Count();
 
             _userRepository.Update(user);
         }
@@ -75,21 +75,21 @@ namespace Lendship.Backend.Services
 
             var evaluationsAsLender = _evaluationRepository.GetLenderEvaluationsByUser(user.Id);
 
-            user.LenderFlexibility = Calculate(evaluationsAsLender.Where(e => e.Creation >= oneYear).Select(e => e.Flexibility),
+            user.Evaluation.LenderFlexibility = Calculate(evaluationsAsLender.Where(e => e.Creation >= oneYear).Select(e => e.Flexibility),
                 evaluationsAsLender.Where(e => e.Creation >= twoYear && e.Creation < oneYear).Select(e => e.Flexibility),
                 evaluationsAsLender.Where(e => e.Creation >= threeYear && e.Creation < twoYear).Select(e => e.Flexibility),
                 evaluationsAsLender.Where(e => e.Creation < threeYear).Select(e => e.Flexibility));
-            user.LenderReliability = Calculate(evaluationsAsLender.Where(e => e.Creation >= oneYear).Select(e => e.Reliability),
+            user.Evaluation.LenderReliability = Calculate(evaluationsAsLender.Where(e => e.Creation >= oneYear).Select(e => e.Reliability),
                 evaluationsAsLender.Where(e => e.Creation >= twoYear && e.Creation < oneYear).Select(e => e.Reliability),
                 evaluationsAsLender.Where(e => e.Creation >= threeYear && e.Creation < twoYear).Select(e => e.Reliability),
                 evaluationsAsLender.Where(e => e.Creation < threeYear).Select(e => e.Reliability));
-            user.LenderQualityAtReturn = Calculate(evaluationsAsLender.Where(e => e.Creation >= oneYear).Select(e => e.QualityAtReturn),
+            user.Evaluation.LenderQualityAtReturn = Calculate(evaluationsAsLender.Where(e => e.Creation >= oneYear).Select(e => e.QualityAtReturn),
                 evaluationsAsLender.Where(e => e.Creation >= twoYear && e.Creation < oneYear).Select(e => e.QualityAtReturn),
                 evaluationsAsLender.Where(e => e.Creation >= threeYear && e.Creation < twoYear).Select(e => e.QualityAtReturn),
                 evaluationsAsLender.Where(e => e.Creation < threeYear).Select(e => e.QualityAtReturn));
 
-            user.EvaluationAsLender = _evaluationCalculator.calculateLender(user.LenderFlexibility, user.LenderReliability, user.LenderQualityAtReturn);
-            user.EvaluationAsLenderCount = evaluationsAsLender.Count();
+            user.Evaluation.EvaluationAsLender = _evaluationCalculator.calculateLender(user.Evaluation.LenderFlexibility, user.Evaluation.LenderReliability, user.Evaluation.LenderQualityAtReturn);
+            user.Evaluation.EvaluationAsLenderCount = evaluationsAsLender.Count();
 
             _userRepository.Update(user);
         }

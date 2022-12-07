@@ -33,6 +33,7 @@ namespace Lendship.Backend.Repositories
         {
             return _dbContext.EvaluationAdvertisers
                         .Include(e => e.UserFrom)
+                        .Include(e => e.UserFrom.Evaluation)
                         .Where(e => e.UserTo.Id == userId);
         }
 
@@ -40,6 +41,7 @@ namespace Lendship.Backend.Repositories
         {
             return _dbContext.EvaluationLenders
                         .Include(e => e.UserFrom)
+                        .Include(e => e.UserFrom.Evaluation)
                         .Where(e => e.UserTo.Id == userId);
         }
 
@@ -47,6 +49,7 @@ namespace Lendship.Backend.Repositories
         {
             return _dbContext.EvaluationAdvertisers
                         .Include(e => e.UserTo)
+                        .Include(e => e.UserTo.Evaluation)
                         .Where(e => e.UserTo.Id == userId);
         }
 
@@ -54,6 +57,7 @@ namespace Lendship.Backend.Repositories
         {
             return _dbContext.EvaluationLenders
                         .Include(e => e.UserTo)
+                        .Include(e => e.UserTo.Evaluation)
                         .Where(e => e.UserTo.Id == userId);
         }
     }

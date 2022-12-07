@@ -25,7 +25,8 @@ namespace Lendship.Backend.Repositories
         {
             return _dbContext.Messages
                         .Where(m => m.ConversationId == conversationId)
-                        .Include(m => m.UserFrom);
+                        .Include(m => m.UserFrom)
+                        .Include(m => m.UserFrom.Evaluation);
         }
 
         public void SetMessagesSeen(int conversationId, string signedInUserId)

@@ -21,8 +21,10 @@ namespace Lendship.Backend.Repositories
             return _dbContext.Reservations
                             .AsNoTracking()
                             .Include(r => r.User)
+                            .Include(r => r.User.Evaluation)
                             .Include(r => r.Advertisement)
                             .Include(r => r.Advertisement.User)
+                            .Include(r => r.Advertisement.User.Evaluation)
                             .Where(r => r.Id == id)
                             .FirstOrDefault();
         }
@@ -32,6 +34,7 @@ namespace Lendship.Backend.Repositories
             var reservations = _dbContext.Reservations
                 .Where(r => r.Advertisement.Id == advertisementId && r.DateFrom >= DateTime.Now)
                 .Include(r => r.User)
+                .Include(r => r.User.Evaluation)
                 .ToList();
             _dbContext.Reservations.RemoveRange(reservations);
             _dbContext.SaveChanges();
@@ -42,8 +45,10 @@ namespace Lendship.Backend.Repositories
             return _dbContext.Reservations
                         .Include(r => r.Advertisement)
                         .Include(r => r.Advertisement.User)
+                        .Include(r => r.Advertisement.User.Evaluation)
                         .Include(a => a.Advertisement.ImageLocations)
                         .Include(r => r.User)
+                        .Include(r => r.User.Evaluation)
                         .Where(r => r.User.Id == userId);
         }
 
@@ -52,8 +57,10 @@ namespace Lendship.Backend.Repositories
             return _dbContext.Reservations
                     .Include(r => r.Advertisement)
                     .Include(r => r.Advertisement.User)
+                    .Include(r => r.Advertisement.User.Evaluation)
                     .Include(a => a.Advertisement.ImageLocations)
                     .Include(r => r.User)
+                    .Include(r => r.User.Evaluation)
                     .Where(r => r.Advertisement.User.Id == userId);
         }
 
@@ -61,8 +68,10 @@ namespace Lendship.Backend.Repositories
         {
             return _dbContext.Reservations
                     .Include(r => r.User)
+                    .Include(r => r.User.Evaluation)
                     .Include(r => r.Advertisement)
                     .Include(r => r.Advertisement.User)
+                    .Include(r => r.Advertisement.User.Evaluation)
                     .Where(r => r.Advertisement.Id == advertisementId);
         }
 
@@ -74,6 +83,7 @@ namespace Lendship.Backend.Repositories
             return _dbContext.Reservations
                     .Include(r => r.Advertisement)
                     .Include(r => r.Advertisement.User)
+                    .Include(r => r.Advertisement.User.Evaluation)
                     .Where(r => (r.Advertisement.User.Id == userId || r.User.Id == userId) && r.ReservationState != ReservationState.Closed
                             && ((r.DateFrom > begin && r.DateFrom < end) || (r.DateTo > begin && r.DateTo < end)));
         }
@@ -83,9 +93,11 @@ namespace Lendship.Backend.Repositories
             return _dbContext.Reservations
                                 .AsNoTracking()
                                 .Include(r => r.User)
+                                .Include(r => r.User.Evaluation)
                                 .Include(r => r.User.ReservedCredits)
                                 .Include(r => r.Advertisement)
                                 .Include(r => r.Advertisement.User)
+                                .Include(r => r.Advertisement.User.Evaluation)
                                 .Where(r => r.Id == reservationId
                                     && (r.User.Id == userId || r.Advertisement.User.Id == userId)
                                     && (r.User.Id == signedInUserId || r.Advertisement.User.Id == signedInUserId))

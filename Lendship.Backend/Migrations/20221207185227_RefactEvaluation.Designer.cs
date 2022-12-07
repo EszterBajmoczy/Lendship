@@ -4,14 +4,16 @@ using Lendship.Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Lendship.Backend.Migrations
 {
     [DbContext(typeof(LendshipDbContext))]
-    partial class LendshipDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221207185227_RefactEvaluation")]
+    partial class RefactEvaluation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,9 +45,6 @@ namespace Lendship.Backend.Migrations
 
                     b.Property<bool>("EmailNotificationsEnabled")
                         .HasColumnType("bit");
-
-                    b.Property<int?>("EvaluationId")
-                        .HasColumnType("int");
 
                     b.Property<string>("ImageLocation")
                         .HasColumnType("nvarchar(max)");
@@ -98,9 +97,10 @@ namespace Lendship.Backend.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.HasKey("Id");
+                    b.Property<int?>("evaluationId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("EvaluationId");
+                    b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -109,6 +109,8 @@ namespace Lendship.Backend.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("evaluationId");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -732,11 +734,11 @@ namespace Lendship.Backend.Migrations
 
             modelBuilder.Entity("Lendship.Backend.Authentication.ApplicationUser", b =>
                 {
-                    b.HasOne("Lendship.Backend.Models.EvaluationComputed", "Evaluation")
+                    b.HasOne("Lendship.Backend.Models.EvaluationComputed", "evaluation")
                         .WithMany()
-                        .HasForeignKey("EvaluationId");
+                        .HasForeignKey("evaluationId");
 
-                    b.Navigation("Evaluation");
+                    b.Navigation("evaluation");
                 });
 
             modelBuilder.Entity("Lendship.Backend.Models.Advertisement", b =>
