@@ -21,5 +21,3 @@ jobs:
       run: dotnet restore Lendship.Backend/Lendship.Backend.sln
     - name: Build
       run: dotnet build Lendship.Backend/Lendship.Backend.csproj --no-restore
-    - name: Test
-      run: dotnet test Lendship.Backend/Lendship.Backend.sln --no-build --verbosity normal
