@@ -237,13 +237,17 @@ namespace Lendship.Backend.Services
 
             foreach (var a in availabilities)
             {
-                var res = _reservationRepository.GetByAdvertisement(advertisementId).Where(x => (x.DateFrom > a.DateFrom && x.DateFrom < a.DateFrom) || (x.DateTo > a.DateTo && x.DateTo < a.DateTo));
+                var res = _reservationRepository.GetByAdvertisement(advertisementId)
+                    .Where(x => 
+                        (x.DateFrom.CompareTo(a.DateFrom) < 0 && x.DateTo.CompareTo(a.DateFrom) >= 0) ||
+                        (x.DateFrom.CompareTo(a.DateFrom) >= 0 && x.DateFrom.CompareTo(a.DateTo) < 0) ||
+                        (x.DateTo.CompareTo(a.DateFrom) >= 0 && x.DateTo.CompareTo(a.DateTo) < 0));
                 reservations.AddRange(res);
             }
 
-            foreach (var res in reservations)
+            foreach (var res in reservations.ToList())
             {
-                _notificationService.CreateNotification("Availibility of the Advertisement was updated", res, res.User.Id);
+                _notificationService.CreateNotification("Availibility of the Advertisement was updated, reservation is deleted", res, res.User.Id);
                 _notificationService.CreateNotification("Reservation was deleted, because you updated the availibility", res, res.Advertisement.User.Id);
             }
 
