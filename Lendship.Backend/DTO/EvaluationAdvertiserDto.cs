@@ -56,6 +56,13 @@ namespace Lendship.Backend.DTO
         public int AdvertisementId { get; set; }
 
         /// <summary>
+        /// Gets or Sets ReservationId
+        /// </summary>
+
+        [DataMember(Name = "reservationId")]
+        public int ReservationId { get; set; }
+
+        /// <summary>
         /// Gets or Sets Flexibility
         /// </summary>
         [Required]
@@ -113,6 +120,7 @@ namespace Lendship.Backend.DTO
             sb.Append("  UserFrom: ").Append(UserFrom).Append("\n");
             sb.Append("  UserTo: ").Append(UserTo).Append("\n");
             sb.Append("  AdvertisementId: ").Append(AdvertisementId).Append("\n");
+            sb.Append("  ReservationId: ").Append(ReservationId).Append("\n");
             sb.Append("  Flexibility: ").Append(Flexibility).Append("\n");
             sb.Append("  Reliability: ").Append(Reliability).Append("\n");
             sb.Append("  QualityOfProduct: ").Append(QualityOfProduct).Append("\n");
@@ -169,12 +177,17 @@ namespace Lendship.Backend.DTO
                     UserTo == other.UserTo ||
                     UserTo != null &&
                     UserTo.Equals(other.UserTo)
-                ) && 
+                ) &&
                 (
                     AdvertisementId == other.AdvertisementId ||
                     AdvertisementId != null &&
                     AdvertisementId.Equals(other.AdvertisementId)
-                ) && 
+                ) &&
+                (
+                    ReservationId == other.ReservationId ||
+                    ReservationId != null &&
+                    ReservationId.Equals(other.ReservationId)
+                ) &&
                 (
                     Flexibility == other.Flexibility ||
                     Flexibility != null &&
@@ -225,6 +238,8 @@ namespace Lendship.Backend.DTO
                     hashCode = hashCode * 59 + UserTo.GetHashCode();
                     if (AdvertisementId != null)
                     hashCode = hashCode * 59 + AdvertisementId.GetHashCode();
+                    if (ReservationId != null)
+                    hashCode = hashCode * 59 + ReservationId.GetHashCode();
                     if (Flexibility != null)
                     hashCode = hashCode * 59 + Flexibility.GetHashCode();
                     if (Reliability != null)

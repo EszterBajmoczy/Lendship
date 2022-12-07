@@ -4,14 +4,16 @@ using Lendship.Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Lendship.Backend.Migrations
 {
     [DbContext(typeof(LendshipDbContext))]
-    partial class LendshipDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221207181247_AddReservationIdToEvaluation")]
+    partial class AddReservationIdToEvaluation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,6 +28,15 @@ namespace Lendship.Backend.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
+
+                    b.Property<double>("AdvertiserFlexibility")
+                        .HasColumnType("float");
+
+                    b.Property<double>("AdvertiserQualityOfProduct")
+                        .HasColumnType("float");
+
+                    b.Property<double>("AdvertiserReliability")
+                        .HasColumnType("float");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -44,7 +55,16 @@ namespace Lendship.Backend.Migrations
                     b.Property<bool>("EmailNotificationsEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("EvaluationId")
+                    b.Property<double>("EvaluationAsAdvertiser")
+                        .HasColumnType("float");
+
+                    b.Property<int>("EvaluationAsAdvertiserCount")
+                        .HasColumnType("int");
+
+                    b.Property<double>("EvaluationAsLender")
+                        .HasColumnType("float");
+
+                    b.Property<int>("EvaluationAsLenderCount")
                         .HasColumnType("int");
 
                     b.Property<string>("ImageLocation")
@@ -53,6 +73,15 @@ namespace Lendship.Backend.Migrations
                     b.Property<decimal>("Latitude")
                         .HasPrecision(8)
                         .HasColumnType("decimal(8,6)");
+
+                    b.Property<double>("LenderFlexibility")
+                        .HasColumnType("float");
+
+                    b.Property<double>("LenderQualityAtReturn")
+                        .HasColumnType("float");
+
+                    b.Property<double>("LenderReliability")
+                        .HasColumnType("float");
 
                     b.Property<string>("Location")
                         .IsRequired()
@@ -99,8 +128,6 @@ namespace Lendship.Backend.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EvaluationId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -280,48 +307,6 @@ namespace Lendship.Backend.Migrations
                     b.ToTable("EvaluationAdvertisers");
                 });
 
-            modelBuilder.Entity("Lendship.Backend.Models.EvaluationComputed", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<double>("AdvertiserFlexibility")
-                        .HasColumnType("float");
-
-                    b.Property<double>("AdvertiserQualityOfProduct")
-                        .HasColumnType("float");
-
-                    b.Property<double>("AdvertiserReliability")
-                        .HasColumnType("float");
-
-                    b.Property<double>("EvaluationAsAdvertiser")
-                        .HasColumnType("float");
-
-                    b.Property<int>("EvaluationAsAdvertiserCount")
-                        .HasColumnType("int");
-
-                    b.Property<double>("EvaluationAsLender")
-                        .HasColumnType("float");
-
-                    b.Property<int>("EvaluationAsLenderCount")
-                        .HasColumnType("int");
-
-                    b.Property<double>("LenderFlexibility")
-                        .HasColumnType("float");
-
-                    b.Property<double>("LenderQualityAtReturn")
-                        .HasColumnType("float");
-
-                    b.Property<double>("LenderReliability")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("EvaluationComputed");
-                });
-
             modelBuilder.Entity("Lendship.Backend.Models.EvaluationLender", b =>
                 {
                     b.Property<int>("Id")
@@ -497,12 +482,6 @@ namespace Lendship.Backend.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<bool>("AdmittedByAdvertiser")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("AdmittedByLender")
-                        .HasColumnType("bit");
-
                     b.Property<int?>("AdvertisementId")
                         .HasColumnType("int");
 
@@ -520,6 +499,12 @@ namespace Lendship.Backend.Migrations
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("admittedByAdvertiser")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("admittedByLender")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -728,15 +713,6 @@ namespace Lendship.Backend.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("Lendship.Backend.Authentication.ApplicationUser", b =>
-                {
-                    b.HasOne("Lendship.Backend.Models.EvaluationComputed", "Evaluation")
-                        .WithMany()
-                        .HasForeignKey("EvaluationId");
-
-                    b.Navigation("Evaluation");
                 });
 
             modelBuilder.Entity("Lendship.Backend.Models.Advertisement", b =>

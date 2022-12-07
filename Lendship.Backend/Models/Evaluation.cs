@@ -19,6 +19,9 @@ namespace Lendship.Backend.Models
         public int AdvertisementId { get; set; }
 
         [Required]
+        public int ReservationId { get; set; }
+
+        [Required]
         public int Flexibility { get; set; }
 
         [Required]

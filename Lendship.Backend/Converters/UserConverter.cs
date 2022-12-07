@@ -14,10 +14,10 @@ namespace Lendship.Backend.Converters
                 Id = new Guid(user.Id),
                 Name = user.UserName,
                 Email = user.Email,
-                EvaluationAsAdvertiser = Math.Round(user.EvaluationAsAdvertiser, 1),
-                EvaluationAsAdvertiserCount = user.EvaluationAsAdvertiserCount,
-                EvaluationAsLender = Math.Round(user.EvaluationAsLender, 1),
-                EvaluationAsLenderCount = user.EvaluationAsLenderCount,
+                EvaluationAsAdvertiser = Math.Round(user.Evaluation.EvaluationAsAdvertiser, 1),
+                EvaluationAsAdvertiserCount = user.Evaluation.EvaluationAsAdvertiserCount,
+                EvaluationAsLender = Math.Round(user.Evaluation.EvaluationAsLender, 1),
+                EvaluationAsLenderCount = user.Evaluation.EvaluationAsLenderCount,
                 Image = user.ImageLocation
             };
         }
@@ -34,10 +34,10 @@ namespace Lendship.Backend.Converters
                 Latitude = user.Latitude,
                 Longitude = user.Longitude,
                 Location = user.Location,
-                EvaluationAsAdvertiser = Math.Round(user.EvaluationAsAdvertiser, 1),
-                EvaluationAsAdvertiserCount = user.EvaluationAsAdvertiserCount,
-                EvaluationAsLender = Math.Round(user.EvaluationAsLender, 1),
-                EvaluationAsLenderCount = user.EvaluationAsLenderCount,
+                EvaluationAsAdvertiser = Math.Round(user.Evaluation.EvaluationAsAdvertiser, 1),
+                EvaluationAsAdvertiserCount = user.Evaluation.EvaluationAsAdvertiserCount,
+                EvaluationAsLender = Math.Round(user.Evaluation.EvaluationAsLender, 1),
+                EvaluationAsLenderCount = user.Evaluation.EvaluationAsLenderCount,
                 Registration = user.Registration,
                 Image = user.ImageLocation
             };

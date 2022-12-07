@@ -26,30 +26,13 @@ namespace Lendship.Backend.Authentication
         [Required]
         public string Location { get; set; }
 
-        public double EvaluationAsAdvertiser { get; set; }
-
-        public int EvaluationAsAdvertiserCount { get; set; }
-
-        public double AdvertiserFlexibility { get; set; }
-
-        public double AdvertiserReliability { get; set; }
-
-        public double AdvertiserQualityOfProduct { get; set; }
-
-        public double EvaluationAsLender { get; set; }
-
-        public int EvaluationAsLenderCount { get; set; }
-
-        public double LenderFlexibility { get; set; }
-
-        public double LenderReliability { get; set; }
-
-        public double LenderQualityAtReturn { get; set; }
-
         public string ImageLocation { get; set; }
 
         [Required]
         public DateTime Registration { get; set; }
+
+        [Required]
+        public EvaluationComputed Evaluation { get; set; }
 
         public virtual ICollection<ReservedCredit> ReservedCredits { get; set; }
     }

@@ -31,6 +31,7 @@ namespace Lendship.Backend.Repositories
         {
             return _dbContext.PrivateUsers
                         .Include(u => u.User)
+                        .Include(a => a.User.Evaluation)
                         .Where(x => x.AdvertisementId == advertisementId);
         }
     }

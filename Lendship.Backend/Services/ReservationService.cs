@@ -1,10 +1,8 @@
-﻿using Lendship.Backend.Authentication;
-using Lendship.Backend.DTO;
+﻿using Lendship.Backend.DTO;
 using Lendship.Backend.Exceptions;
 using Lendship.Backend.Interfaces.Converters;
 using Lendship.Backend.Interfaces.Repositories;
 using Lendship.Backend.Interfaces.Services;
-using Lendship.Backend.Migrations;
 using Lendship.Backend.Models;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -67,6 +65,7 @@ namespace Lendship.Backend.Services
             var reservation = _reservationConverter.ConvertToEntity(reservationDto, user, advertisement);
 
             _reservationRepository.Create(reservation);
+            _notificationService.CreateNotification("New reservation created", reservation, advertisement.User.Id);
         }
 
         public IEnumerable<ReservationDetailDto> GetReservations()
@@ -137,17 +136,17 @@ namespace Lendship.Backend.Services
 
             if (signedInUserId == reservation.User.Id)
             {
-                reservation.admittedByLender = true;
+                reservation.AdmittedByLender = true;
                 _notificationService.CreateNotification("Reservation was evaluated by the Lender", reservation, reservation.Advertisement.User.Id);
             }
 
             if (signedInUserId == reservation.Advertisement.User.Id)
             {
-                reservation.admittedByAdvertiser = true;
+                reservation.AdmittedByAdvertiser = true;
                 _notificationService.CreateNotification("Reservation was evaluated by the Advertiser", reservation, reservation.User.Id);
             }
 
-            if (reservation.admittedByAdvertiser && reservation.admittedByLender)
+            if (reservation.AdmittedByAdvertiser && reservation.AdmittedByLender)
             {
                 reservation.ReservationState = ReservationState.Closed;
             }
@@ -232,6 +231,29 @@ namespace Lendship.Backend.Services
             _reservationRepository.RemoveUpcommingReservations(advertisementId);
         }
 
+        public void RemoveUpcommingReservationForAvailabilities(int advertisementId, IEnumerable<Availability> availabilities)
+        {
+            var reservations = new List<Reservation>();
+
+            foreach (var a in availabilities)
+            {
+                var res = _reservationRepository.GetByAdvertisement(advertisementId)
+                    .Where(x => 
+                        (x.DateFrom.CompareTo(a.DateFrom) < 0 && x.DateTo.CompareTo(a.DateFrom) >= 0) ||
+                        (x.DateFrom.CompareTo(a.DateFrom) >= 0 && x.DateFrom.CompareTo(a.DateTo) < 0) ||
+                        (x.DateTo.CompareTo(a.DateFrom) >= 0 && x.DateTo.CompareTo(a.DateTo) < 0));
+                reservations.AddRange(res);
+            }
+
+            foreach (var res in reservations.ToList())
+            {
+                _notificationService.CreateNotification("Availibility of the Advertisement was updated, reservation is deleted", res, res.User.Id);
+                _notificationService.CreateNotification("Reservation was deleted, because you updated the availibility", res, res.Advertisement.User.Id);
+            }
+
+            _reservationRepository.Delete(reservations);
+        }
+
         public IEnumerable<ReservationForAdvertisementDto> GetRecentReservations()
         {
             var signedInUserId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -279,7 +301,8 @@ namespace Lendship.Backend.Services
                 OtherUser = _userConverter.ConvertToDto(reservation.User.Id == signedInUserId ? reservation.Advertisement.User : reservation.User),
                 ReservationId = reservation.Id,
                 AdvertisementId = reservation.Advertisement.Id,
-                IsLender = reservation.User.Id == signedInUserId ? true : false
+                IsLender = reservation.User.Id == signedInUserId ? true : false,
+                IsAdmitted = reservation.User.Id == signedInUserId ? reservation.AdmittedByLender : reservation.AdmittedByAdvertiser
             };
         }
 

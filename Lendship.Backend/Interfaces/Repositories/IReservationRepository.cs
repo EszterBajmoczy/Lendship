@@ -1,5 +1,4 @@
-﻿using Lendship.Backend.Authentication;
-using Lendship.Backend.Models;
+﻿using Lendship.Backend.Models;
 using System.Collections.Generic;
 
 namespace Lendship.Backend.Interfaces.Repositories
@@ -27,5 +26,7 @@ namespace Lendship.Backend.Interfaces.Repositories
         void Update(Reservation reservation);
 
         void Delete(Reservation reservation);
+
+        void Delete(List<Reservation> reservations);
     }
 }
