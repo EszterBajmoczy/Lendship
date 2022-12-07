@@ -17,6 +17,7 @@ export class QrcodeComponent implements OnInit {
   baseUrl = environment.baseUrl;
   reservations = new Array<IReservationBasic>();
   token: string | undefined;
+  admitted = false;
   closing = true;
   loading = true;
 
@@ -86,6 +87,7 @@ export class QrcodeComponent implements OnInit {
     this.reservationService.getReservationToken(reservation.reservationId, this.closing)
       .subscribe(result => {
         this.token = result.reservationToken;
+        this.admitted = result.isAdmitted;
         this.evaluationBasic = new EvaluationBasic(result.otherUser, result.reservationId, result.advertisementId, result.isLender);
         console.log(result);
       });

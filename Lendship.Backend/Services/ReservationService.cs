@@ -297,7 +297,8 @@ namespace Lendship.Backend.Services
                 OtherUser = _userConverter.ConvertToDto(reservation.User.Id == signedInUserId ? reservation.Advertisement.User : reservation.User),
                 ReservationId = reservation.Id,
                 AdvertisementId = reservation.Advertisement.Id,
-                IsLender = reservation.User.Id == signedInUserId ? true : false
+                IsLender = reservation.User.Id == signedInUserId ? true : false,
+                IsAdmitted = reservation.User.Id == signedInUserId ? reservation.AdmittedByLender : reservation.AdmittedByAdvertiser
             };
         }
 
