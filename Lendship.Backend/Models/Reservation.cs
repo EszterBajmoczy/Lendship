@@ -29,9 +29,9 @@ namespace Lendship.Backend.Models
 
         public string Comment { get; set; }
 
-        public bool admittedByAdvertiser { get; set; }
+        public bool AdmittedByAdvertiser { get; set; }
 
-        public bool admittedByLender { get; set; }
+        public bool AdmittedByLender { get; set; }
 
         [Required]
         public DateTime DateFrom { get; set; }

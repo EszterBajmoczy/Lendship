@@ -59,6 +59,7 @@ namespace Lendship.Backend.Controllers
                 Latitude = model.Latitude,
                 Longitude = model.Longitude,
                 Location = model.Location,
+                Evaluation = new Models.EvaluationComputed(),
                 Registration = DateTime.Now
             };
 

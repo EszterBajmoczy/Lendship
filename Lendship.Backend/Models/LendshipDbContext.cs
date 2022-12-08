@@ -36,6 +36,8 @@ namespace Lendship.Backend.Models
 
         public DbSet<ImageLocation> ImageLocations { get; set; }
 
+        public DbSet<ReservedCredit> ReservedCredit { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

@@ -1,6 +1,6 @@
 import {AbstractControl, ValidationErrors, ValidatorFn} from "@angular/forms";
 
-export function PasswordMatchingValidator(nameRe: RegExp): ValidatorFn {
+export function passwordMatchingValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     const password = control.get("password");
     const confirmPassword = control.get("confirmPassword");

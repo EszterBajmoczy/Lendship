@@ -16,20 +16,7 @@ namespace Lendship.Backend
             return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    //webBuilder.UseUrls("http://0.0.0.0:5000");
                     webBuilder.UseStartup<Startup>();
-                    /*webBuilder.UseKestrel((hostingContext, options) =>
-                    {
-                        if (hostingContext.HostingEnvironment.IsDevelopment())
-                        {
-                            options.Listen(IPAddress.Loopback, 9001);
-                            options.Listen(IPAddress.Loopback, 9002, listenOptions =>
-                            {
-                                listenOptions.UseHttps("certificate.pfx", "LendshipCertPassword");
-                            });
-                        }
-
-                    });*/
                 });
         }
     }

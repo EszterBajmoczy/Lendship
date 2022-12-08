@@ -54,6 +54,12 @@ namespace Lendship.Backend.DTO
         [DataMember(Name = "isLender")]
         public bool IsLender { get; set; }
 
+        /// <summary>
+        /// Gets or Sets IsAdmitted
+        /// </summary>
+        [DataMember(Name = "isAdmitted")]
+        public bool IsAdmitted { get; set; }
+
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -63,6 +69,7 @@ namespace Lendship.Backend.DTO
             sb.Append("  ReservationId: ").Append(ReservationId).Append("\n");
             sb.Append("  AdvertisementId: ").Append(AdvertisementId).Append("\n");
             sb.Append("  IsLender: ").Append(IsLender).Append("\n");
+            sb.Append("  IsAdmitted: ").Append(IsAdmitted).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -119,6 +126,10 @@ namespace Lendship.Backend.DTO
                     IsLender == other.IsLender ||
                     IsLender != null &&
                     IsLender.Equals(other.IsLender)
+                ) && (
+                    IsAdmitted == other.IsAdmitted ||
+                    IsAdmitted != null &&
+                    IsAdmitted.Equals(other.IsAdmitted)
                 );
         }
 
@@ -142,6 +153,8 @@ namespace Lendship.Backend.DTO
                     hashCode = hashCode * 59 + AdvertisementId.GetHashCode();
                 if (IsLender != null)
                     hashCode = hashCode * 59 + IsLender.GetHashCode();
+                if (IsAdmitted != null)
+                    hashCode = hashCode * 59 + IsAdmitted.GetHashCode();
                 return hashCode;
             }
         }

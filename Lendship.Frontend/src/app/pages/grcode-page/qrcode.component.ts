@@ -17,6 +17,7 @@ export class QrcodeComponent implements OnInit {
   baseUrl = environment.baseUrl;
   reservations = new Array<IReservationBasic>();
   token: string | undefined;
+  admitted = false;
   closing = true;
   loading = true;
 
@@ -56,7 +57,10 @@ export class QrcodeComponent implements OnInit {
         this.operationClose = result.operation === "Close";
 
         if (result.operation === "Close") {
-          this.openEvaluation(this.evaluationPopUp)
+          if (result.message !== undefined && result.message != null && result.message != ""){
+            this.isMessage = true;
+          }
+          this.openEvaluation(this.evaluationPopUp, result.message)
         } else {
           if (result.message !== undefined && result.message != null && result.message != "") {
             this.isMessage = true;
@@ -83,6 +87,7 @@ export class QrcodeComponent implements OnInit {
     this.reservationService.getReservationToken(reservation.reservationId, this.closing)
       .subscribe(result => {
         this.token = result.reservationToken;
+        this.admitted = result.isAdmitted;
         this.evaluationBasic = new EvaluationBasic(result.otherUser, result.reservationId, result.advertisementId, result.isLender);
         console.log(result);
       });
@@ -92,10 +97,18 @@ export class QrcodeComponent implements OnInit {
     this.closing = !this.closing;
   }
 
-  openEvaluation(content: any) {
+  openEvaluation(content: any, msg: string | null) {
+    console.log(this.evaluationBasic)
+    console.log(this.evaluationBasic)
     if (this.evaluationBasic !== undefined){
-      this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'})
-        .result.catch((res) => {  this.router.navigateByUrl('home') });
+      this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result
+        .catch((res) => {
+          console.log("B")
+          console.log(this.isMessage)
+          if (this.isMessage) {
+            this.openInformation(this.informationPopup)
+          }
+        });
     }
   }
 
@@ -110,8 +123,8 @@ export class QrcodeComponent implements OnInit {
     this.modalService.dismissAll()
     this.userService.createEvaluationAdvertiser(evaluation)
       .subscribe(result => {
-        this.reservationService.updateReservationsState(evaluation.reservationId, "Closed")
-          .subscribe(res => { this.router.navigateByUrl('home');});
+        this.reservationService.admitReservation(evaluation.reservationId)
+          .subscribe(res => { });
       });
   }
 
@@ -119,8 +132,8 @@ export class QrcodeComponent implements OnInit {
     this.modalService.dismissAll()
     this.userService.createEvaluationLender(evaluation)
       .subscribe(result => {
-        this.reservationService.updateReservationsState(evaluation.reservationId, "Closed")
-          .subscribe(res => { this.router.navigateByUrl('home');});
+        this.reservationService.admitReservation(evaluation.reservationId)
+          .subscribe(res => { });
       });
   }
 }

@@ -9,4 +9,14 @@ export interface UserDetail extends User{
   registration: string,
   image: string,
   credit: number,
+  evaluation: EvaluationComputed | undefined
+}
+
+export interface EvaluationComputed {
+  advertiserFlexibility: number,
+  advertiserReliability: number,
+  advertiserQualityOfProduct: number,
+  lenderFlexibility: number,
+  lenderReliability: number,
+  lenderQualityAtReturn: number
 }

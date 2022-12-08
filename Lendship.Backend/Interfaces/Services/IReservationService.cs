@@ -1,4 +1,5 @@
 ﻿using Lendship.Backend.DTO;
+using Lendship.Backend.Models;
 using System.Collections.Generic;
 
 namespace Lendship.Backend.Interfaces.Services
@@ -22,6 +23,8 @@ namespace Lendship.Backend.Interfaces.Services
         IEnumerable<ReservationDto> GetReservationsForAdvertisement(int advertisementId);
 
         void RemoveUpcommingReservations(int advertisementId);
+
+        void RemoveUpcommingReservationForAvailabilities(int advertisementId, IEnumerable<Availability> availabilities);
 
         IEnumerable<ReservationForAdvertisementDto> GetRecentReservations();
 

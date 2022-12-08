@@ -71,13 +71,13 @@ namespace Lendship.Backend.DTO
             /// Enum ResignedEnum for Resigned
             /// </summary>
             [EnumMember(Value = "Ongoing")]
-            OngoingEnum = 4,
+            OngoingEnum = 5,
 
             /// <summary>
             /// Enum ClosedEnum for Closed
             /// </summary>
             [EnumMember(Value = "Closed")]
-            ClosedEnum = 5
+            ClosedEnum = 6
         }
 
         /// <summary>

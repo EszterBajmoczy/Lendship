@@ -4,6 +4,9 @@ import { Router} from "@angular/router";
 import {NotificationService} from "../../../services/notification/notification.service";
 import {INotification} from "../../../models/notification";
 import {environment} from "../../../../environments/environment";
+import {Conversation} from "../../../models/conversation";
+import {ConversationService} from "../../../services/conversation/conversation.service";
+import {BehaviorSubject, Observable} from "rxjs";
 
 @Component({
   selector: 'app-header',
@@ -13,14 +16,20 @@ import {environment} from "../../../../environments/environment";
 
 export class AppHeaderComponent {
   baseUrl = environment.baseUrl;
+  baseImage = environment.baseImage;
+
   name: string = "Login";
   nameUrl: string = "login";
   image: string = "";
   isLoggedIn: boolean = false;
-  notificationCount: number = 0;
-  notifications = new Array<INotification>();
+  messagesCount: Observable<number | null>;
+  notificationCount: Observable<number | null>;
 
-  constructor(private authService: AuthService, private notificationService: NotificationService, private router: Router) {
+  constructor(
+    private authService: AuthService,
+    private conversationService: ConversationService,
+    private notificationService: NotificationService,
+    private router: Router) {
     let user = this.authService.getUserName();
     let img = this.authService.getProfileImage();
 
@@ -31,16 +40,11 @@ export class AppHeaderComponent {
       this.isLoggedIn = true;
     }
 
-    if(this.isLoggedIn){
-      notificationService.getNewNotifications().subscribe((notifications) => {
-        this.notificationCount = notifications.length;
-        this.notifications = notifications;
-      });
-    }
+    this.messagesCount = conversationService.newMessageCount();
+    this.notificationCount = notificationService.newNotificationCount();
   }
 
   ngOnInit(): void {
-
   }
 
   logout() {
@@ -53,6 +57,6 @@ export class AppHeaderComponent {
   }
 
   removeNewNotifications() {
-    this.notificationCount = 0;
+    this.notificationService.getNewNotificationCount();
   }
 }

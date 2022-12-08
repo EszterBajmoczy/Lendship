@@ -50,18 +50,18 @@ namespace Lendship.Backend.Controllers
         }
 
         /// <summary>
-        /// get all new notification for the user
+        /// get new notification count for the user
         /// </summary>
-        /// <remarks>Gets all new notification for the user</remarks>
-        /// <response code="200">users notifications</response>
+        /// <remarks>Gets new notification count for the user</remarks>
+        /// <response code="200">users notification count</response>
         /// <response code="400">bad request</response>
         /// <response code="401"></response>
         [HttpGet]
         [Route("new")]
-        public virtual IActionResult GetNewNotifications()
+        public virtual IActionResult GetNewNotificationsCount()
         {
-            var notifications = _notificationService.GetNewNotifications();
-            return new ObjectResult(JsonConvert.SerializeObject(notifications));
+            var notificationCount = _notificationService.GetNewNotificationCount();
+            return new ObjectResult(JsonConvert.SerializeObject(notificationCount));
         }
 
         /// <summary>

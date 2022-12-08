@@ -17,7 +17,9 @@ import {environment} from "../../../environments/environment";
   styleUrls: ['./advertisement-info.component.scss']
 })
 export class AdvertisementInfoComponent implements OnInit, AfterContentInit {
-  baseUrl = environment.baseUrl
+  baseUrl = environment.baseUrl;
+  baseImage = environment.baseImage;
+
   id: number = -1;
   ad: AdvertisementDetail | undefined;
   isOwnAdvertisement: boolean = false;
@@ -73,16 +75,14 @@ export class AdvertisementInfoComponent implements OnInit, AfterContentInit {
   }
 
   open(content: any) {
-    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
-      console.log("result");
-      console.log(result);
-      if(result == "Reserve"){
-        console.log("do reservation");
+    this.reserveFrom = undefined;
+    this.reserveTo = undefined;
 
-        if(this.reserveTo !== undefined && this.reserveFrom !== undefined) {
-          let res = new Reservation(0, 1, this.reserveFrom, this.reserveTo);
-          console.log("!");
-          console.log(res);
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
+      if(result == "Reserve"){
+        if(this.reserveFrom !== undefined) {
+          let reserveTo = this.reserveTo === undefined ? this.reserveFrom : this.reserveTo;
+          let res = new Reservation(0, 1, this.reserveFrom, reserveTo);
           this.reservationService.reserve(this.id, res)
             .subscribe(response => {
               console.log(response);

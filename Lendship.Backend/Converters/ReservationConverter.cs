@@ -27,8 +27,8 @@ namespace Lendship.Backend.Converters
                 Advertisement = adDto,
                 ReservationState = GetReservationEnumState(reservation.ReservationState),
                 Comment = reservation.Comment,
-                AdmittedByAdvertiser = reservation.admittedByAdvertiser,
-                AdmittedByLender = reservation.admittedByAdvertiser,
+                AdmittedByAdvertiser = reservation.AdmittedByAdvertiser,
+                AdmittedByLender = reservation.AdmittedByLender,
                 User = reservation.User != null ? _userConverter.ConvertToDto(reservation.User) : null,
                 DateFrom = reservation.DateFrom,
                 DateTo = reservation.DateTo,
@@ -66,8 +66,8 @@ namespace Lendship.Backend.Converters
                 Advertisement = advertisement,
                 ReservationState = GetReservationState(reservationDto.ReservationState),
                 Comment = reservationDto.Comment,
-                admittedByAdvertiser = reservationDto.AdmittedByAdvertiser ?? false,
-                admittedByLender = reservationDto.AdmittedByLender ?? false,
+                AdmittedByAdvertiser = reservationDto.AdmittedByAdvertiser ?? false,
+                AdmittedByLender = reservationDto.AdmittedByLender ?? false,
                 DateFrom = reservationDto.DateFrom ?? DateTime.Now,
                 DateTo = reservationDto.DateTo ?? DateTime.Now
             };
@@ -83,6 +83,7 @@ namespace Lendship.Backend.Converters
                 ReservationState.Accepted => ReservationStateEnum.AcceptedEnum,
                 ReservationState.Declined => ReservationStateEnum.DeclinedEnum,
                 ReservationState.Resigned => ReservationStateEnum.ResignedEnum,
+                ReservationState.Ongoing => ReservationStateEnum.OngoingEnum,
                 ReservationState.Closed => ReservationStateEnum.ClosedEnum,
                 _ => ReservationStateEnum.CreatedEnum,
             };
@@ -96,6 +97,7 @@ namespace Lendship.Backend.Converters
                 ReservationStateEnum.AcceptedEnum => ReservationState.Accepted,
                 ReservationStateEnum.DeclinedEnum => ReservationState.Declined,
                 ReservationStateEnum.ResignedEnum => ReservationState.Resigned,
+                ReservationStateEnum.OngoingEnum => ReservationState.Ongoing,
                 ReservationStateEnum.ClosedEnum => ReservationState.Closed,
                 _ => ReservationState.Created,
             };

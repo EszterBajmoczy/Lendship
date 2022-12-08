@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { PasswordMatchingValidator} from "../../shared/password-matching";
-import { UntypedFormBuilder, Validators} from "@angular/forms";
+import { passwordMatchingValidator} from "../../shared/password-matching";
+import {FormGroup, UntypedFormBuilder, Validators} from "@angular/forms";
 import { AuthService} from "../../services/auth/auth.service";
 import { LocationValidator} from "../../shared/valid-location";
 import { GeocodingService} from "../../services/geocoding/geocoding.service";
@@ -31,7 +31,7 @@ export class RegistrationPageComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  registrationForm = this.formBuilder.group({
+  registrationForm: FormGroup = this.formBuilder.group({
     name: ['', [Validators.required]],
     email: ['', [Validators.required, Validators.email]],
     location: ['', [Validators.required], [this.locationValidator.exists.bind(this.locationValidator)]],
@@ -39,7 +39,7 @@ export class RegistrationPageComponent implements OnInit {
     longitude: [],
     password: ['', [Validators.required, Validators.minLength(6), Validators.pattern(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])"))]],
     confirmPassword: ['', [Validators.required, Validators.minLength(6), Validators.pattern(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])"))]],
-  }, { validators: PasswordMatchingValidator });
+  }, {validators: [passwordMatchingValidator()]});
 
   get name() {
     return this.registrationForm.get("name");

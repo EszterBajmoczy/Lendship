@@ -96,7 +96,7 @@
       </div>
 
       <app-file-upload (files)="addFile($event)" ></app-file-upload>
-      <div *ngIf="newImageName !== undefined" class="date-section d-flex text-center align-items-center align-items-center justify-content-between">
+      <div *ngIf="newImageName.length > 0" class="date-section d-flex text-center align-items-center align-items-center justify-content-between">
         <p class="mb-0">{{newImageName}}</p>
         <button class="btn btn-primary m-0" (click)="removeNewImage()"><i class="fa-solid fa-circle-minus"></i></button>
       </div>

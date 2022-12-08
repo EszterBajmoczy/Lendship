@@ -2,8 +2,8 @@
 {
     public interface IEvaluationCalculator
     {
-        double calculateAdviser(double flexibility, double reliability, double qualityOfProduct);
+        double CalculateAdvertiser(double flexibility, double reliability, double qualityOfProduct);
 
-        double calculateLender(double flexibility, double reliability, double qualityAtReturn);
+        double CalculateLender(double flexibility, double reliability, double qualityAtReturn);
     }
 }

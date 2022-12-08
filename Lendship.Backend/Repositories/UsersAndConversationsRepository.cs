@@ -1,9 +1,6 @@
-﻿using Lendship.Backend.Authentication;
-using Lendship.Backend.Exceptions;
-using Lendship.Backend.Interfaces.Repositories;
+﻿using Lendship.Backend.Interfaces.Repositories;
 using Lendship.Backend.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -42,8 +39,10 @@ namespace Lendship.Backend.Repositories
             return _dbContext.UsersAndConversations
                             .Where(x => x.UserId == userId)
                             .Include(u => u.User)
+                            .Include(u => u.User.Evaluation)
                             .Include(u => u.Conversation)
                             .Include(u => u.Conversation.Advertisement)
+                            .Include(u => u.Conversation.Advertisement.User.Evaluation)
                             .Include(u => u.Conversation.Messages)
                             .OrderByDescending(x => x.Conversation.Messages.OrderByDescending(m => m.Date).FirstOrDefault().Date);
         }
@@ -52,6 +51,7 @@ namespace Lendship.Backend.Repositories
         {
             return _dbContext.UsersAndConversations
                             .Include(u => u.User)
+                            .Include(u => u.User.Evaluation)
                             .Where(x => x.ConversationId == conversationId && x.UserId != userId);
         }
 
@@ -60,8 +60,7 @@ namespace Lendship.Backend.Repositories
             return _dbContext.UsersAndConversations
                             .Include(u => u.Conversation)
                             .Include(u => u.Conversation.Messages)
-                            .Include(u => u.Conversation.Advertisement)
-                            .Where(u => u.UserId == userId && u.Conversation.Messages.Any(m => m.New))
+                            .Where(u => u.UserId == userId && u.Conversation.Messages.Any(m => m.New && m.UserFrom.Id != userId))
                             .Count();
         }
     }

@@ -129,6 +129,13 @@ namespace Lendship.Backend.DTO
         public string Image { get; set; }
 
         /// <summary>
+        /// Gets or Sets Evaluation
+        /// </summary>
+
+        [DataMember(Name = "evaluation")]
+        public EvaluationComputedDto? Evaluation { get; set; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -146,6 +153,7 @@ namespace Lendship.Backend.DTO
             sb.Append("  Location: ").Append(Location).Append("\n");
             sb.Append("  Registration: ").Append(Registration).Append("\n");
             sb.Append("  Image: ").Append(Image).Append("\n");
+            sb.Append("  Evaluation: ").Append(Evaluation).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -231,6 +239,11 @@ namespace Lendship.Backend.DTO
                     Image == other.Image ||
                     Image != null &&
                     Image.Equals(other.Image)
+                ) &&
+                (
+                    Evaluation == other.Evaluation ||
+                    Evaluation != null &&
+                    Evaluation.Equals(other.Evaluation)
                 );
         }
 
@@ -264,6 +277,8 @@ namespace Lendship.Backend.DTO
                     hashCode = hashCode * 59 + Registration.GetHashCode();
                     if (Image != null)
                     hashCode = hashCode * 59 + Image.GetHashCode();
+                    if (Evaluation != null)
+                    hashCode = hashCode * 59 + Evaluation.GetHashCode();
                 return hashCode;
             }
         }

@@ -20,13 +20,12 @@ namespace Lendship.Backend.Converters
 
         public EvaluationLenderDto ConvertToDto(EvaluationLender evaluation)
         {
-            //TODO evaluations as lender, advertiser
-            //TODO if it is anonymus, should client get the UserFrom or rather not
             return new EvaluationLenderDto
             {
                 Id = evaluation.Id,
-                UserFrom = _userConverter.ConvertToDto(evaluation.UserFrom),
-                AdvertisementId = evaluation.Advertisement.Id,
+                UserFrom = evaluation.IsAnonymous ? null : _userConverter.ConvertToDto(evaluation.UserFrom),
+                AdvertisementId = evaluation.AdvertisementId,
+                ReservationId = evaluation.ReservationId,
                 Flexibility = evaluation.Flexibility,
                 Reliability = evaluation.Reliability,
                 QualityAtReturn = evaluation.QualityAtReturn,
@@ -43,7 +42,8 @@ namespace Lendship.Backend.Converters
                 Id = evaluation.Id ?? 0,
                 UserFrom = UserFrom,
                 UserTo = UserTo,
-                Advertisement = advertisement,
+                AdvertisementId = advertisement.Id,
+                ReservationId = evaluation.ReservationId,
                 Flexibility = evaluation.Flexibility,
                 Reliability = evaluation.Reliability,
                 QualityAtReturn = evaluation.QualityAtReturn,

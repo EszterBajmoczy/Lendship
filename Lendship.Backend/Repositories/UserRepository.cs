@@ -1,9 +1,7 @@
 ﻿using Lendship.Backend.Authentication;
-using Lendship.Backend.Exceptions;
 using Lendship.Backend.Interfaces.Repositories;
 using Lendship.Backend.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -26,7 +24,10 @@ namespace Lendship.Backend.Repositories
 
         public ApplicationUser GetById(string id)
         {
-            return _dbContext.Users.Where(x => x.Id == id).FirstOrDefault();
+            return _dbContext.Users
+                .Include(x => x.Evaluation)
+                .Where(x => x.Id == id)
+                .FirstOrDefault();
         }
 
         public void Update(ApplicationUser user)
@@ -37,7 +38,10 @@ namespace Lendship.Backend.Repositories
 
         public void DeleteById(string userId)
         {
-            var user = _dbContext.Users.Where(x => x.Id == userId).FirstOrDefault();
+            var user = _dbContext.Users
+                            .Include(u => u.Evaluation)
+                            .Where(x => x.Id == userId)
+                            .FirstOrDefault();
             _dbContext.Users.Remove(user);
             _dbContext.SaveChanges();
         }
@@ -45,6 +49,7 @@ namespace Lendship.Backend.Repositories
         public IEnumerable<string> GetIdsByEmails(List<string> emails)
         {
             return _dbContext.Users
+                        .Include(u => u.Evaluation)
                         .Where(u => emails.Contains(u.Email))
                         .Select(u => u.Id);
         }
@@ -52,6 +57,7 @@ namespace Lendship.Backend.Repositories
         public ApplicationUser GetByEmail(string email)
         {
             return _dbContext.Users
+                .Include(x => x.Evaluation)
                 .Where(x => x.Email == email)
                 .FirstOrDefault();
         }

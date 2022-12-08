@@ -20,11 +20,13 @@ namespace Lendship.Backend.Repositories
         {
             return _dbContext.Advertisements
                 .Include(a => a.User)
+                .Include(a => a.User.Evaluation)
                 .Include(a => a.Category)
                 .Include(a => a.ImageLocations)
                 .Include(a => a.Availabilities)
                 .Include(a => a.PrivateUsers)
                 .ThenInclude(p => p.User)
+                .ThenInclude(u => u.Evaluation)
                 .Where(x => x.IsPublic || x.User.Id == signedInUserId || x.PrivateUsers.Any(p => p.UserId == signedInUserId));
         }
 
@@ -33,11 +35,13 @@ namespace Lendship.Backend.Repositories
             return _dbContext.Advertisements
                 .AsNoTracking()
                 .Include(a => a.User)
+                .Include(a => a.User.Evaluation)
                 .Include(a => a.Category)
                 .Include(a => a.ImageLocations)
                 .Include(a => a.Availabilities)
                 .Include(a => a.PrivateUsers)
                 .ThenInclude(p => p.User)
+                .ThenInclude(u => u.Evaluation)
                 .Where(a => a.Id == id && (a.IsPublic || a.User.Id == signedInUserId || a.PrivateUsers.Any(p => p.UserId == signedInUserId)))
                 .FirstOrDefault();
         }
@@ -46,6 +50,7 @@ namespace Lendship.Backend.Repositories
         {
             return _dbContext.Advertisements
                 .Include(a => a.User)
+                .Include(a => a.User.Evaluation)
                 .Where(a => a.Id == id && (a.IsPublic || a.User.Id == signedInUserId || a.PrivateUsers.Any(p => p.UserId == signedInUserId)))
                 .FirstOrDefault();
         }

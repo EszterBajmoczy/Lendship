@@ -6,6 +6,7 @@ export interface IReservationToken {
   reservationId: number;
   advertisementId: number;
   isLender: boolean;
+  isAdmitted: boolean;
 }
 
 export class QRToken {

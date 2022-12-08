@@ -5,6 +5,7 @@ using Lendship.Backend.Interfaces.Converters;
 using Lendship.Backend.Interfaces.Repositories;
 using Lendship.Backend.Interfaces.Services;
 using Lendship.Backend.Models;
+using Lendship.Backend.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -21,13 +22,13 @@ namespace Lendship.Backend.Services
         private readonly IUserRepository _userRepository;
         private readonly ISavedAdvertisementRepository _savedAdvertisementRepository;
         private readonly IAvailabilityRepository _availabilityRepository;
+        private readonly IConversationRepository _conversationRepository;
 
         private readonly ICategoryService _categoryService;
         private readonly IReservationService _reservationService;
         private readonly IImageService _imageService;
         private readonly IPrivateUserService _privateUserService;
 
-        private readonly IAdvertisementConverter _adDetailsConverter;
         private readonly IAdvertisementConverter _adConverter;
         private readonly IAvailabilityConverter _availabilityConverter;
 
@@ -39,11 +40,11 @@ namespace Lendship.Backend.Services
             IUserRepository userRepository,
             ISavedAdvertisementRepository savedAdvertisementRepository,
             IAvailabilityRepository availabilityRepository,
+            IConversationRepository conversationRepository,
             ICategoryService categoryService,
             IReservationService reservationService, 
             IImageService imageService,
             IPrivateUserService privateUserService,
-            IAdvertisementConverter advertisementDetailsConverter,
             IAdvertisementConverter advertisementConverter,
             IAvailabilityConverter availabilityConverter)
         {
@@ -52,13 +53,13 @@ namespace Lendship.Backend.Services
             _userRepository = userRepository;
             _savedAdvertisementRepository = savedAdvertisementRepository;
             _availabilityRepository = availabilityRepository;
+            _conversationRepository = conversationRepository;
 
             _categoryService = categoryService;
             _reservationService = reservationService;
             _imageService = imageService;
             _privateUserService = privateUserService;
 
-            _adDetailsConverter = advertisementDetailsConverter;
             _adConverter = advertisementConverter;
             _availabilityConverter = availabilityConverter;
         }
@@ -73,7 +74,7 @@ namespace Lendship.Backend.Services
                 throw new AdvertisementNotFoundException("Advertisement not found.");
             }
 
-            var advertisementDto = _adDetailsConverter.ConvertToDetailsDto(advertisement);
+            var advertisementDto = _adConverter.ConvertToDetailsDto(advertisement);
             return advertisementDto;
         }
 
@@ -84,7 +85,7 @@ namespace Lendship.Backend.Services
             var category = _categoryService.GetOrCreateCategoryByName(advertisement.Category.Name);
             var user = _userRepository.GetById(signedInUserId);
 
-            var ad =_adDetailsConverter.ConvertToEntity(advertisement, user, category);
+            var ad =_adConverter.ConvertToEntity(advertisement, user, category);
 
             _advertisementRepository.Create(ad);
 
@@ -115,10 +116,9 @@ namespace Lendship.Backend.Services
             var user = _userRepository.GetById(signedInUserId);
             var privateUsers = advertisement.PrivateUsers.Select(x => _userRepository.GetById(x.Id.ToString()));
 
-            var ad = _adDetailsConverter.ConvertToEntity(advertisement, user, category);
+            var ad = _adConverter.ConvertToEntity(advertisement, user, category);
 
             _advertisementRepository.Update(ad);
-
             UpdateAvailabilities(ad, advertisement.Availabilities);
             _privateUserService.UpdatePrivateUsers(ad.Id, advertisement.PrivateUsers);
         }
@@ -136,8 +136,9 @@ namespace Lendship.Backend.Services
 
             _imageService.DeleteImages(advertisementId);
 
-            _advertisementRepository.Delete(advertisementId);
+            _conversationRepository.DeleteByAdvertisementId(advertisementId);
             _reservationService.RemoveUpcommingReservations(advertisementId);
+            _advertisementRepository.Delete(advertisementId);
         }
 
         public AdvertisementListDto GetAdvertisements(string advertisementType, bool creditPayment, bool cashPayment, string category, double latitude, double longitude, int distance, string word, string sortBy, int page)
@@ -152,7 +153,7 @@ namespace Lendship.Backend.Services
 
             if (sortBy == null)
             {
-                advertisements = advertisements.OrderByDescending(x => userLocation.GetDistanceTo(new GeoCoordinate((double)x.Latitude, (double)x.Longitude)));
+                advertisements = advertisements.OrderBy(x => userLocation.GetDistanceTo(new GeoCoordinate((double)x.Latitude, (double)x.Longitude)));
             }
 
             var result = Paging(advertisements, page)
@@ -259,15 +260,15 @@ namespace Lendship.Backend.Services
 
             if (creditPayment && cashPayment)
             {
-                ads = ads.Where(a => a.Credit != null || a.Price != null);
+                ads = ads.Where(a => (a.Credit != null && a.Credit != 0) || (a.Price != null && a.Price != 0));
             }
             else if (creditPayment)
             {
-                ads = ads.Where(a => a.Credit != null);
+                ads = ads.Where(a => (a.Credit != null && a.Credit != 0));
             }
             else if (cashPayment)
             {
-                ads = ads.Where(a => a.Price != null);
+                ads = ads.Where(a => (a.Price != null && a.Price != 0));
             }
 
             if (category != null && category != "")
@@ -275,9 +276,10 @@ namespace Lendship.Backend.Services
                 ads = ads.Where(a => a.Category.Name.ToLower() == category.ToLower());
             }
 
-            if (word != null)
+            if (word != null && word != "")
             {
-                ads = ads.Where(a => a.Title.Contains(word) || a.Description.Contains(word));
+                var lower = word.ToLower();
+                ads = ads.Where(a => a.Title.ToLower().Contains(lower) || a.Description.ToLower().Contains(lower));
             }
 
             if (latitude > 0 && longitude > 0 && distance > 0)
@@ -327,6 +329,12 @@ namespace Lendship.Backend.Services
 
             var toAdd = availabilities.Where(a => a.Id == 0).Select(a => _availabilityConverter.ConvertToEntity(a, ad));
             var toDelete = savedAv.Where(a => !avIds.Contains(a.Id));
+
+            var toDeleteWithReservation = toDelete.Where(x => x.DateTo > DateTime.Now).ToList();
+            if (toDeleteWithReservation.Any())
+            {
+                _reservationService.RemoveUpcommingReservationForAvailabilities(ad.Id, toDeleteWithReservation);
+            }
 
             _availabilityRepository.DeleteRange(toDelete);
             _availabilityRepository.AddRange(toAdd);
