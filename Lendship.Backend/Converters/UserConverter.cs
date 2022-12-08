@@ -49,12 +49,12 @@ namespace Lendship.Backend.Converters
         {
             return new EvaluationComputedDto()
             {
-                AdvertiserFlexibility = evaluation.AdvertiserFlexibility,
-                AdvertiserReliability = evaluation.AdvertiserReliability,
-                AdvertiserQualityOfProduct = evaluation.AdvertiserQualityOfProduct,
-                LenderFlexibility = evaluation.LenderFlexibility,
-                LenderReliability = evaluation.LenderReliability,
-                LenderQualityAtReturn = evaluation.LenderQualityAtReturn
+                AdvertiserFlexibility = Math.Round(evaluation.AdvertiserFlexibility, 1),
+                AdvertiserReliability = Math.Round(evaluation.AdvertiserReliability, 1),
+                AdvertiserQualityOfProduct = Math.Round(evaluation.AdvertiserQualityOfProduct, 1),
+                LenderFlexibility = Math.Round(evaluation.LenderFlexibility, 1),
+                LenderReliability = Math.Round(evaluation.LenderReliability, 1),
+                LenderQualityAtReturn = Math.Round(evaluation.LenderQualityAtReturn, 1)
             };
         }
     }
